@@ -1,3 +1,4 @@
+// Actualizar el titulo del encabezado 
 function actualizarTitulo() {
         const tituloElemento = document.getElementById('titulo-seccion');
         const nombreArchivo = window.location.pathname.split('/').pop();
@@ -7,7 +8,6 @@ function actualizarTitulo() {
         'usuarios.html': 'Gestión de Usuarios',
         'pedidos.html': 'Historial de Pedidos',
         'categorias.html': 'Gestión de Categorías',
-        'dashboard.html': 'Panel de Control'
         };
 
         const nuevoTitulo = titulos[nombreArchivo] || 'Panel de Administración';
@@ -76,7 +76,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Llamada al menú principal
     cargarComponente("menu-placeholder", "admin_menu.html");
     
-    // Llamada al segundo HTML que acompleta la interfaz
+    // Llamada al segundo HTML que completa la interfaz
     cargarComponente("menu-complemento-placeholder", "admin_menu_extra.html");
 });
 document.addEventListener('click', function(e) {
@@ -117,21 +117,17 @@ document.addEventListener('click', function(e) {
         document.getElementById(modalId).style.display = 'block';
     }
 
-    // --- LÓGICA PARA EL BOTÓN "ACEPTAR" DEL ÉXITO ---
     if (e.target.id === 'btn-accept-confirm') {
         document.getElementById('confirmation-overlay').style.display = 'none';
-        // Cerrar todos los modales abiertos
+        // Cerrar los modales abiertos
         document.querySelectorAll('.modal').forEach(m => m.style.display = 'none');
     }
 });
 
-// --- LÓGICA PARA GUARDAR (SUBMIT) ---
+// guardar
 document.addEventListener('submit', function(e) {
     e.preventDefault(); // Evita recargar página
-    
-    // Aquí iría tu Fetch/AJAX a PHP
-    
-    // Al terminar con éxito, mostramos el popup de confirmación
+
     document.getElementById('confirmation-overlay').style.display = 'flex';
 });
 
@@ -235,21 +231,20 @@ document.addEventListener('click', function(e) {
         const modalId = btnDelete.getAttribute('data-modal');
         document.getElementById(modalId).style.display = 'block';
     }
-    //btn de confimacion 
+    //btn de confirmacion 
     if (e.target.id === 'btn-confirmar-eliminar') {
         const idAEliminar = document.getElementById('deleteCatId').value;
         console.log('Eliminando ID:', idAEliminar);
-        
-        // muestra
+
         mostrarAvisoExito();
     }
 });
 
-//  (Añadir / Modificar) 
+ 
 document.addEventListener('submit', function(e) {
     e.preventDefault(); 
     
-    // vihuculo php
+    // vinculo php
     
     mostrarAvisoExito();
     
@@ -259,7 +254,7 @@ document.addEventListener('submit', function(e) {
     if (formAdd) formAdd.reset();
     if (formEdit) formEdit.reset();
 });
-// --- LÓGICA PARA EL FILTRADO EN TIEMPO REAL DE LA BARRA DE BÚSQUEDA ---
+// 
 document.addEventListener('DOMContentLoaded', () => {
     const searchInput = document.getElementById('searchInput');
     
@@ -274,11 +269,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 const nombreCategoria = fila.cells[2] ? fila.cells[2].innerText.toLowerCase() : '';
                 const descripcionCategoria = fila.cells[3] ? fila.cells[3].innerText.toLowerCase() : '';
 
-                // coicidir
                 if (nombreCategoria.includes(textoBusqueda) || descripcionCategoria.includes(textoBusqueda)) {
-                    fila.style.display = ''; // Muestra la fila si hay coincidencia
+                    fila.style.display = '';
                 } else {
-                    fila.style.display = 'none'; // Oculta la fila si no coincide
+                    fila.style.display = 'none';
                 }
             });
         });
