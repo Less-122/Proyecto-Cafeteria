@@ -1,4 +1,4 @@
-// Actualizar el titulo del encabezado 
+
 function actualizarTitulo() {
         const tituloElemento = document.getElementById('titulo-seccion');
         const nombreArchivo = window.location.pathname.split('/').pop();

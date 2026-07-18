@@ -91,7 +91,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
 
-        //detecta cambios 
+       
         cartItemsSection.addEventListener("change", (e) => {
             if (e.target.classList.contains("qty-input")) {
                 if (e.target.value < 1) e.target.value = 1;
@@ -113,7 +113,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
-            alert(`¡Pedido confirmado con éxito! Total a pagar en sucursal: ${totalText}`);
+            alert(`Pedido confirmado Total a pagar en sucursal: ${totalText}`);
            
         });
     }
@@ -144,7 +144,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (subtotalLabel && subtotalValue && totalValue) {
             subtotalLabel.textContent = `Subtotal (${totalProductos} producto${totalProductos !== 1 ? 's' : ''})`;
             subtotalValue.textContent = `$${subtotal.toFixed(2)}`;
-            totalValue.textContent = `$${subtotal.toFixed(2)}`; //Poner el descuento
+            totalValue.textContent = `$${subtotal.toFixed(2)}`; 
         }
     }
 });
