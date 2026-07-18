@@ -105,6 +105,37 @@
     </form>
   </div>
 </div>
+<div id="modalEdit" class="modal">
+        <div class="modal-content">
+            <span class="close" data-modal="modalEdit">&times;</span>
+            <h2>Modificar producto</h2>
+            <form id="formEdit" action="#" method="POST">
+                <label for="editNombre">Nombre:</label>
+                <input type="text" id="editNombre" name="nombre" required>
+
+                <label for="editDescripcion">Descripción:</label>
+                <textarea id="editDescripcion" name="descripcion"></textarea>
+
+                <label for="editCategoria">Categoría:</label>
+                <select id="editCategoria" name="categoria" required>
+                    <option value="Bebida caliente">Bebida caliente</option>
+                    <option value="Bebida fría">Bebida fría</option>
+                    <option value="Postre">Postre</option>
+                </select>
+
+                <label for="editPrecio">Precio:</label>
+                <input type="number" id="editPrecio" name="precio" step="1">
+
+                <label for="editImg-url">URL de imagen</label>
+                <input type="text" id="editImg-url" name="img-url">
+
+                <label for="editPromocion">Promoción</label>
+                <input type="checkbox" id="editPromocion" name="promocion">
+
+                <button type="submit">Actualizar</button>
+            </form>
+        </div>
+    </div>
 
     <script src="../js/admin.js"></script>
     <script type="module" src="https://unpkg.com/ionicons@8.0.13/dist/ionicons/ionicons.esm.js"></script>
