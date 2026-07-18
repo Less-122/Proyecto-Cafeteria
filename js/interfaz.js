@@ -35,3 +35,13 @@ if (carousel && btnPrev && btnNext) {
         carousel.scrollBy({ left: -getScrollAmount(), behavior: 'smooth' });
     });
 }
+document.addEventListener('click', (event) => {
+    if (event.target.classList.contains('btn-agregar')) {
+        const tarjeta = event.target.closest('.box');
+        const nombreProducto = tarjeta.querySelector('h3').textContent;
+        const precioProducto = tarjeta.querySelector('.precio').textContent;
+        
+        console.log(`Producto añadido: ${nombreProducto} por ${precioProducto}`);
+      
+    }
+});

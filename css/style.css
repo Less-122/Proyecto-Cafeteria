@@ -386,3 +386,33 @@ body {
     height: 28px;
     object-fit: contain;
 }
+/* --- Botón Agregar a Carrito --- */
+.product-txt {
+    position: relative; 
+    padding-bottom: 50px; 
+}
+
+.btn-agregar {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    background-color: #89ca50; 
+    color: #0e0d0c; 
+    border: none;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 20px;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    transition: all 0.2s ease;
+}
+
+.btn-agregar:hover {
+    background-color: #748c62; 
+    transform: scale(1.05);
+}
+
+.btn-agregar:active {
+    transform: scale(0.95);
+}
