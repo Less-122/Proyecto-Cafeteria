@@ -137,6 +137,48 @@
         </div>
     </div>
 
+<div>
+    <div id="modalEditProducto" class="modal">
+    <div class="modal-content">
+        <span class="close" data-modal="modalEditCategoria">&times;</span>
+        <h2>Modificar Producto</h2>
+        <form id="formEditProducto">
+            <input type="hidden" id="editProdId" name="id">
+            
+            <label for="editProNombre">Nombre:</label>
+            <input type="text" id="editProNombre" name="nombre" required>
+            
+            <label for="editProDescripcion">Descripción:</label>
+            <textarea id="editProDescripcion" name="descripcion"></textarea>
+
+            <label for="editProCategoria">Categoría:</label>
+                <select id="editProCategoria" name="categoria" required class="modal-content">
+                    <option value="Bebida caliente">Bebida caliente</option>
+                    <option value="Bebida fría">Bebida fría</option>
+                    <option value="Postre">Postre</option>
+                </select>
+
+            <label for="editProPrecio">Precio:</label>
+            <input type="number" id="editProPrecio" name="precio" step="1">
+
+            <label for="editProImg-url">URL de imagen</label>
+            <input type="text" id="editProImg-url" name="img-url">
+
+            <label for="editProPromocion">Promoción</label>
+            <input type="checkbox" id="editProPromocion" name="promocion">
+            
+            <button type="submit" class="btn-guardar">Actualizar Cambios</button>
+        </form>
+    </div>
+</div>
+<div id="confirmation-overlay" class="overlay" style="display:none;">
+    <div class="modal-confirm">
+        <h3>LISTO</h3>
+        <p><br>Los cambios se han guardado correctamente.</br></p>
+      
+    </div>
+</div>
+
     <script src="../js/admin.js"></script>
     <script type="module" src="https://unpkg.com/ionicons@8.0.13/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@8.0.13/dist/ionicons/ionicons.js"></script>
