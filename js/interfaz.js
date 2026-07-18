@@ -1,0 +1,37 @@
+// js/interfaz.js
+
+// 1. Control del Header Fijo
+let ubicacionPrincipal = window.scrollY; // Corrección: de pageYOffset a scrollY
+const header = document.getElementById("main-header");
+
+window.addEventListener("scroll", function() {
+    let desplazamientoActual = window.scrollY;
+    
+    if (ubicacionPrincipal < desplazamientoActual && desplazamientoActual > 50) {
+        header.style.top = "-100px";
+    } else {
+        header.style.top = "0";
+    }
+    ubicacionPrincipal = desplazamientoActual;
+});
+
+// 2. Control del Carrusel de Promociones
+const carousel = document.getElementById('promos-carousel');
+const btnPrev = document.getElementById('btn-prev');
+const btnNext = document.getElementById('btn-next');
+
+if (carousel && btnPrev && btnNext) {
+    // Calcula el ancho de una tarjeta + el gap para saber cuánto desplazar
+    const getScrollAmount = () => {
+        const box = carousel.querySelector('.box');
+        return box ? box.offsetWidth + 20 : 300; 
+    };
+
+    btnNext.addEventListener('click', () => {
+        carousel.scrollBy({ left: getScrollAmount(), behavior: 'smooth' });
+    });
+
+    btnPrev.addEventListener('click', () => {
+        carousel.scrollBy({ left: -getScrollAmount(), behavior: 'smooth' });
+    });
+}

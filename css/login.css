@@ -1,0 +1,283 @@
+@import url('https://fonts.googleapis.com/css2?family=PT+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
+* {
+    font-family: "PT Sans", sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --bg-color: #D3D1DF;
+    --bg-form-color: #FFFFFF;
+    --bg-banner-color: #F4F5F9;
+    --border-input-color: #CBCBCB;
+    --primary-color: #72401c;
+}
+
+body {
+    width: 100%;
+    min-height: 100vh;
+    background-color: var(--bg-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem; 
+}
+
+.container {
+    width: 64rem;
+    max-width: 100%; 
+    height: 40rem;
+    max-height: 90vh; 
+    border-radius: 0.3rem;
+    background-color: var(--bg-form-color);
+    display: flex;
+    justify-content: space-between;
+    overflow: hidden;
+}
+
+.form-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem 1.2rem;
+}
+
+.form {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.login,
+.registro {
+    width: 55%;
+    position: absolute;
+    top: 50%;
+}
+
+.login {
+    transform: translateY(-50%);
+    transition: transform 0.8s, opacity 0.8s;
+    opacity: 1;
+}
+
+.form.toggle .login {
+    transform: translateY(-170%);
+    opacity: 0;
+}
+
+.registro {
+    transform: translateY(100%);
+    transition: transform 0.8s, opacity 0.8s;
+    opacity: 0;
+}
+
+.form.toggle .registro {
+    transform: translateY(-50%);
+    opacity: 1;
+}
+
+.form h2 {
+    font-weight: 600;
+    font-size: 2.2rem;
+    margin-bottom: 0.8rem;
+}
+
+.form p {
+    font-size: 1rem;
+    margin-bottom: 1.8rem;
+}
+
+.form .input input {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    margin-bottom: 0.9rem;
+}
+
+.form .input .label {
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.form .input input {
+    font-size: 1rem;
+    outline: none;
+    border: none;
+    border: 1px solid var(--border-input-color);
+    border-radius: 0.2rem;
+    padding: 0.4rem;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Botones */
+.form .buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    margin-bottom: 1rem;
+}
+
+.form .buttons button {
+    width: 100%;
+    padding: 0.7rem;
+    font-size: 0.8rem;
+    border-radius: 0.5rem;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+}
+
+.form .buttons button:first-child {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.form .cuenta {
+    text-align: center;
+    font-size: 0.75rem;
+}
+
+.banner {
+    background-color: var(--bg-banner-color);
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+.banner img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+
+/*tablets */
+@media (max-width: 1024px) {
+    .container {
+        width: 95%;
+        height: auto;
+        min-height: 90vh;
+        flex-direction: column;
+        border-radius: 0.5rem;
+        padding: 2rem 1.5rem;     
+        background-color: var(--bg-form-color);
+        justify-content: center;  
+    }
+
+    .banner {
+        display: none;
+    }
+
+    .form-container {
+        width: 100%;
+        padding: 1rem 0;
+    }
+
+    .form {
+        height: auto;
+        min-height: 60vh;       
+        position: relative;
+        overflow: visible;
+    }
+
+    .login, .registro {
+        width: 85%;              
+        max-width: 550px;      
+        position: absolute;
+        top: 50%;
+        left: 50%;
+    }
+
+    .login {
+        transform: translate(-50%, -50%);
+        transition: transform 0.8s, opacity 0.8s;
+        opacity: 1;
+    }
+
+    .form.toggle .login {
+        transform: translate(-50%, -180%);
+        opacity: 0;
+    }
+
+    .registro {
+        transform: translate(-50%, 100%);
+        transition: transform 0.8s, opacity 0.8s;
+        opacity: 0;
+    }
+
+    .form.toggle .registro {
+        transform: translate(-50%, -50%);
+        opacity: 1;
+    }
+
+    .form h2 {
+        font-size: 2.5rem;       
+        margin-bottom: 1.2rem;
+    }
+    .form p {
+        font-size: 1.2rem;
+        margin-bottom: 2.2rem;
+    }
+    .form .input .label {
+        font-size: 1.2rem;
+    }
+    .form .input input {
+        font-size: 1.2rem;
+        padding: 1rem 1.2rem;    
+        border-radius: 0.5rem;
+        margin-bottom: 1.2rem;
+    }
+    .form .buttons button {
+        padding: 1.2rem;
+        font-size: 1.1rem;
+        border-radius: 0.6rem;
+    }
+    .form .cuenta {
+        font-size: 1rem;
+        margin-top: 1rem;
+    }
+}
+
+/* pantallas más pequeñas */
+@media (max-width: 480px) {
+    .container {
+        width: 100%;
+        min-height: 100vh;
+        border-radius: 0;
+        padding: 1rem;
+    }
+
+    .login, .registro {
+        width: 95%;
+        max-width: 100%;
+    }
+
+    .form h2 {
+        font-size: 2rem;
+    }
+    .form p {
+        font-size: 1rem;
+    }
+    .form .input input {
+        font-size: 1rem;
+        padding: 0.9rem;
+    }
+    .form .buttons button {
+        padding: 1rem;
+        font-size: 1rem;
+    }
+}

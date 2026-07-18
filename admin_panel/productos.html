@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Productos</title>
+    <link rel="stylesheet" href="../css/admin.css">
+</head>
+<body>
+    <div id="header-placeholder" class="header-placeholder"></div>
+
+    <div id="menu-placeholder" class="menu-placeholder"></div>
+
+    <main class="main_container">
+        <h1 class="titulo">Gestión de Productos</h1>
+    <section>
+        <div class="filtros_container">
+            <div class="search_box">
+                <ion-icon name="search-outline" class="icono_filtro"></ion-icon>
+                <input type="text" id="searchInput" placeholder="Buscar productos">
+            </div>
+
+            <div class="select_box">
+                <ion-icon name="pricetag-outline" class="icono_filtro"></ion-icon>
+                <select name="seleccion" class="custom_select">
+                    <option value="" disabled selected>Todas las categorías</option>
+                    <option value="valor1">Bebidas calientes</option>
+                    <option value="valor2">Bebidas frías</option>
+                    <option value="valor3">Postres</option>
+                </select>
+            </div>
+        </div>
+        
+        <div>
+            <!--<button id="test">test</button>-->
+            <button data-modal="modalAdd" class="btn-add">Añadir</button>
+            <button id="btnEdit" class="btn-edit">Modificar</button>
+            <button class="btn-delete">Borrar</button>
+        </div>
+    </section>
+
+    <table>
+            <tr>
+                <th></th>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th>Categoría</th>
+                <th>Precio</th>
+                <th>img_url</th>
+                <th>Promoción</th>
+            </tr>
+            <tr>
+                <td><input type="checkbox" name="seleccion" value="1"></td>
+                <td>456</td>
+                <td>Cappuccino</td>
+                <td>Lorem, ipsum dolor sit amet consectetur adipisicing elit.</td>
+                <td>Bebida caliente</td>
+                <td>90</td>
+                <td>imp.jpg</td>
+                <td><input type="checkbox" name="seleccion" value="prom"></td>
+            </tr>
+            <tr>
+                <td><input type="checkbox" name="seleccion" value="2"></td>
+                <td>456</td>
+                <td>Chocolate</td>
+                <td>Lorem, ipsum dolor sit amet consectetur adipisicing elit.</td>
+                <td>Bebida caliente</td>
+                <td>90</td>
+                <td>img.jpg</td>
+                <td><input type="checkbox" name="seleccion" value="prom"></td>
+            </tr>
+        </table>
+    </main>
+
+    <!-- Modal añadir -->
+<div id="modalAdd" class="modal">
+  <div class="modal-content">
+    <span class="close" data-modal="modalAdd">&times;</span>
+    <h2>Añadir nuevo producto</h2>
+    <form id="formAdd" action="#" method="POST">
+      <label for="nombre">Nombre:</label>
+      <input type="text" id="nombre" name="nombre" required>
+
+      <label for="descripcion">Descripción:</label>
+      <textarea id="descripcion" name="descripcion"></textarea>
+
+      <label for="categoria">Categoría:</label>
+      <select id="categoria" name="categoria" required class="modal-content">
+                    <option value="Bebida caliente">Bebida caliente</option>
+                    <option value="Bebida fría">Bebida fría</option>
+                    <option value="Postre">Postre</option>
+      </select>
+
+      <label for="precio">Precio:</label>
+      <input type="number" id="precio" name="precio" step="1">
+
+      <label for="img-url">URL de imagen</label>
+      <input type="text" id="img-url" name="img-url">
+
+      <label for="promocion">Promoción</label>
+      <input type="checkbox" id="promocion" name="promocion">
+
+      <button type="submit">Guardar</button>
+    </form>
+  </div>
+</div>
+
+    <script src="../js/admin.js"></script>
+    <script type="module" src="https://unpkg.com/ionicons@8.0.13/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@8.0.13/dist/ionicons/ionicons.js"></script>
+</body>
+</html>

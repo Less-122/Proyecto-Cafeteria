@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Barista - Aroma a Café</title>
+    <link rel="stylesheet" href="css/barista.css">
+</head>
+<body class="admin-body">
+
+    <header class="barista-header">
+        <h1>Aroma a Café | Monitor de Pedidos</h1>
+        <div class="status-indicator">
+            <span class="dot pulse"></span> Conectado (Actualizando...)
+        </div>
+    </header>
+
+    <main class="kanban-board">
+        <!-- Columna 1: Nuevos Pedidos -->
+        <section class="kanban-column" id="col-pendientes">
+            <h2>Pendientes <span>(2)</span></h2>
+            
+            <article class="order-card alert">
+                <header class="order-header">
+                    <h3>Pedido #1042</h3>
+                    <time>08:25 AM</time>
+                </header>
+                <div class="order-customer">Cliente: <strong>Carlos R.</strong></div>
+                <ul class="order-items">
+                    <li>2x Frappé de Caramelo</li>
+                    <li>1x Rebanada Pastel Chocolate</li>
+                </ul>
+                <button class="btn-action start-btn" onclick="prepararPedido(1042)">Preparar</button>
+            </article>
+
+            <article class="order-card">
+                <header class="order-header">
+                    <h3>Pedido #1043</h3>
+                    <time>08:28 AM</time>
+                </header>
+                <div class="order-customer">Cliente: <strong>Ana T.</strong></div>
+                <ul class="order-items">
+                    <li>1x Americano Grande</li>
+                </ul>
+                <button class="btn-action start-btn" onclick="prepararPedido(1043)">Preparar</button>
+            </article>
+        </section>
+
+        <!-- Columna 2: En Preparación -->
+        <section class="kanban-column" id="col-preparacion">
+            <h2>En Preparación <span>(1)</span></h2>
+            
+            <article class="order-card in-progress">
+                <header class="order-header">
+                    <h3>Pedido #1041</h3>
+                    <time>08:20 AM</time>
+                </header>
+                <div class="order-customer">Cliente: <strong>Luis M.</strong></div>
+                <ul class="order-items">
+                    <li>1x Capuchino Vainilla</li>
+                    <li>2x Croissant</li>
+                </ul>
+                <button class="btn-action finish-btn" onclick="completarPedido(1041)">Listo para Entrega</button>
+            </article>
+        </section>
+
+        <!-- Columna 3: Listos para Entrega / Pagar -->
+        <section class="kanban-column" id="col-listos">
+            <h2>Listos para Pago <span>(0)</span></h2>
+            <!-- Aquí caerán los pedidos terminados esperando al cliente -->
+        </section>
+    </main>
+
+</body>
+</html>
