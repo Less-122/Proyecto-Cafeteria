@@ -1,14 +1,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Cedarville+Cursive&family=Roboto+Slab:wght@100..900&display=swap');
 
-/* Variables de Paleta de Colores (Basada en interfaces de Aroma a Café) */
+
 :root {
-    --dark-brown: #2B1810;     /* Fondo del Header original */
-    --light-beige: #F9F5EB;    /* Fondo claro de la página */
-    --accent-orange: #C87444;  /* Color del botón "Información" */
+    --dark-brown: #2B1810;     
+    --light-beige: #d8d2c4;    
+    --accent-orange: #C87444;  
     --accent-orange-hover: #A95D33;
-    --text-dark: #3E2723;      /* Color para títulos principales */
-    --text-muted: #795548;     /* Descripciones secundarias */
-    --white-card: #FAF6EE;     /* Color crema de las tarjetas de producto */
+    --text-dark: #3E2723;     
+    --text-muted: #795548;     
+    --white-card: #FAF6EE;     
     --border-color: #E0D7C6;
 }
 
@@ -61,7 +61,7 @@ body {
 }
 
 .nav-menu a {
-    color: #E0D7C6;
+    color: #d6c8ad;
     text-decoration: none;
     font-size: 0.95rem;
     transition: color 0.3s;
@@ -138,7 +138,7 @@ body {
 .item-img-placeholder {
     width: 90px;
     height: 90px;
-    background-color: #E0D7C6; /* Color provisional */
+    background-color: #da9e2e; 
     border-radius: 12px;
     margin-right: 20px;
 }
@@ -170,7 +170,7 @@ body {
 .item-quantity {
     display: flex;
     align-items: center;
-    background-color: #FFFFFF;
+    background-color: #f5efef;
     border: 1px solid var(--border-color);
     border-radius: 25px;
     padding: 3px;
