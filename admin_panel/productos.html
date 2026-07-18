@@ -31,12 +31,12 @@
             </div>
         </div>
         
-        <div>
-            <!--<button id="test">test</button>-->
-            <button data-modal="modalAdd" class="btn-add">Añadir</button>
-            <button id="btnEdit" class="btn-edit">Modificar</button>
-            <button class="btn-delete">Borrar</button>
-        </div>
+       <!-- Reemplaza tus botones actuales por estos -->
+<div>
+    <button data-modal="modalAdd" class="btn-add">Añadir</button>
+    <button data-modal="modalEdit" class="btn-edit">Modificar</button>
+    <button data-modal="modalDeleteProducto" class="btn-delete">Borrar</button>
+</div>
     </section>
 
     <table>
@@ -105,6 +105,7 @@
     </form>
   </div>
 </div>
+
 <div id="modalEdit" class="modal">
         <div class="modal-content">
             <span class="close" data-modal="modalEdit">&times;</span>
@@ -137,38 +138,19 @@
         </div>
     </div>
 
-<div>
-    <div id="modalEditProducto" class="modal">
-    <div class="modal-content">
-        <span class="close" data-modal="modalEditCategoria">&times;</span>
-        <h2>Modificar Producto</h2>
-        <form id="formEditProducto">
-            <input type="hidden" id="editProdId" name="id">
-            
-            <label for="editProNombre">Nombre:</label>
-            <input type="text" id="editProNombre" name="nombre" required>
-            
-            <label for="editProDescripcion">Descripción:</label>
-            <textarea id="editProDescripcion" name="descripcion"></textarea>
-
-            <label for="editProCategoria">Categoría:</label>
-                <select id="editProCategoria" name="categoria" required class="modal-content">
-                    <option value="Bebida caliente">Bebida caliente</option>
-                    <option value="Bebida fría">Bebida fría</option>
-                    <option value="Postre">Postre</option>
-                </select>
-
-            <label for="editProPrecio">Precio:</label>
-            <input type="number" id="editProPrecio" name="precio" step="1">
-
-            <label for="editProImg-url">URL de imagen</label>
-            <input type="text" id="editProImg-url" name="img-url">
-
-            <label for="editProPromocion">Promoción</label>
-            <input type="checkbox" id="editProPromocion" name="promocion">
-            
-            <button type="submit" class="btn-guardar">Actualizar Cambios</button>
-        </form>
+<!-- Modal para eliminar producto -->
+<div id="modalDeleteProducto" class="modal">
+    <div class="modal-content text-center">
+        <span class="close" data-modal="modalDeleteProducto">&times;</span>
+        <h2>¿Eliminar Producto?</h2>
+        <br>
+        <p>Esta acción no se puede deshacer.<br><br>¿Estás seguro de que deseas eliminar el producto seleccionado?<br></p>
+        <input type="hidden" id="deleteProdId">
+        
+        <div class="modal-buttons">
+            <button type="button" class="btn-cancelar" onclick="document.getElementById('modalDeleteProducto').style.display='none'">Cancelar</button>
+            <button type="button" id="btn-confirmar-eliminar" class="btn-danger">Confirmar Eliminar</button>
+        </div>
     </div>
 </div>
 <div id="confirmation-overlay" class="overlay" style="display:none;">
