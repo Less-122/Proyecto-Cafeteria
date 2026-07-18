@@ -99,34 +99,34 @@ document.addEventListener('click', function(e) {
             return;
         }
 
-        // 2. Obtenemos la fila (tr) del checkbox
+   
         const fila = checkbox.closest('tr');
         
-        // 3. Extraemos los datos de las celdas (td)
+       
         const id = fila.cells[1].innerText;
         const nombre = fila.cells[2].innerText;
         const descripcion = fila.cells[3].innerText;
 
-        // 4. Metemos los datos en el formulario del modal
+    
         document.getElementById('editCatId').value = id;
         document.getElementById('editCatNombre').value = nombre;
         document.getElementById('editCatDescripcion').value = descripcion;
 
-        // 5. Abrimos el modal
+       
         const modalId = btnEdit.getAttribute('data-modal');
         document.getElementById(modalId).style.display = 'block';
     }
 
     if (e.target.id === 'btn-accept-confirm') {
         document.getElementById('confirmation-overlay').style.display = 'none';
-        // Cerrar los modales abiertos
+   
         document.querySelectorAll('.modal').forEach(m => m.style.display = 'none');
     }
 });
 
-// guardar
+
 document.addEventListener('submit', function(e) {
-    e.preventDefault(); // Evita recargar página
+    e.preventDefault(); 
 
     document.getElementById('confirmation-overlay').style.display = 'flex';
 });
@@ -192,7 +192,7 @@ function mostrarAvisoExito() {
   
         document.querySelectorAll('.modal').forEach(m => m.style.display = 'none');
 
-        // Tiemmpo de aviso
+        
         setTimeout(() => {
             overlay.style.display = 'none';
         }, 2000);
