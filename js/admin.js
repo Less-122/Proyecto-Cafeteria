@@ -175,7 +175,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             filas.forEach((fila, indice) => {
                 if (indice === 0) return; // Cabecera
-
+           
                 const columna2 = fila.cells[2] ? fila.cells[2].innerText.toLowerCase() : '';
                 const columna3 = fila.cells[3] ? fila.cells[3].innerText.toLowerCase() : '';
 
