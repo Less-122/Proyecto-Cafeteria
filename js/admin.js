@@ -66,12 +66,14 @@ closeButtons.forEach(function(btn) {
   });
 });
 
-//Cerrar modales al hacer clic fuera 
+//Cerrar al hacer clic fuera 
 window.addEventListener('click', function(event) {
   if (event.target.classList.contains('modal')) {
     event.target.style.display = 'none';
   }
 });
+
+
 document.addEventListener("DOMContentLoaded", () => {
     // Llamada al menú principal
     cargarComponente("menu-placeholder", "admin_menu.html");
@@ -91,7 +93,7 @@ document.addEventListener('click', function(e) {
     }
 
     if (btnEdit) {
-        // 1. Buscamos el checkbox seleccionado
+
         const checkbox = document.querySelector('input[name="seleccion"]:checked');
         
         if (!checkbox) {
@@ -99,7 +101,6 @@ document.addEventListener('click', function(e) {
             return;
         }
 
-        // 2. Obtenemos la fila (tr) del checkbox
         const fila = checkbox.closest('tr');
         
         // 3. Extraemos los datos de las celdas (td)
@@ -126,7 +127,7 @@ document.addEventListener('click', function(e) {
 
 // guardar
 document.addEventListener('submit', function(e) {
-    e.preventDefault(); // Evita recargar página
+    e.preventDefault();
 
     document.getElementById('confirmation-overlay').style.display = 'flex';
 });
