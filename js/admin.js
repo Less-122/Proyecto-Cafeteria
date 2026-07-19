@@ -164,7 +164,6 @@ document.addEventListener('submit', function(e) {
     if (formEditProd) formEditProd.reset();
 });
 
-
 document.addEventListener('DOMContentLoaded', () => {
     const searchInput = document.getElementById('searchInput');
     
@@ -174,12 +173,19 @@ document.addEventListener('DOMContentLoaded', () => {
             const filas = document.querySelectorAll('main.main_container table tr');
 
             filas.forEach((fila, indice) => {
-                if (indice === 0) return; // Cabecera
+                if (indice === 0) return; 
            
-                const columna2 = fila.cells[2] ? fila.cells[2].innerText.toLowerCase() : '';
-                const columna3 = fila.cells[3] ? fila.cells[3].innerText.toLowerCase() : '';
+                const columnaID_Pedidos = fila.cells[0] ? fila.cells[0].innerText.toLowerCase() : '';
+                const columnaID_Productos = fila.cells[1] ? fila.cells[1].innerText.toLowerCase() : '';
+                const columnaNombre_Pedidos = fila.cells[1] ? fila.cells[1].innerText.toLowerCase() : '';
+                const columnaNombre_Productos = fila.cells[2] ? fila.cells[2].innerText.toLowerCase() : '';
 
-                if (columna2.includes(textoBusqueda) || columna3.includes(textoBusqueda)) {
+                if (
+                    columnaID_Pedidos.includes(textoBusqueda) || 
+                    columnaID_Productos.includes(textoBusqueda) || 
+                    columnaNombre_Pedidos.includes(textoBusqueda) || 
+                    columnaNombre_Productos.includes(textoBusqueda)
+                ) {
                     fila.style.display = '';
                 } else {
                     fila.style.display = 'none';
