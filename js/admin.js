@@ -76,8 +76,14 @@ document.addEventListener('click', function(e) {
             document.getElementById('editCatId').value = fila.cells[1].innerText;
             document.getElementById('editCatNombre').value = fila.cells[2].innerText;
             document.getElementById('editCatDescripcion').value = fila.cells[3].innerText;
-        } 
-       
+        } // Si estás en la sección de Usuarios
+        else if (document.getElementById('editUserNombre')) {
+            document.getElementById('editUserId').value = fila.cells[1].innerText;
+            document.getElementById('editUserNombre').value = fila.cells[2].innerText;
+            document.getElementById('editUserApellido').value = fila.cells[3].innerText;
+            document.getElementById('editUserCorreo').value = fila.cells[4].innerText;
+            document.getElementById('editUserContra').value = fila.cells[5].innerText;
+        }// Si estás en la sección de Productos
         else if (document.getElementById('editNombre')) {
             document.getElementById('editNombre').value = fila.cells[2].innerText;
             document.getElementById('editDescripcion').value = fila.cells[3].innerText;
@@ -104,9 +110,12 @@ document.addEventListener('click', function(e) {
         const fila = checkbox.closest('tr');
         const id = fila.cells[1].innerText;
 
-        // Asignar ID según el formulario activo
+        //Seleccion de checkbox
         const deleteCatInput = document.getElementById('deleteCatId');
         if (deleteCatInput) deleteCatInput.value = id;
+
+        const deleteUserInput = document.getElementById('deleteUserId');
+        if (deleteUserInput) deleteUserInput.value = id;
 
         const modalId = btnDelete.getAttribute('data-modal');
         const modal = document.getElementById(modalId);
@@ -157,11 +166,13 @@ document.addEventListener('submit', function(e) {
     const formEditCat = document.getElementById('formEditCategoria');
     const formAddProd = document.getElementById('formAdd');
     const formEditProd = document.getElementById('formEdit');
-
+    const formEditUser = document.getElementById('formEditUsuario');
+    
     if (formAddCat) formAddCat.reset();
     if (formEditCat) formEditCat.reset();
     if (formAddProd) formAddProd.reset();
     if (formEditProd) formEditProd.reset();
+    if (formEditUser) formEditUser.reset();
 });
 
 document.addEventListener('DOMContentLoaded', () => {
