@@ -97,6 +97,9 @@ body{
     background-color: #1F2937;
     grid-column: 1 / 2; 
     padding: 2rem 1rem;
+    position: sticky;
+    top: 0;        
+    height: 100vh;
 }
 
 
