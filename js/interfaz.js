@@ -61,3 +61,12 @@ if (loadMoreBtn) {
         }
     };
 }
+
+
+// Funcion para redirigir al login
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('botonLogin').addEventListener('click', function(evento) {
+        evento.preventDefault();
+        window.location.href = 'login.html';
+    });
+});
