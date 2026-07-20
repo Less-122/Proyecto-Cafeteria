@@ -72,7 +72,7 @@ function agregarAlLocalStorage(nuevoProducto) {
     localStorage.setItem("carritoCompras", JSON.stringify(carrito));
     alert(`¡${nuevoProducto.nombre} se agregó al carrito con éxito!`);
 
-<<<<<<< Updated upstream
+
 if (loadMoreBtn) {
     loadMoreBtn.onclick = () => {
         let boxes = [...document.querySelectorAll(".box-container .box")];
@@ -85,7 +85,7 @@ if (loadMoreBtn) {
         }
     };
 }
-=======
+
 }
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -106,4 +106,3 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
->>>>>>> Stashed changes
