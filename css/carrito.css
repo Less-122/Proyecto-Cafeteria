@@ -291,3 +291,10 @@ body {
     .cart-content { grid-template-columns: 1fr; }
     .nav-menu { display: none; }
 }
+.cart-item img {
+    width: 70px;         
+    height: 70px;        
+    object-fit: cover;  
+    border-radius: 8px;
+    margin-right: 20px;
+}
