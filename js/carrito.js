@@ -1,142 +1,93 @@
-// js/carrito.js
 
 
-const carrito = document.getElementById("carrito");
-const elementos1 = document.getElementById("lista-1");
-const lista = document.querySelector("#lista-carrito tbody"); // Corregido
-const vaciarCarritoBtn = document.getElementById("vaciar-carrito");
-
-if (elementos1 && carrito) {
-    cargarEventListeners();
-}
-
-function cargarEventListeners() {
-    elementos1.addEventListener('click', comprarElemento);
-    carrito.addEventListener('click', eliminarElemento);
-    vaciarCarritoBtn.addEventListener('click', vaciarCarrito);
-}
-
-function comprarElemento(e) {
-    e.preventDefault();
-    if (e.target.classList.contains('agregar-carrito')) {
-        const elemento = e.target.parentElement.parentElement;
-        leerDatosElemento(elemento);
-    }
-}
-
-function leerDatosElemento(elemento) {
-    const infoElemento = {
-        imagen: elemento.querySelector('img').src,
-        titulo: elemento.querySelector('h3').textContent,
-        precio: elemento.querySelector('.precio').textContent,
-        id: elemento.querySelector('a').getAttribute('data-id')
-    }
-    insertarCarrito(infoElemento);
-}
-
-function insertarCarrito(elemento) {
-    const row = document.createElement('tr');
-    row.innerHTML = `
-        <td>
-            <img src="${elemento.imagen}" width="100px" style="border-radius:10px;">
-        </td>
-        <td>${elemento.titulo}</td>
-        <td>${elemento.precio}</td>
-        <td>
-            <a href="#" class="borrar-producto" data-id="${elemento.id}">X</a>
-        </td>
-    `;
-    lista.appendChild(row);
-}
-
-
-function vaciarCarrito(e) {
-    e.preventDefault();
-    while (lista.firstChild) {
-        lista.removeChild(lista.firstChild);
-    }
-}
-// listo
 document.addEventListener("DOMContentLoaded", () => {
-    
     const cartItemsSection = document.querySelector(".cart-items-section");
-    
     const btnConfirmar = document.querySelector(".btn-confirm-order");
 
+    let carrito = JSON.parse(localStorage.getItem("carritoCompras")) || [];
+
+    function renderizarCarrito() {
+        if (!cartItemsSection) return;
+
+        cartItemsSection.innerHTML = "";
+
+        if (carrito.length === 0) {
+            cartItemsSection.innerHTML = "<p class='carrito-vacio' style='text-align:center; padding:20px; font-weight: bold;'>Tu pedido está vacío. ¡Explora nuestro menú!</p>";
+            actualizarTotales();
+            return;
+        }
+
+        carrito.forEach((producto, indice) => {
+            const itemHTML = `
+                <div class="cart-item" data-indice="${indice}">
+                    <img src="${producto.imagen}" alt="${producto.nombre}">
+                    <div class="item-details">
+                        <h3>${producto.nombre}</h3>
+                        <p class="item-category">Producto Seleccionado</p>
+                        <span class="item-price">$${producto.precio.toFixed(2)}</span>
+                    </div>
+                    <div class="item-quantity">
+                        <button class="qty-btn btn-restar">-</button>
+                        <input type="number" value="${producto.cantidad}" min="1" class="qty-input" readonly>
+                        <button class="qty-btn btn-sumar">+</button>
+                    </div>
+                    <button class="delete-item-btn" title="Eliminar producto">×</button>
+                </div>
+            `;
+            cartItemsSection.innerHTML += itemHTML;
+        });
+
+        actualizarTotales();
+    }
+
+    renderizarCarrito();
+
+    //  (Sumar, Restar y Eliminar)
     if (cartItemsSection) {
-       // borrar, sumar y restar productos
         cartItemsSection.addEventListener("click", (e) => {
+            const cartItem = e.target.closest(".cart-item");
+            if (!cartItem) return;
             
-           
-            if (e.target.classList.contains("qty-btn") && e.target.textContent === "+") {
-                const input = e.target.parentElement.querySelector(".qty-input");
-                input.value = parseInt(input.value) + 1;
-                actualizarTotales();
+            const indice = parseInt(cartItem.getAttribute("data-indice"));
+
+            // Botón de Sumar (+)
+            if (e.target.classList.contains("btn-sumar") || e.target.textContent === "+") {
+                carrito[indice].cantidad++;
+                guardarYActualizar();
             }
 
-           
-            if (e.target.classList.contains("qty-btn") && e.target.textContent === "-") {
-                const input = e.target.parentElement.querySelector(".qty-input");
-                if (parseInt(input.value) > 1) {
-                    input.value = parseInt(input.value) - 1;
-                    actualizarTotales();
+            // Botón de Restar (-)
+            if (e.target.classList.contains("btn-restar") || e.target.textContent === "-") {
+                if (carrito[indice].cantidad > 1) {
+                    carrito[indice].cantidad--;
+                    guardarYActualizar();
                 }
             }
 
-            // elimina
+            // Botón Eliminar Producto (×)
             if (e.target.classList.contains("delete-item-btn")) {
-                const cartItem = e.target.closest(".cart-item");
-                cartItem.remove();
-                actualizarTotales();
-            }
-        });
-
-       
-        cartItemsSection.addEventListener("change", (e) => {
-            if (e.target.classList.contains("qty-input")) {
-                if (e.target.value < 1) e.target.value = 1;
-                actualizarTotales();
+                carrito.splice(indice, 1);
+                guardarYActualizar();
             }
         });
     }
 
-    // pedido
-    if (btnConfirmar) {
-        btnConfirmar.addEventListener("click", () => {
-            const totalText = document.querySelector(".summary-row.total span:last-child").textContent;
-            
-            // Verificacion
-
-            const items = document.querySelectorAll(".cart-item");
-            if(items.length === 0) {
-                alert("Tu carrito está vacío. Agrega productos antes de confirmar.");
-                return;
-            }
-
-            alert(`Pedido confirmado Total a pagar en sucursal: ${totalText}`);
-           
-        });
+    //actualizar
+    function guardarYActualizar() {
+        localStorage.setItem("carritoCompras", JSON.stringify(carrito));
+        renderizarCarrito();
     }
 
-    // CALCULO 
+    // calculo
     function actualizarTotales() {
-        const cartItems = document.querySelectorAll(".cart-item");
         let subtotal = 0;
         let totalProductos = 0;
 
-        cartItems.forEach(item => {
-            
-            const precioTexto = item.querySelector(".item-price").textContent;
-            const precio = parseFloat(precioTexto.replace("$", ""));
-            
-           
-            const cantidad = parseInt(item.querySelector(".qty-input").value);
-
-            subtotal += precio * cantidad;
-            totalProductos += cantidad;
+        carrito.forEach(item => {
+            subtotal += item.precio * item.cantidad;
+            totalProductos += item.cantidad;
         });
 
-        // Actualizacion 
         const subtotalLabel = document.querySelector(".summary-row:nth-of-type(1) span:first-child");
         const subtotalValue = document.querySelector(".summary-row:nth-of-type(1) span:last-child");
         const totalValue = document.querySelector(".summary-row.total span:last-child");
@@ -146,5 +97,22 @@ document.addEventListener("DOMContentLoaded", () => {
             subtotalValue.textContent = `$${subtotal.toFixed(2)}`;
             totalValue.textContent = `$${subtotal.toFixed(2)}`; 
         }
+    }
+
+    //confirmacion
+    if (btnConfirmar) {
+        btnConfirmar.addEventListener("click", () => {
+            if (carrito.length === 0) {
+                alert("Tu carrito está vacío. Agrega productos antes de confirmar.");
+                return;
+            }
+
+            const totalText = document.querySelector(".summary-row.total span:last-child").textContent;
+            alert(`Pedido confirmado. Total a pagar en sucursal: ${totalText}`);
+            
+            localStorage.removeItem("carritoCompras");
+            carrito = [];
+            renderizarCarrito();
+        });
     }
 });
