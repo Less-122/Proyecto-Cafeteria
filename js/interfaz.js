@@ -61,3 +61,20 @@ if (loadMoreBtn) {
         }
     };
 }
+
+
+// Funcion para redirigir al login
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('botonLogin').addEventListener('click', function(evento) {
+        evento.preventDefault();
+        window.location.href = 'login.html';
+    });
+});
+
+// Funcion para redirigir al carrito
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('botonCarrito').addEventListener('click', function(evento) {
+        evento.preventDefault();
+        window.location.href = 'carrito.html';
+    });
+});

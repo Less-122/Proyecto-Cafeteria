@@ -12,20 +12,16 @@ if (signIn && signUp && form) {
     });
 }
 
-//validacion 
-
+//validacion
 document.addEventListener('DOMContentLoaded', function() {
-    // --- Credenciales predefinidas (simulación) ---
     const VALID_EMAIL = 'admin@mail.com';
     const VALID_PASSWORD = '123456';
 
-    // --- Elementos del DOM ---
     const loginForm = document.getElementById('login');
     const registerForm = document.getElementById('registro');
     const signUpLink = document.getElementById('sign-up');
     const signInLink = document.getElementById('sign-in');
 
-    // función para mostrar mensajes de error
     function showError(message) {
         let errorEl = document.querySelector('.error-message');
         if (!errorEl) {
@@ -46,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     loginForm.addEventListener('submit', function(e) {
-        e.preventDefault(); // Evita el envío tradicional
+        e.preventDefault(); 
 
         // Obtener valores
         const emailInput = document.getElementById('login-email');
@@ -61,7 +57,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (email === VALID_EMAIL && password === VALID_PASSWORD) {
             clearError();
-            window.location.href = 'index.html';
+            window.location.href = '../admin_panel/productos.html';
         } else {
             showError('Correo o contraseña incorrectos. Inténtalo de nuevo.');
             passwordInput.focus();

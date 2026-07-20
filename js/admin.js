@@ -1,4 +1,4 @@
-
+// Actualizar titulo
 function actualizarTitulo() {
     const tituloElemento = document.getElementById('titulo-seccion');
     const nombreArchivo = window.location.pathname.split('/').pop();
@@ -18,7 +18,7 @@ function actualizarTitulo() {
     document.title = nuevoTitulo + ' | Panel Admin';
 }
 
-
+// Traer el encabezado y menú
 fetch('admin_header.html')
     .then(response => response.text())
     .then(headerData => {
@@ -71,19 +71,21 @@ document.addEventListener('click', function(e) {
         const fila = checkbox.closest('tr');
         const modalId = btnEdit.getAttribute('data-modal');
 
-        // Si estás en la sección de Categorías
+        // sección de Categorías
         if (document.getElementById('editCatId')) {
             document.getElementById('editCatId').value = fila.cells[1].innerText;
             document.getElementById('editCatNombre').value = fila.cells[2].innerText;
             document.getElementById('editCatDescripcion').value = fila.cells[3].innerText;
-        } // Si estás en la sección de Usuarios
+        } 
+        // sección de Usuarios
         else if (document.getElementById('editUserNombre')) {
             document.getElementById('editUserId').value = fila.cells[1].innerText;
             document.getElementById('editUserNombre').value = fila.cells[2].innerText;
             document.getElementById('editUserApellido').value = fila.cells[3].innerText;
             document.getElementById('editUserCorreo').value = fila.cells[4].innerText;
             document.getElementById('editUserContra').value = fila.cells[5].innerText;
-        }// Si estás en la sección de Productos
+        }
+        //sección de Productos
         else if (document.getElementById('editNombre')) {
             document.getElementById('editNombre').value = fila.cells[2].innerText;
             document.getElementById('editDescripcion').value = fila.cells[3].innerText;
@@ -204,4 +206,44 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
     }
+});
+
+
+//filtrar por categorias
+document.addEventListener('DOMContentLoaded', function() {
+    // Elementos del DOM
+    const selectorCategoria = document.querySelector('#selector');
+    const tabla = document.querySelector('table');
+
+    const mapaCategorias = {
+        'Bebidas calientes': 'Bebidas calientes',
+        'Bebidas frias': 'Bebidas frías',
+        'Postres': 'Postres'
+    };
+
+    function filtrarPorCategoria() {
+        const valorSeleccionado = selectorCategoria.value;
+
+        const categoriaSeleccionada = mapaCategorias[valorSeleccionado] || '';
+
+        const filas = tabla.querySelectorAll('tr');
+        for (let i = 1; i < filas.length; i++) {
+            const fila = filas[i];
+            const celdas = fila.querySelectorAll('td');
+            if (celdas.length === 0) continue;
+
+            const celdaCategoria = celdas[4];
+            const textoCategoria = celdaCategoria.textContent.trim();
+
+            if (categoriaSeleccionada === '' || textoCategoria === categoriaSeleccionada) {
+                fila.style.display = '';
+            } else {
+                fila.style.display = 'none';
+            }
+        }
+    }
+
+    selectorCategoria.addEventListener('change', filtrarPorCategoria);
+
+    filtrarPorCategoria();
 });
