@@ -97,6 +97,9 @@ body{
     background-color: #1F2937;
     grid-column: 1 / 2; 
     padding: 2rem 1rem;
+    position: sticky;
+    top: 0;        
+    height: 100vh;
 }
 
 
@@ -379,6 +382,8 @@ th{
     .menu {
         width: 100%;
         padding: 1rem 0;
+        height: auto;     
+        position: relative;
     }
 
     .lista_menu {
@@ -480,7 +485,6 @@ th{
     margin-top: 15px;
 }
 
-
 .text-center {
     text-align: center;
 }
@@ -492,7 +496,6 @@ th{
     gap: 15px;
 }
 
-/* Botón Cancelar */
 .btn-cancelar {
     background-color: #6c757d;
     color: white;
@@ -502,7 +505,6 @@ th{
     cursor: pointer;
 }
 
-/* Botón de Peligro (Eliminar) */
 .btn-danger {
     background-color: #dc3545;
     color: white;

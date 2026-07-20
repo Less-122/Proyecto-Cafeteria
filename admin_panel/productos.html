@@ -22,16 +22,15 @@
 
             <div class="select_box">
                 <ion-icon name="pricetag-outline" class="icono_filtro"></ion-icon>
-                <select name="seleccion" class="custom_select">
+                <select name="seleccion" id="selector" class="custom_select">
                     <option value="" disabled selected>Todas las categorías</option>
-                    <option value="valor1">Bebidas calientes</option>
-                    <option value="valor2">Bebidas frías</option>
-                    <option value="valor3">Postres</option>
+                    <option value="Bebidas calientes">Bebidas calientes</option>
+                    <option value="Bebidas frias">Bebidas frías</option>
+                    <option value="Postres">Postres</option>
                 </select>
             </div>
         </div>
         
-       <!-- Reemplaza tus botones actuales por estos -->
 <div>
     <button data-modal="modalAdd" class="btn-add">Añadir</button>
     <button data-modal="modalEdit" class="btn-edit">Modificar</button>
@@ -52,21 +51,31 @@
             </tr>
             <tr>
                 <td><input type="checkbox" name="seleccion" value="1"></td>
-                <td>456</td>
-                <td>Cappuccino</td>
-                <td>Lorem, ipsum dolor sit amet consectetur adipisicing elit.</td>
-                <td>Bebida caliente</td>
-                <td>90</td>
+                <td>1</td>
+                <td>Café Mocha</td>
+                <td>Perfecta armonía entre espresso, salsa de chocolate oscuro y leche vaporizada.</td>
+                <td>Bebidas calientes</td>
+                <td>$59</td>
                 <td>imp.jpg</td>
                 <td><input type="checkbox" name="seleccion" value="prom"></td>
             </tr>
             <tr>
                 <td><input type="checkbox" name="seleccion" value="2"></td>
-                <td>456</td>
-                <td>Chocolate</td>
-                <td>Lorem, ipsum dolor sit amet consectetur adipisicing elit.</td>
-                <td>Bebida caliente</td>
-                <td>90</td>
+                <td>2</td>
+                <td>Pastel de Zanahoria</td>
+                <td>Bizcocho especiado con nuez y zanahoria rallada, cubierto de betún cremoso de queso de cabra.</td>
+                <td>Postres</td>
+                <td>$78</td>
+                <td>imp.jpg</td>
+                <td><input type="checkbox" name="seleccion" value="prom"></td>
+            </tr>
+            <tr>
+                <td><input type="checkbox" name="seleccion" value="3"></td>
+                <td>3</td>
+                <td>Iced Americano</td>
+                <td>Doble shot de espresso vertido sobre agua fría y hielos, refrescante e intenso.</td>
+                <td>Bebidas frías</td>
+                <td>$55</td>
                 <td>img.jpg</td>
                 <td><input type="checkbox" name="seleccion" value="prom"></td>
             </tr>
