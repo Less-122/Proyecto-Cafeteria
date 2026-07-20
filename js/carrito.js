@@ -41,7 +41,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     renderizarCarrito();
-
     //  (Sumar, Restar y Eliminar)
     if (cartItemsSection) {
         cartItemsSection.addEventListener("click", (e) => {
@@ -55,7 +54,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 carrito[indice].cantidad++;
                 guardarYActualizar();
             }
-
             // Botón de Restar (-)
             if (e.target.classList.contains("btn-restar") || e.target.textContent === "-") {
                 if (carrito[indice].cantidad > 1) {
@@ -63,7 +61,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     guardarYActualizar();
                 }
             }
-
             // Botón Eliminar Producto (×)
             if (e.target.classList.contains("delete-item-btn")) {
                 carrito.splice(indice, 1);

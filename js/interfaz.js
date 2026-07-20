@@ -102,3 +102,4 @@ document.addEventListener('DOMContentLoaded', function() {
         window.location.href = 'carrito.html';
     });
 });
+      
