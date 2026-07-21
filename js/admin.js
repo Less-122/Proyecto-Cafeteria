@@ -1,13 +1,15 @@
-// Actualizar titulo
+// 1. Actualizar título dinámicamente
 function actualizarTitulo() {
     const tituloElemento = document.getElementById('titulo-seccion');
     const nombreArchivo = window.location.pathname.split('/').pop();
     
+    // CORREGIDO: Las claves ahora son .php para coincidir con tus archivos reales
     const titulos = {
-        'productos.html': 'Gestión de Productos',
-        'usuarios.html': 'Gestión de Usuarios',
-        'pedidos.html': 'Historial de Pedidos',
-        'categorias.html': 'Gestión de Categorías',
+        'productos.php': 'Gestión de Productos',
+        'usuarios.php': 'Gestión de Usuarios',
+        'pedidos.php': 'Historial de Pedidos',
+        'categorias.php': 'Gestión de Categorías',
+        'panel_barista.php': 'Panel de Barista'
     };
 
     const nuevoTitulo = titulos[nombreArchivo] || 'Panel de Administración';
@@ -18,23 +20,36 @@ function actualizarTitulo() {
     document.title = nuevoTitulo + ' | Panel Admin';
 }
 
-// Traer el encabezado y menú
-fetch('admin_header.html')
-    .then(response => response.text())
-    .then(headerData => {
-        document.getElementById('header-placeholder').innerHTML = headerData;
-        return fetch('admin_menu.html');
-    })
-    .then(response => response.text())
-    .then(menuData => {
-        document.getElementById('menu-placeholder').innerHTML = menuData;
-        actualizarTitulo();
-    })
-    .catch(error => {
-        console.error('Error cargando los componentes:', error);
-    });
+// 2. Carga dinámica de componentes (Header y Menú) con RUTAS Y EXTENSIONES CORREGIDAS
+document.addEventListener("DOMContentLoaded", () => {
+    // CORREGIDO: Busca exactamente en la misma carpeta y con extensión .php
+    const rutaHeader = 'admin_header.php'; 
+    const rutaMenu = 'admin_menu.php'; 
 
+    fetch(rutaHeader)
+        .then(response => {
+            if (!response.ok) throw new Error(`Header 404: No se encontró en ${rutaHeader}`);
+            return response.text();
+        })
+        .then(headerData => {
+            document.getElementById('header-placeholder').innerHTML = headerData;
+            return fetch(rutaMenu);
+        })
+        .then(response => {
+            if (!response.ok) throw new Error(`Menú 404: No se encontró en ${rutaMenu}`);
+            return response.text();
+        })
+        .then(menuData => {
+            document.getElementById('menu-placeholder').innerHTML = menuData;
+            actualizarTitulo();
+        })
+        .catch(error => {
+            console.error('Fallo en la arquitectura de la interfaz:', error);
+            document.getElementById('header-placeholder').innerHTML = `<div style="background:red; color:white; padding:10px;">Error crítico de carga. Revisa consola.</div>`;
+        });
+});
 
+// 3. Funciones de UI y Modales
 function mostrarAvisoExito() {
     const overlay = document.getElementById('confirmation-overlay');
     if (overlay) {
@@ -46,21 +61,20 @@ function mostrarAvisoExito() {
     }
 }
 
-
 document.addEventListener('click', function(e) {
     const btnAdd = e.target.closest('.btn-add');
     const btnEdit = e.target.closest('.btn-edit');
     const btnDelete = e.target.closest('.btn-delete');
     const closeBtn = e.target.closest('.close');
 
-  
+    // Abrir Modal Añadir
     if (btnAdd) {
         const modalId = btnAdd.getAttribute('data-modal');
         const modal = document.getElementById(modalId);
         if (modal) modal.style.display = 'block';
     }
 
-    
+    // Abrir Modal Modificar y cargar datos
     if (btnEdit) {
         const checkbox = document.querySelector('input[name="seleccion"]:checked');
         if (!checkbox) {
@@ -71,13 +85,12 @@ document.addEventListener('click', function(e) {
         const fila = checkbox.closest('tr');
         const modalId = btnEdit.getAttribute('data-modal');
 
-        // sección de Categorías
+        // Lógica de llenado según la sección
         if (document.getElementById('editCatId')) {
             document.getElementById('editCatId').value = fila.cells[1].innerText;
             document.getElementById('editCatNombre').value = fila.cells[2].innerText;
             document.getElementById('editCatDescripcion').value = fila.cells[3].innerText;
         } 
-        // sección de Usuarios
         else if (document.getElementById('editUserNombre')) {
             document.getElementById('editUserId').value = fila.cells[1].innerText;
             document.getElementById('editUserNombre').value = fila.cells[2].innerText;
@@ -85,7 +98,6 @@ document.addEventListener('click', function(e) {
             document.getElementById('editUserCorreo').value = fila.cells[4].innerText;
             document.getElementById('editUserContra').value = fila.cells[5].innerText;
         }
-        //sección de Productos
         else if (document.getElementById('editNombre')) {
             document.getElementById('editNombre').value = fila.cells[2].innerText;
             document.getElementById('editDescripcion').value = fila.cells[3].innerText;
@@ -101,7 +113,7 @@ document.addEventListener('click', function(e) {
         if (modal) modal.style.display = 'block';
     }
 
-  
+    // Abrir Modal Eliminar
     if (btnDelete) {
         const checkbox = document.querySelector('input[name="seleccion"]:checked');
         if (!checkbox) {
@@ -112,7 +124,6 @@ document.addEventListener('click', function(e) {
         const fila = checkbox.closest('tr');
         const id = fila.cells[1].innerText;
 
-        //Seleccion de checkbox
         const deleteCatInput = document.getElementById('deleteCatId');
         if (deleteCatInput) deleteCatInput.value = id;
 
@@ -124,12 +135,12 @@ document.addEventListener('click', function(e) {
         if (modal) modal.style.display = 'block';
     }
 
-  
+    // Confirmar eliminación
     if (e.target.id === 'btn-confirmar-eliminar') {
         mostrarAvisoExito();
     }
 
-   
+    // Cerrar Modales
     if (closeBtn) {
         const modalId = closeBtn.getAttribute('data-modal');
         const modal = document.getElementById(modalId);
@@ -143,23 +154,14 @@ document.addEventListener('click', function(e) {
     }
 });
 
-
+// Cerrar modal al hacer clic afuera
 window.addEventListener('click', function(event) {
     if (event.target.classList.contains('modal')) {
         event.target.style.display = 'none';
     }
 });
 
-
-document.addEventListener("DOMContentLoaded", () => {
-    const menuExtra = document.getElementById("menu-complemento-placeholder");
-    if (menuExtra) {
-        fetch("admin_menu_extra.html")
-            .then(response => response.text())
-            .then(data => { menuExtra.innerHTML = data; });
-    }
-});
-
+// 4. Manejo de Formularios
 document.addEventListener('submit', function(e) {
     e.preventDefault(); 
     mostrarAvisoExito();
@@ -177,6 +179,7 @@ document.addEventListener('submit', function(e) {
     if (formEditUser) formEditUser.reset();
 });
 
+// 5. Motor de Búsqueda
 document.addEventListener('DOMContentLoaded', () => {
     const searchInput = document.getElementById('searchInput');
     
@@ -208,12 +211,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-
-//filtrar por categorias
+// 6. Filtro por Categorías
 document.addEventListener('DOMContentLoaded', function() {
-    // Elementos del DOM
     const selectorCategoria = document.querySelector('#selector');
     const tabla = document.querySelector('table');
+    
+    if (!selectorCategoria || !tabla) return; 
 
     const mapaCategorias = {
         'Bebidas calientes': 'Bebidas calientes',
@@ -223,7 +226,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function filtrarPorCategoria() {
         const valorSeleccionado = selectorCategoria.value;
-
         const categoriaSeleccionada = mapaCategorias[valorSeleccionado] || '';
 
         const filas = tabla.querySelectorAll('tr');
@@ -233,6 +235,8 @@ document.addEventListener('DOMContentLoaded', function() {
             if (celdas.length === 0) continue;
 
             const celdaCategoria = celdas[4];
+            if (!celdaCategoria) continue; 
+
             const textoCategoria = celdaCategoria.textContent.trim();
 
             if (categoriaSeleccionada === '' || textoCategoria === categoriaSeleccionada) {
@@ -244,6 +248,5 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     selectorCategoria.addEventListener('change', filtrarPorCategoria);
-
     filtrarPorCategoria();
 });
