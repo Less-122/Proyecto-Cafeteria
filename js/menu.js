@@ -19,9 +19,10 @@ if (btnCarrito) {
 }
 //Carrusel de fotos para una mejor presentacion en la pagina web
 const imagenesHero =[
-    "img/productos/Promociones/Combo-dulce.jpg",
-    "img/productos/Promociones/Desayuno-Amanecer.jpg",
-    "img/productos/Promociones/Doble-felicidad.jpg"
+    "img/productos/Postres/sueño-chocolate.jpeg",
+    "img/productos/Promociones/Combo-dulce.jpeg",
+    "img/productos/Promociones/Desayuno-Amanecer.jpeg",
+    "img/productos/Promociones/Doble-felicidad.jpeg"
 ];
 let indiceHero=0;
 const heroImage=document.getElementById("PromoImagen");
@@ -32,7 +33,7 @@ if(heroImage){
             indiceHero =0;
         }
     heroImage.src=imagenesHero[indiceHero]
-    },400);
+    },4000);
 }
 
 
@@ -120,6 +121,61 @@ function configurarBotonVerMas(idBoton, idSeccion) {
 configurarBotonVerMas("btn-masBcalientes", "#calientes");
 configurarBotonVerMas("btn-masBFrias", "#frias");
 configurarBotonVerMas("btn-masPostres", "#postres");
+
+/*Para el scroll en la pagina*/
+const enlacesMenu= document.querySelectorAll('a[href^="#"]');
+enlacesMenu.forEach((enlace) => {
+    enlace.addEventListener("click", (evento) => {
+        evento.preventDefault();
+
+        const idSeccion = enlace.getAttribute("href");
+        const seccion = document.querySelector(idSeccion);
+
+        if (!seccion) return;
+
+        const posicionInicial = window.scrollY;
+        const posicionFinal =
+            seccion.getBoundingClientRect().top +
+            window.scrollY -
+            100;
+
+        const distancia = posicionFinal - posicionInicial;
+        const duracion = 1500;
+        let tiempoInicial = null;
+
+        function animarScroll(tiempoActual) {
+            if (!tiempoInicial) {
+                tiempoInicial = tiempoActual;
+            }
+
+            const tiempoTranscurrido =
+                tiempoActual - tiempoInicial;
+
+            const progreso = Math.min(
+                tiempoTranscurrido / duracion,
+                1
+            );
+
+            const suavizado =
+                progreso < 0.5
+                    ? 2 * progreso * progreso
+                    : 1 - Math.pow(-2 * progreso + 2, 2) / 2;
+
+            window.scrollTo(
+                0,
+                posicionInicial + distancia * suavizado
+            );
+
+            if (progreso < 1) {
+                requestAnimationFrame(animarScroll);
+            }
+        }
+
+        requestAnimationFrame(animarScroll);
+    });
+});
+
+
 
 
 

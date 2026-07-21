@@ -397,6 +397,10 @@ body {
 .admin-footer-login{
     padding: 0;
 }
+/*Para el scroll*/
+section{
+    scroll-margin-top: 100px;
+}
 /* --- 9. Responsividad --- */
 @media (max-width: 1024px) {
     .limit-grid { 
@@ -479,6 +483,21 @@ body {
     height: 18px;
     margin-right: 8px;
     vertical-align: middle;
-    
 }
+
+.info-logo img{
+    width: 180px;
+    height: auto;
+}
+
+.footer-copy{
+    text-align: center;
+    border-top: 1px solid rgba(255,255,255,0.2);
+    margin-top: 20px;
+    padding: 15px 0;
+    color: #d6d6d6;
+    font-size: 8px;
+}
+
+
 
