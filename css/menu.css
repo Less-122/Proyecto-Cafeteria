@@ -1,0 +1,484 @@
+@import url('https://fonts.googleapis.com/css2?family=Cedarville+Cursive&family=Roboto+Slab:wght@100..900&display=swap');
+
+/* --- 0. Reset Optimizado --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+a {
+    text-decoration: none;
+}
+
+ul {
+    list-style: none;
+}
+
+body {
+    font-family: "Roboto Slab", serif;
+    background-color: #F5EDD6; /* Fondo Crema */
+    color: #2C1A0E;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* --- Fotter precio y agregar al carrito en menu de productos--- */
+.producto-footer{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+}
+.btn-agCarrito{
+    margin-top: 15px;
+    width: 100px;
+    height: 30px;
+    border-radius: 8px;
+    border: none;
+    background-color: #056d39;
+    color: #fff;
+    font-size: 15px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+.btn-agCarrito:hover{
+    background-color: #004e11;
+;
+}
+/* --- Smart Header / Encabezado inteligente --- */
+
+.smart-header { /*Diseño del encabezado de la pagina*/
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background-color: #2C1A0E;
+    z-index: 2000;
+    transition: top 0.3s ease-in-out;
+    border-bottom: 1px solid rgba(0,0,0,0.2);
+}
+
+.menu-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+}
+
+.Isotipo{
+    width: 70px;
+    height: 70px;
+    object-fit: cover;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+.smart-header .logo { /*Texto "aroma a cafe"*/
+    margin-right: 30px;
+    margin-left: 30px;
+    color: #F5EDD6;
+    font-size: 24px;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-family: cursive;
+}
+
+.navbar ul {
+    display: flex;
+    gap: 20px;
+}
+
+.navbar ul li a {
+    font-size: 16px;
+    font-weight: 600;
+    color: #F5EDD6;
+    transition: color 0.3s;
+}
+
+.navbar ul li a:hover {
+    color: #8DA27B; 
+}
+
+/* --- 2. Sección Inicio (Hero Rediseñado) --- */
+#inicio.hero {
+    background-color: #3b2818; 
+    padding-top: 120px;
+    padding-bottom: 60px;
+}
+
+.hero-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 40px;
+}
+
+.hero-txt {
+    flex: 1;
+    color: #F5EDD6;
+}
+
+.hero-txt h1 {
+    font-size: 48px;
+    margin-bottom: 20px;
+    line-height: 1.2;
+}
+
+.hero-txt h1 span {
+    color: #d87d4a; 
+}
+
+.hero-txt p {
+    font-size: 16px;
+    color: #e0dcd3;
+    margin-bottom: 30px;
+    line-height: 1.6;
+}
+
+.btn-primary {
+    display: inline-block;
+    background-color: #d87d4a;
+    color: #fff;
+    padding: 12px 30px;
+    border-radius: 25px;
+    font-weight: bold;
+    transition: background 0.3s;
+}
+
+.btn-primary:hover {
+    background-color: #b96536;
+}
+
+.hero-img {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    max-width: 500px;
+    height: 450px;
+    border-radius: 16px;
+    object-fit: cover;
+}
+
+.hero-img img {
+    width: 100%;
+    max-width: 500px;
+    border-radius: 16px; 
+    object-fit: cover;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+/* --- 3. Contenedores de Categorías --- */
+.categoria-seccion {
+    padding: 60px 0 20px 0;
+}
+
+.categoria-seccion h2 {
+    font-size: 36px;
+    color: #2C1A0E;
+    margin-bottom: 5px;
+}
+
+.categoria-seccion .subtitulo {
+    font-size: 14px;
+    color: #705335;
+    margin-bottom: 30px;
+}
+
+/* --- 4. Carrusel (Promociones) --- */
+.carousel-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.carousel-btn {
+    background-color: #2C1A0E;
+    color: #F5EDD6;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+    cursor: pointer;
+    position: absolute;
+    z-index: 10;
+    transition: background 0.3s;
+}
+
+.carousel-btn:hover { 
+    background-color: #8DA27B; 
+}
+
+#btn-prev { left: -20px; }
+#btn-next { right: -20px; }
+
+.carrusel-container {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory; 
+    gap: 20px;
+    padding: 10px 0;
+    scroll-behavior: smooth;
+    width: 100%;
+}
+
+.carrusel-container::-webkit-scrollbar { 
+    display: none; 
+}
+
+.carrusel-container .box {
+    scroll-snap-align: start;
+    min-width: 280px; 
+    flex: 0 0 auto;
+}
+
+/* --- 5. Grid de Tarjetas (4 Columnas) --- */
+.limit-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+}
+
+/* --- 6. Tarjeta Individual (Molde General) --- */
+.box {
+    background-color: #FFF8E7;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s, box-shadow 0.3s;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+.box img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+/*Diseño de los productos*/
+.product-txt {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.product-txt h3 {
+    font-size: 18px;
+    color: #2C1A0E;
+    margin-bottom: 8px;
+}
+
+.product-txt p {
+    font-size: 14px;
+    color: #705335;
+    line-height: 1.4;
+    margin-bottom: 15px;
+    flex-grow: 1;
+}
+
+.product-item-extra{
+    display: none;
+}
+
+.precio {
+    font-size: 18px;
+    font-weight: 700;
+    color: #2C1A0E;
+}
+
+.precio-anterior{
+    color: #d32f2f;       /* Rojo */
+    text-decoration: line-through; /* Tachado */
+    font-size: 16px;
+    margin-right: 10px;
+}
+
+.precio-promo{
+    color: hwb(92 0% 53%);       /* O el color que ya usas */
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.tag-oferta {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    background-color: #8DA27B;
+    color: #2C1A0E;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    z-index: 10;
+}
+
+/* --- 7. Botones Secundarios (Ver más) --- */
+.btn-container-center {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.btn-secundario {
+    background-color: transparent;
+    border: 2px solid #2C1A0E;
+    color: #2C1A0E;
+    padding: 10px 25px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-secundario:hover {
+    background-color: #2C1A0E;
+    color: #F5EDD6;
+}
+
+/* --- 8. Footer (Nosotros) --- */
+.footer {
+    padding: 50px 0;
+    background-color: #2C1A0E;
+    margin-top: 50px;
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.footer h3 {
+    font-size: 18px;
+    color: #F5EDD6;
+    margin-bottom: 15px;
+}
+
+.footer p, .footer a {
+    color: #dedad7;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8ps;
+    margin-bottom: 10px;
+    transition: color 0.3s;
+}
+
+.footer a:hover {
+    color: #8DA27B;
+}
+/*Footer inferior para el inicio de sesion*/
+.divisor{
+    border: none;
+    height: 1px;
+    background-color: #705335;
+    margin-top: 30px;
+}
+.admin-footer{
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    font-size: 14px;
+    text-align: left;
+}
+.admin-footer-login{
+    padding: 0;
+}
+/* --- 9. Responsividad --- */
+@media (max-width: 1024px) {
+    .limit-grid { 
+        grid-template-columns: repeat(2, 1fr); 
+    }
+}
+
+@media (max-width: 991px) {
+    .menu-container {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .navbar ul {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .footer-content {
+        flex-direction: column;
+        text-align: center;
+    }
+}
+
+@media (max-width: 768px) {
+    .hero-content {
+        flex-direction: column;
+        text-align: center;
+    }
+    .hero-img {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+    .hero-img img {
+        width: 90%;
+        display: flex;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 600px) {
+    .limit-grid { 
+        grid-template-columns: 1fr; 
+    }
+}
+/* --- Controles de Usuario en el Header --- */
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px; /* Espacio entre los dos íconos */
+    margin-left: auto; /* Empuja los botones a la extrema derecha si hay espacio */
+}
+
+.icon-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease;
+}
+
+.icon-btn:hover {
+    transform: scale(1.1); /* Pequeño efecto visual al pasar el mouse */
+}
+
+.icon-btn img {
+    width: 28px; /* Ajusta este valor si los íconos se ven muy grandes o pequeños */
+    height: 28px;
+    object-fit: contain;
+    fill: "#FFFFFF";
+}
+
+/*ICONOS DEL FOOTER*/
+.icono-footer{
+    width: 18px;
+    height: 18px;
+    margin-right: 8px;
+    vertical-align: middle;
+    
+}
+
