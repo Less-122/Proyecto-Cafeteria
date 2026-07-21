@@ -5,7 +5,7 @@
 const btnLogin = document.getElementById("boton-login");
 if (btnLogin) {
     btnLogin.addEventListener("click", () => {
-        window.location.href = "login.html";
+        window.location.href = "login.php";
     });
 }
 
@@ -14,7 +14,7 @@ const btnCarrito = document.getElementById("boton-carrito");
 
 if (btnCarrito) {
     btnCarrito.addEventListener("click", () => {
-        window.location.href = "carrito.html";
+        window.location.href = "carrito.php";
     });
 }
 //Carrusel de fotos para una mejor presentacion en la pagina web
@@ -123,56 +123,106 @@ configurarBotonVerMas("btn-masBFrias", "#frias");
 configurarBotonVerMas("btn-masPostres", "#postres");
 
 /*Para el scroll en la pagina*/
-const enlacesMenu= document.querySelectorAll('a[href^="#"]');
-enlacesMenu.forEach((enlace) => {
-    enlace.addEventListener("click", (evento) => {
-        evento.preventDefault();
+function animarHaciaSeccion(seccion) {
+    const posicionInicial = window.scrollY;
 
-        const idSeccion = enlace.getAttribute("href");
-        const seccion = document.querySelector(idSeccion);
+    const posicionFinal =
+        seccion.getBoundingClientRect().top +
+        window.scrollY -
+        100;
 
-        if (!seccion) return;
+    const distancia = posicionFinal - posicionInicial;
+    const duracion = 1500;
+    let tiempoInicial = null;
 
-        const posicionInicial = window.scrollY;
-        const posicionFinal =
-            seccion.getBoundingClientRect().top +
-            window.scrollY -
-            100;
-
-        const distancia = posicionFinal - posicionInicial;
-        const duracion = 1500;
-        let tiempoInicial = null;
-
-        function animarScroll(tiempoActual) {
-            if (!tiempoInicial) {
-                tiempoInicial = tiempoActual;
-            }
-
-            const tiempoTranscurrido =
-                tiempoActual - tiempoInicial;
-
-            const progreso = Math.min(
-                tiempoTranscurrido / duracion,
-                1
-            );
-
-            const suavizado =
-                progreso < 0.5
-                    ? 2 * progreso * progreso
-                    : 1 - Math.pow(-2 * progreso + 2, 2) / 2;
-
-            window.scrollTo(
-                0,
-                posicionInicial + distancia * suavizado
-            );
-
-            if (progreso < 1) {
-                requestAnimationFrame(animarScroll);
-            }
+    function animarScroll(tiempoActual) {
+        if (tiempoInicial === null) {
+            tiempoInicial = tiempoActual;
         }
 
-        requestAnimationFrame(animarScroll);
+        const tiempoTranscurrido =
+            tiempoActual - tiempoInicial;
+
+        const progreso = Math.min(
+            tiempoTranscurrido / duracion,
+            1
+        );
+
+        const suavizado =
+            progreso < 0.5
+                ? 2 * progreso * progreso
+                : 1 - Math.pow(-2 * progreso + 2, 2) / 2;
+
+        window.scrollTo(
+            0,
+            posicionInicial + distancia * suavizado
+        );
+
+        if (progreso < 1) {
+            requestAnimationFrame(animarScroll);
+        }
+    }
+
+    requestAnimationFrame(animarScroll);
+}
+
+const enlacesMenu = document.querySelectorAll(".header-navbar a");
+
+enlacesMenu.forEach((enlace) => {
+    enlace.addEventListener("click", (evento) => {
+        const destino = enlace.getAttribute("href");
+
+        if (!destino || !destino.includes("#")) {
+            return;
+        }
+
+        const partes = destino.split("#");
+        const idSeccion = partes[1];
+
+        if (!idSeccion) {
+            return;
+        }
+
+        const seccion = document.getElementById(idSeccion);
+
+        /*
+        Si la sección existe, significa que estamos en index.php.
+        Entonces evitamos el salto normal y usamos la animación.
+        */
+        if (seccion) {
+            evento.preventDefault();
+            animarHaciaSeccion(seccion);
+        }
+
+        /*
+        Si no existe, por ejemplo desde login.php,
+        el navegador irá normalmente a index.php#seccion.
+        */
     });
+});
+
+window.addEventListener("load", () => {
+    const idDestino = window.location.hash;
+
+    if (!idDestino) {
+        return;
+    }
+
+    const seccion = document.querySelector(idDestino);
+
+    if (!seccion) {
+        return;
+    }
+
+    /*
+    El navegador intenta saltar automáticamente a la sección.
+    Lo regresamos arriba y después iniciamos la animación.
+    */
+    window.scrollTo(0, 0);
+
+    setTimeout(() => {
+        animarHaciaSeccion(seccion);
+    }, 150);
 });
 
 

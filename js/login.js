@@ -1,67 +1,64 @@
+//Animacion para cambiar entre inicio de sesion y crear cuenta
+
 const signIn = document.getElementById('sign-in')
 const signUp = document.getElementById('sign-up')
 const form = document.getElementById('form')
 
-if (signIn && signUp && form) {
-    signIn.addEventListener('click', () => {
-        form.classList.remove('toggle');
-    });
-    
-    signUp.addEventListener('click', () => {
-        form.classList.add('toggle');
-    });
-}
+signIn.addEventListener('click',()=>{
+    form.classList.remove('toggle')
+})
+signUp.addEventListener('click',()=>{
+    form.classList.add('toggle')
+})
 
-//validacion
-document.addEventListener('DOMContentLoaded', function() {
-    const VALID_EMAIL = 'admin@mail.com';
-    const VALID_PASSWORD = '123456';
+//
+const botonIS = document.querySelectorAll(".btniniciarSesion");
 
-    const loginForm = document.getElementById('login');
-    const registerForm = document.getElementById('registro');
-    const signUpLink = document.getElementById('sign-up');
-    const signInLink = document.getElementById('sign-in');
+let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
 
-    function showError(message) {
-        let errorEl = document.querySelector('.error-message');
-        if (!errorEl) {
-            errorEl = document.createElement('div');
-            errorEl.className = 'error-message';
-            errorEl.style.color = 'red';
-            errorEl.style.marginTop = '10px';
-            errorEl.style.fontSize = '14px';
-            const buttons = loginForm.querySelector('.buttons');
-            buttons.parentNode.insertBefore(errorEl, buttons.nextSibling);
-        }
-        errorEl.textContent = message;
-    }
+botonesComprar.forEach((boton) => {
+    boton.addEventListener("click", () => {
+        const tarjeta = boton.closest(".product-item, .box");
 
-    function clearError() {
-        const errorEl = document.querySelector('.error-message');
-        if (errorEl) errorEl.remove();
-    }
-
-    loginForm.addEventListener('submit', function(e) {
-        e.preventDefault(); 
-
-        // Obtener valores
-        const emailInput = document.getElementById('login-email');
-        const passwordInput = document.getElementById('login-password');
-        const email = emailInput.value.trim();
-        const password = passwordInput.value.trim();
-
-        if (email === '' || password === '') {
-            showError('Por favor, completa todos los campos.');
+        if (!tarjeta) {
             return;
         }
 
-        if (email === VALID_EMAIL && password === VALID_PASSWORD) {
-            clearError();
-            window.location.href = '../admin_panel/productos.html';
-        } else {
-            showError('Correo o contraseña incorrectos. Inténtalo de nuevo.');
-            passwordInput.focus();
-        }
-    });
+        const nombre = tarjeta.querySelector("h3")?.textContent.trim();
+        const descripcion = tarjeta.querySelector("p")?.textContent.trim();
+        const imagen = tarjeta.querySelector("img")?.getAttribute("src");
+        const precioTexto = tarjeta.querySelector(".precio")?.textContent;
 
+        const precio = Number(
+            precioTexto
+                ?.replace("$", "")
+                .replace(",", "")
+                .trim()
+        );
+
+        if (!nombre || Number.isNaN(precio)) {
+            console.error("No se pudo obtener la información del producto.");
+            return;
+        }
+
+        const productoExistente = carrito.find(
+            (producto) => producto.nombre === nombre
+        );
+
+        if (productoExistente) {
+            productoExistente.cantidad += 1;
+        } else {
+            carrito.push({
+                nombre,
+                descripcion,
+                imagen,
+                precio,
+                cantidad: 1
+            });
+        }
+
+        localStorage.setItem("carrito", JSON.stringify(carrito));
+
+        alert(`${nombre} se agregó al carrito`);
+    });
 });

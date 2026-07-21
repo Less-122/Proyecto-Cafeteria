@@ -48,58 +48,6 @@ body {
 }
 .btn-agCarrito:hover{
     background-color: #004e11;
-;
-}
-/* --- Smart Header / Encabezado inteligente --- */
-
-.smart-header { /*Diseño del encabezado de la pagina*/
-    position: fixed;
-    top: 0;
-    width: 100%;
-    background-color: #2C1A0E;
-    z-index: 2000;
-    transition: top 0.3s ease-in-out;
-    border-bottom: 1px solid rgba(0,0,0,0.2);
-}
-
-.menu-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 20px;
-}
-
-.Isotipo{
-    width: 70px;
-    height: 70px;
-    object-fit: cover;
-    border-radius: 50%;
-    flex-shrink: 0;
-}
-.smart-header .logo { /*Texto "aroma a cafe"*/
-    margin-right: 30px;
-    margin-left: 30px;
-    color: #F5EDD6;
-    font-size: 24px;
-    font-weight: bold;
-    text-transform: uppercase;
-    font-family: cursive;
-}
-
-.navbar ul {
-    display: flex;
-    gap: 20px;
-}
-
-.navbar ul li a {
-    font-size: 16px;
-    font-weight: 600;
-    color: #F5EDD6;
-    transition: color 0.3s;
-}
-
-.navbar ul li a:hover {
-    color: #8DA27B; 
 }
 
 /* --- 2. Sección Inicio (Hero Rediseñado) --- */
@@ -347,56 +295,6 @@ body {
     color: #F5EDD6;
 }
 
-/* --- 8. Footer (Nosotros) --- */
-.footer {
-    padding: 50px 0;
-    background-color: #2C1A0E;
-    margin-top: 50px;
-}
-
-.footer-content {
-    display: flex;
-    justify-content: space-around;
-    flex-wrap: wrap;
-    gap: 20px;
-}
-
-.footer h3 {
-    font-size: 18px;
-    color: #F5EDD6;
-    margin-bottom: 15px;
-}
-
-.footer p, .footer a {
-    color: #dedad7;
-    font-size: 14px;
-    display: flex;
-    align-items: center;
-    gap: 8ps;
-    margin-bottom: 10px;
-    transition: color 0.3s;
-}
-
-.footer a:hover {
-    color: #8DA27B;
-}
-/*Footer inferior para el inicio de sesion*/
-.divisor{
-    border: none;
-    height: 1px;
-    background-color: #705335;
-    margin-top: 30px;
-}
-.admin-footer{
-    display: flex;
-    justify-content: space-between;
-    padding: 20px;
-    font-size: 14px;
-    text-align: left;
-}
-.admin-footer-login{
-    padding: 0;
-}
 /*Para el scroll*/
 section{
     scroll-margin-top: 100px;
@@ -408,22 +306,7 @@ section{
     }
 }
 
-@media (max-width: 991px) {
-    .menu-container {
-        flex-direction: column;
-        gap: 15px;
-    }
 
-    .navbar ul {
-        flex-wrap: wrap;
-        justify-content: center;
-    }
-
-    .footer-content {
-        flex-direction: column;
-        text-align: center;
-    }
-}
 
 @media (max-width: 768px) {
     .hero-content {
@@ -447,57 +330,4 @@ section{
         grid-template-columns: 1fr; 
     }
 }
-/* --- Controles de Usuario en el Header --- */
-.header-actions {
-    display: flex;
-    align-items: center;
-    gap: 15px; /* Espacio entre los dos íconos */
-    margin-left: auto; /* Empuja los botones a la extrema derecha si hay espacio */
-}
-
-.icon-btn {
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    padding: 5px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: transform 0.2s ease;
-}
-
-.icon-btn:hover {
-    transform: scale(1.1); /* Pequeño efecto visual al pasar el mouse */
-}
-
-.icon-btn img {
-    width: 28px; /* Ajusta este valor si los íconos se ven muy grandes o pequeños */
-    height: 28px;
-    object-fit: contain;
-    fill: "#FFFFFF";
-}
-
-/*ICONOS DEL FOOTER*/
-.icono-footer{
-    width: 18px;
-    height: 18px;
-    margin-right: 8px;
-    vertical-align: middle;
-}
-
-.info-logo img{
-    width: 180px;
-    height: auto;
-}
-
-.footer-copy{
-    text-align: center;
-    border-top: 1px solid rgba(255,255,255,0.2);
-    margin-top: 20px;
-    padding: 15px 0;
-    color: #d6d6d6;
-    font-size: 8px;
-}
-
-
 
