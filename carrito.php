@@ -4,37 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aroma a Café - Tu Carrito</title>
-<<<<<<< HEAD
-=======
-
->>>>>>> Kaori
-    <link rel="stylesheet" href="css/carrito.css">
     <script src="js/carrito.js"></script>
+    
+    <link rel="stylesheet" href="css/header-menu.css">
+    <link rel="stylesheet" href="css/footer.css">
+    <link rel="stylesheet" href="css/carrito.css">
 </head>
 <body>
-
-  
-    <header class="main-header">
-        <div class="header-container">
-            <div class="logo-section">
-        
-                <img src="img/logocafe.png" alt="Aroma a Café Logo" class="logo-icon">
-                
-            </div>
-            <nav class="nav-menu">
-                <a href="#">Inicio</a>
-                <a href="#">Promociones</a>
-                <a href="#">Calientes</a>
-                <a href="#">Frías</a>
-                <a href="#">Postres</a>
-                <a href="#">Ubicacion</a>
-            </nav>
-            <div class="header-icons">
-                
-                <a href="#" class="icon-link"></a>
-            </div>
-        </div>
-    </header>
+    <?php include("includes/header-menu.php"); ?>
 
     <!-- Contenedor del Carrito -->
     <main class="cart-main-container">
@@ -106,4 +83,8 @@
     </main>
 
 </body>
+<?php include("includes/footer.php"); ?>
+
+    <script src="js/carrito.js"></script>
+    <script src="js/menu.js"></script> </body>
 </html>
