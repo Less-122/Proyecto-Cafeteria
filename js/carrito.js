@@ -41,6 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     renderizarCarrito();
+    
     //  (Sumar, Restar y Eliminar)
     if (cartItemsSection) {
         cartItemsSection.addEventListener("click", (e) => {
@@ -112,4 +113,35 @@ document.addEventListener("DOMContentLoaded", () => {
             renderizarCarrito();
         });
     }
-});
+        // --- EL NUEVO CÓDIGO VA AQUÍ (DENTRO DEL DOMContentLoaded) ---
+    document.addEventListener("click", (e) => {
+        if (e.target.classList.contains("btn-agregar")) {
+            const contenedorProducto = e.target.closest(".box");
+            
+            if (contenedorProducto) {
+                const nombre = contenedorProducto.querySelector("h3").textContent;
+                const precioTexto = contenedorProducto.querySelector(".precio").textContent;
+                const precio = parseFloat(precioTexto.replace(/[^0-9.]/g, ""));
+                const imagen = contenedorProducto.querySelector("img").getAttribute("src");
+
+                const productoExistente = carrito.find(item => item.nombre === nombre);
+
+                if (productoExistente) {
+                    productoExistente.cantidad++;
+                } else {
+                    const nuevoProducto = {
+                        nombre: nombre,
+                        precio: precio,
+                        imagen: imagen,
+                        cantidad: 1
+                    };
+                    carrito.push(nuevoProducto);
+                }
+
+                guardarYActualizar();
+                alert(`¡${nombre} agregado al carrito!`);
+            }
+        }
+    });
+}); 
+    

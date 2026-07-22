@@ -1,6 +1,5 @@
-//Menu control
+// Menu control
 
-//Redireccíon a login
 // Redirección al inicio de sesión
 const btnLogin = document.getElementById("boton-login");
 if (btnLogin) {
@@ -9,90 +8,112 @@ if (btnLogin) {
     });
 }
 
-// Redirección al carrito
+// Redirección al carrito desde el botón del header
 const btnCarrito = document.getElementById("boton-carrito");
-
 if (btnCarrito) {
     btnCarrito.addEventListener("click", () => {
         window.location.href = "carrito.php";
     });
 }
-//Carrusel de fotos para una mejor presentacion en la pagina web
-const imagenesHero =[
+
+// Carrusel de fotos hero (presentación)
+const imagenesHero = [
     "img/productos/Postres/sueño-chocolate.jpeg",
     "img/productos/Promociones/Combo-dulce.jpeg",
     "img/productos/Promociones/Desayuno-Amanecer.jpeg",
     "img/productos/Promociones/Doble-felicidad.jpeg"
 ];
-let indiceHero=0;
-const heroImage=document.getElementById("PromoImagen");
-if(heroImage){
-    setInterval(()=>{
+let indiceHero = 0;
+const heroImage = document.getElementById("PromoImagen");
+if (heroImage) {
+    setInterval(() => {
         indiceHero++;
-        if(indiceHero >= imagenesHero.length){
-            indiceHero =0;
+        if (indiceHero >= imagenesHero.length) {
+            indiceHero = 0;
         }
-    heroImage.src=imagenesHero[indiceHero]
-    },4000);
+        heroImage.src = imagenesHero[indiceHero];
+    }, 4000);
 }
 
+// Listener de clics global para agregar productos al carrito
+document.addEventListener('click', (event) => {
+    if (event.target.classList.contains('btn-agCarrito')) {
+        const tarjeta = event.target.closest('.box, .product-item');
+        if (!tarjeta) return;
 
+        // Búsqueda flexible de elementos dentro de la tarjeta
+        const nombreProducto = tarjeta.querySelector('h3')?.textContent.trim() || 'Producto';
+        
+        // Obtiene el precio promocional si existe; si no, el normal
+        const precioElem = tarjeta.querySelector('.precio-promo') || tarjeta.querySelector('.precio');
+        const precioTexto = precioElem ? precioElem.textContent : '$0';
+        
+        const imagenProducto = tarjeta.querySelector('img')?.src || '';
 
-//Agregar al carrito
-const botonesComprar = document.querySelectorAll(".btn-agCarrito");
+        const producto = {
+            id: nombreProducto.toLowerCase().replace(/\s+/g, '-'),
+            nombre: nombreProducto,
+            precio: parseFloat(precioTexto.replace('$', '').replace(',', '').trim()) || 0,
+            imagen: imagenProducto,
+            cantidad: 1
+        };
 
-let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
-
-botonesComprar.forEach((boton) => {
-    boton.addEventListener("click", () => {
-        const tarjeta = boton.closest(".product-item, .box");
-
-        if (!tarjeta) {
-            return;
-        }
-
-        const nombre = tarjeta.querySelector("h3")?.textContent.trim();
-        const descripcion = tarjeta.querySelector("p")?.textContent.trim();
-        const imagen = tarjeta.querySelector("img")?.getAttribute("src");
-        const precioTexto = tarjeta.querySelector(".precio")?.textContent;
-
-        const precio = Number(
-            precioTexto
-                ?.replace("$", "")
-                .replace(",", "")
-                .trim()
-        );
-
-        if (!nombre || Number.isNaN(precio)) {
-            console.error("No se pudo obtener la información del producto.");
-            return;
-        }
-
-        const productoExistente = carrito.find(
-            (producto) => producto.nombre === nombre
-        );
-
-        if (productoExistente) {
-            productoExistente.cantidad += 1;
-        } else {
-            carrito.push({
-                nombre,
-                descripcion,
-                imagen,
-                precio,
-                cantidad: 1
-            });
-        }
-
-        localStorage.setItem("carrito", JSON.stringify(carrito));
-
-        alert(`${nombre} se agregó al carrito`);
-    });
+        agregarAlLocalStorage(producto);
+        mostrarNotificacion(`${nombreProducto} ha sido agregado al carrito`);
+    }
 });
 
-// Para el botón de ver mas
+function agregarAlLocalStorage(nuevoProducto) {
+    let carrito = JSON.parse(localStorage.getItem("carritoCompras")) || [];
 
-// Mostrar y ocultar productos adicionales
+    const existe = carrito.find(item => item.id === nuevoProducto.id);
+
+    if (existe) {
+        existe.cantidad++; 
+    } else {
+        carrito.push(nuevoProducto); 
+    }
+
+    localStorage.setItem("carritoCompras", JSON.stringify(carrito));
+    // Ya no redirige automáticamente a carrito.php para dejar seguir comprando
+}
+
+// Función para mostrar alerta emergente elegante sin bloquear la navegación
+function mostrarNotificacion(mensaje) {
+    let toast = document.getElementById("toast-notificacion");
+
+    if (!toast) {
+        toast = document.createElement("div");
+        toast.id = "toast-notificacion";
+        toast.style.cssText = `
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #333;
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            font-size: 0.95rem;
+            z-index: 1000;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            opacity: 0;
+            transform: translateY(20px);
+        `;
+        document.body.appendChild(toast);
+    }
+
+    toast.textContent = mensaje;
+    toast.style.opacity = "1";
+    toast.style.transform = "translateY(0)";
+
+    setTimeout(() => {
+        toast.style.opacity = "0";
+        toast.style.transform = "translateY(20px)";
+    }, 2500);
+}
+
+// Mostrar y ocultar productos adicionales (Ver más)
 function configurarBotonVerMas(idBoton, idSeccion) {
     const boton = document.getElementById(idBoton);
     const productosExtra = document.querySelectorAll(
@@ -122,7 +143,7 @@ configurarBotonVerMas("btn-masBcalientes", "#calientes");
 configurarBotonVerMas("btn-masBFrias", "#frias");
 configurarBotonVerMas("btn-masPostres", "#postres");
 
-/*Para el scroll en la pagina*/
+// Scroll suave en la página
 function animarHaciaSeccion(seccion) {
     const posicionInicial = window.scrollY;
 
@@ -140,8 +161,7 @@ function animarHaciaSeccion(seccion) {
             tiempoInicial = tiempoActual;
         }
 
-        const tiempoTranscurrido =
-            tiempoActual - tiempoInicial;
+        const tiempoTranscurrido = tiempoActual - tiempoInicial;
 
         const progreso = Math.min(
             tiempoTranscurrido / duracion,
@@ -185,19 +205,10 @@ enlacesMenu.forEach((enlace) => {
 
         const seccion = document.getElementById(idSeccion);
 
-        /*
-        Si la sección existe, significa que estamos en index.php.
-        Entonces evitamos el salto normal y usamos la animación.
-        */
         if (seccion) {
             evento.preventDefault();
             animarHaciaSeccion(seccion);
         }
-
-        /*
-        Si no existe, por ejemplo desde login.php,
-        el navegador irá normalmente a index.php#seccion.
-        */
     });
 });
 
@@ -214,10 +225,6 @@ window.addEventListener("load", () => {
         return;
     }
 
-    /*
-    El navegador intenta saltar automáticamente a la sección.
-    Lo regresamos arriba y después iniciamos la animación.
-    */
     window.scrollTo(0, 0);
 
     setTimeout(() => {
@@ -225,53 +232,29 @@ window.addEventListener("load", () => {
     }, 150);
 });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// 1. Control del Header Fijo
-let ubicacionPrincipal = window.scrollY; // Corrección: de pageYOffset a scrollY
+// Control del Header Fijo
+let ubicacionPrincipal = window.scrollY;
 const header = document.getElementById("main-header");
 
 window.addEventListener("scroll", function() {
     let desplazamientoActual = window.scrollY;
     
-    if (ubicacionPrincipal < desplazamientoActual && desplazamientoActual > 50) {
-        header.style.top = "-100px";
-    } else {
-        header.style.top = "0";
+    if (header) {
+        if (ubicacionPrincipal < desplazamientoActual && desplazamientoActual > 50) {
+            header.style.top = "-100px";
+        } else {
+            header.style.top = "0";
+        }
     }
     ubicacionPrincipal = desplazamientoActual;
 });
 
-// 2. Control del Carrusel de Promociones
+// Control del Carrusel de Promociones
 const carousel = document.getElementById('promos-carousel');
 const btnPrev = document.getElementById('btn-prev');
 const btnNext = document.getElementById('btn-next');
 
 if (carousel && btnPrev && btnNext) {
-    // Calcula el ancho de una tarjeta + el gap para saber cuánto desplazar
     const getScrollAmount = () => {
         const box = carousel.querySelector('.box');
         return box ? box.offsetWidth + 20 : 300; 
