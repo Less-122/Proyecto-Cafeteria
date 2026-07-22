@@ -42,7 +42,7 @@
                 </li>
 
                 <li>
-                    <a href="index.php#nosotros">Nosotros</a>
+                    <a href="index.php#nosotros">Ubicacion</a>
                 </li>
 
             </ul>

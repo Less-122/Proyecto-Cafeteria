@@ -61,7 +61,7 @@
             
     </div>
 </main>
-    <?php include("includes/footer.php"); ?>
+  
     <script src="js/login.js"></script>
     <script src="js/menu.js"></script>
 </body>

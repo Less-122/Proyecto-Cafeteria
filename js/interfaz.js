@@ -37,7 +37,7 @@ if (carousel && btnPrev && btnNext) {
 }
 //se agrega a carrito
 document.addEventListener('click', (event) => {
-    if (event.target.classList.contains('btn-agregar')) {
+    if (event.target.classList.contains('btn-agCarrito')) {
         const tarjeta = event.target.closest('.box');
         if (!tarjeta) return;
 
@@ -71,7 +71,7 @@ function agregarAlLocalStorage(nuevoProducto) {
 
     localStorage.setItem("carritoCompras", JSON.stringify(carrito));
     alert(`¡${nuevoProducto.nombre} se agregó al carrito con éxito!`);
-
+}
 
 if (loadMoreBtn) {
     loadMoreBtn.onclick = () => {
@@ -90,14 +90,13 @@ if (loadMoreBtn) {
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('botonLogin').addEventListener('click', function(evento) {
         evento.preventDefault();
-        window.location.href = 'login.html';
+        window.location.href = 'login.php';
     });
 });
 
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('botonCarrito').addEventListener('click', function(evento) {
         evento.preventDefault();
-        window.location.href = 'carrito.html';
+        window.location.href = 'carrito.php';
     });
 });
-    

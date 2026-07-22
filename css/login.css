@@ -4,7 +4,7 @@
 
 
 .txt-titulo{
-    font-family: "Cedarville Cursive ",cursive;
+    font-family: "Arial ";
     font-size: 4rem;
     color: #72401c;
     font-weight: normal;
@@ -13,7 +13,7 @@
 }
 *{
 
-    font-family: "PT Sans", sans-serif;
+    font-family: "Arial";
     margin: 0;
     padding: 0;
     text-align: center;

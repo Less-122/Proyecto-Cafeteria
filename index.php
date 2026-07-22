@@ -22,7 +22,7 @@
 Nos apasiona recibirte con el olor a grano recién molido y pan calientito saliendo del horno. Cada una de nuestras tazas está preparada con paciencia, dedicación y el cariño de quienes aman lo que hacen, buscando recordarte ese sabor casero que reconforta el alma.
 
 </p>
-                <a href="#nosotros" class="btn-primary">Información</a>
+             
             </div>
             <div class="hero-img">
                 <img id="PromoImagen" src="img/productos/Postres/sueño-chocolate.jpeg" alt="Delicias de café y helado" alt="Promociones">
@@ -41,12 +41,13 @@ Nos apasiona recibirte con el olor a grano recién molido y pan calientito salie
                     <div class="tag-oferta">Ahorra un 20%</div>
                     <img src="img/productos/Promociones/Desayuno-Amanecer.jpeg" alt="Promoción 1">
                     <div class="product-txt">
+
                         <h3>Desayuno al amanecer</h3>
                         <p>Primer sorbo + Delicia de zanahoria</p>
                     <div class="producto-footer">
                         <span class="precio-anterior">$124.00</span>
                         <span class="precio-promo">$99.20</span>
-                        <button class="btn-agCarrito">Comprar</button>
+                        <button class="btn-agCarrito">Agregar</button>
                     </div>
                         
                     </div>
@@ -60,7 +61,7 @@ Nos apasiona recibirte con el olor a grano recién molido y pan calientito salie
                         <div class="producto-footer">
                             <span class="precio-anterior">$176.00</span>
                             <span class="precio-promo">$88.00</span>
-                            <button class="btn-agCarrito">Comprar</button>
+                            <button class="btn-agCarrito">Agregar</button>
                         </div>
                     </div>
                 </div>
@@ -73,7 +74,7 @@ Nos apasiona recibirte con el olor a grano recién molido y pan calientito salie
                         <div class="producto-footer">
                             <span class="precio-anterior">$156.00</span>
                             <span class="precio-promo">$132.60</span>
-                            <button class="btn-agCarrito">Comprar</button>
+                            <button class="btn-agCarrito">Agregar</button>
                         </div>
                     </div>
                 </div>
@@ -86,7 +87,7 @@ Nos apasiona recibirte con el olor a grano recién molido y pan calientito salie
                             suave y un sabor intenso que conquista desde la primera cucharada.</p>
                         <div class="producto-footer">
                             <span class="precio">$62.00</span>
-                            <button class="btn-agCarrito">Comprar</button>
+                            <button class="btn-agCarrito">Agregar</button>
                         </div>
                     </div>
                 </div>
@@ -108,7 +109,7 @@ Nos apasiona recibirte con el olor a grano recién molido y pan calientito salie
                         El equilibrio perfecto entre intensidad y aroma. Un café corto, fuerte y lleno de carácter para comenzar el día con energía.</p>
                     <div class="producto-footer">
                         <span class="precio">$59.00</span>
-                        <button class="btn-agCarrito">Comprar</button>
+                        <button class="btn-agCarrito">Agregar</button>
                     </div>
                 </div>
             </div>
@@ -121,7 +122,7 @@ Nos apasiona recibirte con el olor a grano recién molido y pan calientito salie
             </p>
             <div class="producto-footer">
                 <span class="precio">$49.00</span>
-                <button class="btn-agCarrito">Comprar</button>
+                <button class="btn-agCarrito">Agregar</button>
             </div>
         </div>
     </div>
@@ -134,7 +135,7 @@ Nos apasiona recibirte con el olor a grano recién molido y pan calientito salie
             </p>
             <div class="producto-footer">
                 <span class="precio">$59.00</span>
-                <button class="btn-agCarrito">Comprar</button>
+                <button class="btn-agCarrito">Agregar</button>
             </div>
         </div>
     </div>
@@ -146,7 +147,7 @@ Nos apasiona recibirte con el olor a grano recién molido y pan calientito salie
             <p>Latte de vainilla. Leche vaporizada, espresso y vainilla natural que crean una bebida suave, cremosa y reconfortante.</p>
             <div class="producto-footer">
                 <span class="precio">$89.00</span>
-                <button class="btn-agCarrito">Comprar</button>
+                <button class="btn-agCarrito">Agregar</button>
             </div>
         </div>
     </div>
@@ -158,7 +159,7 @@ Nos apasiona recibirte con el olor a grano recién molido y pan calientito salie
             <p>Cappuccino de caramelo. Un cappuccino clásico con espuma ligera y un toque de caramelo que aporta dulzura en cada taza.</p>
             <div class="producto-footer">
                 <span class="precio">$96.00</span>
-                <button class="btn-agCarrito">Comprar</button>
+                <button class="btn-agCarrito">Agregar</button>
             </div>
         </div>
     </div>
@@ -170,7 +171,7 @@ Nos apasiona recibirte con el olor a grano recién molido y pan calientito salie
             <p>Chocolate caliente. Chocolate preparado con leche caliente y una textura cremosa que recuerda el sabor de casa.</p>
             <div class="producto-footer">
                 <span class="precio">$66.00</span>
-                <button class="btn-agCarrito">Comprar</button>
+                <button class="btn-agCarrito">Agregar</button>
             </div>
         </div>
     </div>
@@ -183,7 +184,7 @@ Nos apasiona recibirte con el olor a grano recién molido y pan calientito salie
                 Una infusión ligera acompañada de miel natural, perfecta para disfrutar un momento de tranquilidad.</p>
             <div class="producto-footer">
                 <span class="precio">$45.00</span>
-                <button class="btn-agCarrito">Comprar</button>
+                <button class="btn-agCarrito">Agregar</button>
             </div>
         </div>
     </div>
@@ -195,7 +196,7 @@ Nos apasiona recibirte con el olor a grano recién molido y pan calientito salie
             <p>Café de olla tradicional. Café preparado al estilo tradicional con piloncillo y canela, lleno de aromas que evocan los sabores de México.</p>
             <div class="producto-footer">
                 <span class="precio">$79.00</span>
-                <button class="btn-agCarrito">Comprar</button>
+                <button class="btn-agCarrito"<>Agregar</button>
             </div>
         </div>
     </div>
@@ -220,7 +221,7 @@ Nos apasiona recibirte con el olor a grano recién molido y pan calientito salie
             <p> Mezcla de frutos naturales con una textura ligera y un sabor fresco lleno de color.</p>
             <div class="producto-footer">
                 <span class="precio">$55.00</span>
-                <button class="btn-agCarrito">Comprar</button>
+                <button class="btn-agCarrito">Agregar</button>
             </div>
         </div>
     </div>
@@ -232,7 +233,7 @@ Nos apasiona recibirte con el olor a grano recién molido y pan calientito salie
             <p>Cold Brew. Café preparado lentamente en frío durante varias horas para lograr un sabor suave, refrescante y de baja acidez.</p>
             <div class="producto-footer">
                 <span class="precio">$68.00</span>
-                <button class="btn-agCarrito">Comprar</button>
+                <button class="btn-agCarrito">Agregar</button>
             </div>
         </div>
     </div>
@@ -244,7 +245,7 @@ Nos apasiona recibirte con el olor a grano recién molido y pan calientito salie
             <p>Frappé de vainilla. Bebida cremosa con hielo triturado y un delicado sabor a vainilla que refresca cada momento. </p>
             <div class="producto-footer">
                 <span class="precio">$75.00</span>
-                <button class="btn-agCarrito">Comprar</button>
+                <button class="btn-agCarrito">Agregar</button>
             </div>
         </div>
     </div>
@@ -257,7 +258,7 @@ Nos apasiona recibirte con el olor a grano recién molido y pan calientito salie
             <p>Frappé moka. Café, chocolate y hielo mezclados en una bebida cremosa ideal para los amantes del moka.</p>
             <div class="producto-footer">
                 <span class="precio">$65.00</span>
-                <button class="btn-agCarrito">Comprar</button>
+                <button class="btn-agCarrito">Agregar</button>
             </div>
         </div>
     </div>
@@ -269,7 +270,7 @@ Nos apasiona recibirte con el olor a grano recién molido y pan calientito salie
             <p>Frappé de caramelo. Una combinación de café, leche y caramelo con una textura suave y un dulzor perfectamente equilibrado.</p>
             <div class="producto-footer">
                 <span class="precio">$88.00</span>
-                <button class="btn-agCarrito">Comprar</button>
+                <button class="btn-agCarrito">Agregar</button>
             </div>
         </div>
     </div>
@@ -281,7 +282,7 @@ Nos apasiona recibirte con el olor a grano recién molido y pan calientito salie
             <p>Té helado de durazno. Té frío con un delicado toque de durazno que ofrece una bebida ligera y muy refrescante.</p>
             <div class="producto-footer">
                 <span class="precio">$68.00</span>
-                <button class="btn-agCarrito">Comprar</button>
+                <button class="btn-agCarrito">Agregar</button>
             </div>
         </div>
     </div>
@@ -293,7 +294,7 @@ Nos apasiona recibirte con el olor a grano recién molido y pan calientito salie
             <p>Iced Latte. Espresso servido sobre hielo con leche fría, logrando una bebida cremosa y refrescante.</p>
             <div class="producto-footer">
                 <span class="precio">$96.00</span>
-                <button class="btn-agCarrito">Comprar</button>
+                <button class="btn-agCarrito">Agregar</button>
             </div>
         </div>
     </div>
@@ -305,7 +306,7 @@ Nos apasiona recibirte con el olor a grano recién molido y pan calientito salie
             <p>Café frío con helado. Café helado acompañado de una bola de helado que aporta suavidad y un toque especial en cada sorbo.</p>
             <div class="producto-footer">
                 <span class="precio">$99.00</span>
-                <button class="btn-agCarrito">Comprar</button>
+                <button class="btn-agCarrito">Agregar</button>
             </div>
         </div>
     </div>
@@ -331,7 +332,7 @@ Nos apasiona recibirte con el olor a grano recién molido y pan calientito salie
             <p>Brownie de chocolate. Brownie recién horneado con un intenso sabor a chocolate y una textura suave por dentro.</p>
             <div class="producto-footer">
                 <span class="precio">$78.00</span>
-                <button class="btn-agCarrito">Comprar</button>
+                <button class="btn-agCarrito">Agregar</button>
             </div>
         </div>
     </div>
@@ -343,7 +344,7 @@ Nos apasiona recibirte con el olor a grano recién molido y pan calientito salie
             <p>Cheesecake de frutos rojos. Suave pastel de queso acompañado de una deliciosa salsa de frutos rojos que equilibra cada bocado.</p>
             <div class="producto-footer">
                 <span class="precio">$69.00</span>
-                <button class="btn-agCarrito">Comprar</button>
+                <button class="btn-agCarrito">Agregar</button>
             </div>
         </div>
     </div>
@@ -355,7 +356,7 @@ Nos apasiona recibirte con el olor a grano recién molido y pan calientito salie
             <p>Pastel de zanahoria. Esponjoso pastel elaborado con zanahoria y especias, cubierto con un cremoso betún de queso.</p>
             <div class="producto-footer">
                 <span class="precio">$65.00</span>
-                <button class="btn-agCarrito">Comprar</button>
+                <button class="btn-agCarrito">Agregar</button>
             </div>
         </div>
     </div>
@@ -367,7 +368,7 @@ Nos apasiona recibirte con el olor a grano recién molido y pan calientito salie
             <p>Muffin de nuez. Muffin suave con trozos de nuez que aportan un ligero toque crujiente y un sabor casero.</p>
             <div class="producto-footer">
                 <span class="precio">$77.00</span>
-                <button class="btn-agCarrito">Comprar</button>
+                <button class="btn-agCarrito">Agregar</button>
             </div>
         </div>
     </div>
@@ -379,7 +380,7 @@ Nos apasiona recibirte con el olor a grano recién molido y pan calientito salie
             <p>Churros tradicionales. Delicados churros recién preparados, espolvoreados con azúcar y canela, perfectos para acompañar una taza de café o chocolate caliente.</p>
             <div class="producto-footer">
                 <span class="precio">$48.00</span>
-                <button class="btn-agCarrito">Comprar</button>
+                <button class="btn-agCarrito">Agregar</button>
             </div>
         </div>
     </div>
@@ -391,7 +392,7 @@ Nos apasiona recibirte con el olor a grano recién molido y pan calientito salie
             <p>Helado de chocolate. Cremoso helado de chocolate elaborado con cacao de alta calidad, de textura suave y un sabor intenso que conquista desde la primera cucharada.</p>
             <div class="producto-footer">
                 <span class="precio">$62.00</span>
-                <button class="btn-agCarrito">Comprar</button>
+                <button class="btn-agCarrito">Agregar</button>
             </div>
         </div>
     </div>
@@ -403,7 +404,7 @@ Nos apasiona recibirte con el olor a grano recién molido y pan calientito salie
             <p>Arroz con leche. Un postre tradicional preparado con arroz, leche y un toque de canela, cuya receta casera evoca los sabores y recuerdos de hogar.</p>
             <div class="producto-footer">
                 <span class="precio">$55.00</span>
-                <button class="btn-agCarrito">Comprar</button>
+                <button class="btn-agCarrito">Agregar</button>
             </div>
         </div>
     </div>
@@ -415,7 +416,7 @@ Nos apasiona recibirte con el olor a grano recién molido y pan calientito salie
             <p>Pastel de chocolate. Capas de bizcocho de chocolate cubiertas con una cremosa ganache que conquista desde el primer bocado.</p>
             <div class="producto-footer">
                 <span class="precio">$87.00</span>
-                <button class="btn-agCarrito">Comprar</button>
+                <button class="btn-agCarrito">Agregar</button>
             </div>
         </div>
     </div>
@@ -427,7 +428,6 @@ Nos apasiona recibirte con el olor a grano recién molido y pan calientito salie
         </div>
     </section>
     <?php include("includes/footer.php"); ?>
-
     <script src="js/carrito.js"></script>
     <script src="js/menu.js"></script> </body>
 </html>
