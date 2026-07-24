@@ -15,6 +15,8 @@
     <main class="main_container">
         <h1 class="titulo">Historial de Pedidos</h1>
     <section>
+
+    
         <div class="filtros_container">
             <div class="search_box">
                 <ion-icon name="search-outline" class="icono_filtro"></ion-icon>

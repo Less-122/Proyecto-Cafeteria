@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="css/footer.css">
     <link rel="stylesheet" href="css/carrito.css">
 </head>
+
 <body>
     <?php include("includes/header-menu.php"); ?>
 

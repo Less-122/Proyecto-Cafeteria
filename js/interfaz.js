@@ -86,6 +86,44 @@ if (loadMoreBtn) {
     };
 }
 
+<<<<<<< HEAD
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const botonLogin = document.getElementById('botonLogin');
+    const botonCarrito = document.getElementById('botonCarrito');
+
+    if (botonLogin) {
+        botonLogin.addEventListener('click', function(evento) {
+            evento.preventDefault();
+            window.location.href = 'login.html';
+        });
+    }
+
+    if (botonCarrito) {
+        botonCarrito.addEventListener('click', function(evento) {
+            evento.preventDefault();
+            window.location.href = 'carrito.html';
+        });
+    }
+});
+
+// Funcion para redirigir al login
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('botonLogin').addEventListener('click', function(evento) {
+        evento.preventDefault();
+        window.location.href = 'login.html';
+    });
+});
+
+// Funcion para redirigir al carrito
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('botonCarrito').addEventListener('click', function(evento) {
+        evento.preventDefault();
+        window.location.href = 'carrito.html';
+    });
+});
+=======
 
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('botonLogin').addEventListener('click', function(evento) {
@@ -100,3 +138,4 @@ document.addEventListener('DOMContentLoaded', function() {
         window.location.href = 'carrito.php';
     });
 });
+>>>>>>> integracion
