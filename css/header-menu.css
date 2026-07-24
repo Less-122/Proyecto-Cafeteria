@@ -1,0 +1,200 @@
+@import url("https://fonts.googleapis.com/css2?family=Cedarville+Cursive&family=PT+Sans:wght@400;700&display=swap");
+
+/* Encabezado principal */
+.site-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 2000;
+    background-color: #2C1A0E;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.2);
+
+    transition: top 0.4s ease;
+}
+
+/* Contenedor interno */
+.header-container {
+    width: min(1200px, 92%);
+    min-height: 85px;
+    margin: 0 auto;
+    padding: 10px 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 25px;
+
+    box-sizing: border-box;
+}
+
+/* Logo e isotipo */
+.header-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+
+    color: #ffffff;
+    text-decoration: none;
+}
+
+.header-isotipo {
+    width: 58px;
+    height: 58px;
+
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.header-logo-text {
+    color: #ffffff;
+    font-family: "Roboto";
+    font-size: 27px;
+    white-space: nowrap;
+}
+
+/* Navegación */
+.header-navbar {
+    flex: 1;
+}
+
+.header-menu {
+    margin: 0;
+    padding: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+
+    list-style: none;
+}
+
+.header-menu li {
+    margin: 0;
+    padding: 0;
+}
+
+.header-menu a {
+    position: relative;
+
+    color: #ffffff;
+    font-family: "PT Sans", sans-serif;
+    font-size: 15px;
+    font-weight: 400;
+    text-decoration: none;
+    white-space: nowrap;
+
+    transition: color 0.3s ease;
+}
+
+/* Línea animada debajo del enlace */
+.header-menu a::after {
+    content: "";
+
+    position: absolute;
+    left: 0;
+    bottom: -6px;
+
+    width: 0;
+    height: 2px;
+
+    background-color: #c87444;
+
+    transition: width 0.3s ease;
+}
+
+.header-menu a:hover {
+    color: #e7a576;
+}
+
+.header-menu a:hover::after {
+    width: 100%;
+}
+
+/* Botones de login y carrito */
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+}
+
+.header-icon-btn {
+    width: 42px;
+    height: 42px;
+    padding: 8px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background-color: transparent;
+    border: none;
+    border-radius: 50%;
+
+    cursor: pointer;
+
+    transition:
+        background-color 0.3s ease,
+        transform 0.2s ease;
+}
+
+.header-icon-btn:hover {
+    background-color: rgba(255, 255, 255, 0.12);
+    transform: translateY(-2px);
+}
+
+.header-icon-btn img {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+}
+
+/* Pantallas medianas */
+@media (max-width: 1050px) {
+    .header-logo-text {
+        display: none;
+    }
+
+    .header-menu {
+        gap: 15px;
+    }
+
+    .header-menu a {
+        font-size: 14px;
+    }
+}
+
+/* Celulares y tabletas pequeñas */
+@media (max-width: 800px) {
+    .header-container {
+        min-height: auto;
+        padding: 12px 0;
+        flex-wrap: wrap;
+    }
+
+    .header-brand {
+        order: 1;
+    }
+
+    .header-actions {
+        order: 2;
+    }
+
+    .header-navbar {
+        width: 100%;
+        order: 3;
+        overflow-x: auto;
+    }
+
+    .header-menu {
+        width: max-content;
+        min-width: 100%;
+        padding: 8px 0 4px;
+
+        justify-content: flex-start;
+    }
+}
