@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="../css/admin.css">
 </head>
 <body>
+    
     <div id="header-placeholder" class="header-placeholder"></div>
 
     <div id="menu-placeholder" class="menu-placeholder"></div>
