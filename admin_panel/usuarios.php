@@ -1,8 +1,8 @@
 <?php
 include '../conexion.php';
 
-// 1. Agregamos fecha_registro a la consulta SQL
-$stmt = $conexion->prepare("SELECT id_usuario, nombre, apellido, telefono, password, fecha_registro FROM usuarios");
+// Consulta SQL ordenada para mostrar los más recientes primero
+$stmt = $conexion->prepare("SELECT id_usuario, nombre, apellido, telefono, password, fecha_registro FROM usuarios ORDER BY id_usuario DESC");
 $stmt->execute();
 $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
@@ -11,13 +11,12 @@ $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Usuarios</title>
+    <title>Usuarios | Admin</title>
     <link rel="stylesheet" href="../css/admin.css">
 </head>
 <body>
     
     <div id="header-placeholder" class="header-placeholder"></div>
-
     <div id="menu-placeholder" class="menu-placeholder"></div>
 
     <main class="main_container">
@@ -45,24 +44,29 @@ $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <th>Apellido</th>
                     <th>Teléfono</th>
                     <th>Contraseña</th>
-                    <th>Fecha de Registro</th> <!-- Nueva columna en el encabezado -->
+                    <th>Fecha de Registro</th>
                 </tr>
             </thead>
             <tbody>
-                <?php foreach($usuarios as $u): ?>
-                <tr>
-                    <td><input type="checkbox" name="seleccion" value="<?= $u['id_usuario'] ?>"></td>
-                    <td><?= $u['id_usuario'] ?></td>
-                    <td><?= htmlspecialchars($u['nombre']) ?></td>
-                    <td><?= htmlspecialchars($u['apellido']) ?></td>
-                    <td><?= htmlspecialchars($u['telefono']) ?></td>
-                    <td>••••••••</td> <!-- Enmascarado por seguridad -->
-                    <!-- Nueva celda para la fecha y hora -->
-                    <td>
-                        <?= !empty($u['fecha_registro']) ? date('d/m/Y H:i', strtotime($u['fecha_registro'])) : 'N/A' ?>
-                    </td>
-                </tr>
-                <?php endforeach; ?>
+                <?php if (empty($usuarios)): ?>
+                    <tr>
+                        <td colspan="7" style="text-align: center;">No hay usuarios registrados.</td>
+                    </tr>
+                <?php else: ?>
+                    <?php foreach($usuarios as $u): ?>
+                    <tr>
+                        <td><input type="checkbox" name="seleccion" value="<?= htmlspecialchars($u['id_usuario']) ?>"></td>
+                        <td><?= htmlspecialchars($u['id_usuario']) ?></td>
+                        <td><?= htmlspecialchars($u['nombre']) ?></td>
+                        <td><?= htmlspecialchars($u['apellido']) ?></td>
+                        <td><?= htmlspecialchars($u['telefono']) ?></td>
+                        <td>••••••••</td>
+                        <td>
+                            <?= !empty($u['fecha_registro']) ? date('d/m/Y H:i', strtotime($u['fecha_registro'])) : 'N/A' ?>
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
+                <?php endif; ?>
             </tbody>
         </table>
     </main>
@@ -120,4 +124,4 @@ $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <script type="module" src="https://unpkg.com/ionicons@8.0.13/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@8.0.13/dist/ionicons/ionicons.js"></script>
 </body>
-</html>
+</html> 

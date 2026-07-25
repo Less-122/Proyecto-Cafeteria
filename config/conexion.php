@@ -1,17 +1,14 @@
 <?php
-$servidor = "localhost";
-$usuario = "root";
-$password = "";
-$base_datos = "cafe_db";
+$host = "localhost";
+$db   = "cafe_db";
+$user = "root";
+$pass = "";
+$charset = "utf8mb4";
 
-//crear conexion
-$conexion = new mysqli($servidor, $usuario, $password, $base_datos);
-
-//verificar la conexion
-if($conexion -> connect_error){
-    die("Error de conexión: " . $conexion -> connect_error);
+try {
+    $conexion = new PDO("mysql:host=$host;dbname=$db;charset=$charset", $user, $pass);
+    $conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $e) {
+    die("Error de conexión: " . $e->getMessage());
 }
-//echo "Conexion exitosa <br>";
-
-//Cerrar la conexion
-// $conexion -> close();
+?>
