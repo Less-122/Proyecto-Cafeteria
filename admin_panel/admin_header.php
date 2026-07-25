@@ -1,3 +1,4 @@
+<?php include 'seguridad_admin.php'; ?>
 <header class="header">
         <div class="header_menu">
             <img src="../img/Logo/logoAzul.jpeg" alt="" class="header_logo">

@@ -19,37 +19,46 @@
     <div class = "container-login">
         <div class="form-container">
             <div class="form" id="form">
-                <form class="login">
-                    <h1 class="txt-titulo">Bienvenid@ </h1>
-                    <div class="input">
-                        <input type="tel" name="telefono" id="telefono" placeholder="Ingrese su numero" required>
-                    </div>
-                    <div class="input">
-                        <input type="password" name="password" id="password" placeholder="Ingrese su contraseña" required>
-                    </div>
-                    <div class="buttons">
-                        <button id="btnIniciarSesion">Iniciar sesión</button>
-                    </div>
-                        <p class="cuenta">¿No tiene una cuenta? <a href="#" id="sign-up">Crear cuenta</a></p>
-                </form>
-                <form class="registro">
-                    <h2 class="txt-titulo">Crear cuenta</h2>
-                    <p>Usa tu numero de telefono para registrarte</p>
-                    <div class="input">
-                        <input type="text" name="nombre" id="nombre" placeholder="Ingrese su nombre" required>
-                        <input type="text" name="apeliido" id="nombre" placeholder="Ingrese su apellidoombre" required>
-                    </div>
-                    <div class="input">
-                        <input type="tel" name="telefono" id="telefono" placeholder="Ingrese su numero" required>
-                    </div>
-                    <div class="input">
-                        <input type="password" name="password" id="password" placeholder="Ingrese su contraseña" required>
-                    </div>
-                    <div class="buttons">
-                        <button>Registrar</button>
-                    </div>
-                        <p class="cuenta">¿Ya tiene una cuenta? <a href="#" id="sign-in">Iniciar sesión</a></p>
-                </form>
+                <!-- FORMULARIO DE INICIO DE SESIÓN -->
+<form class="login" action="controlador\Autenticacion.php" method="POST">
+    <h1 class="txt-titulo">Bienvenid@ </h1>
+
+    <input type="hidden" name="operacion" value="login">
+
+    <div class="input">
+        <input type="tel" name="telefono" id="login_telefono" placeholder="Ingrese su número" required>
+    </div>
+    <div class="input">
+        <input type="password" name="password" id="login_password" placeholder="Ingrese su contraseña" required>
+    </div>
+    <div class="buttons">
+        <button type="submit" id="btnIniciarSesion">Iniciar sesión</button>
+    </div>
+    <p class="cuenta">¿No tiene una cuenta? <a href="#" id="sign-up">Crear cuenta</a></p>
+</form>
+
+<!-- FORMULARIO DE REGISTRO -->
+<form class="registro" action="controlador\Autenticacion.php" method="POST">
+    <h2 class="txt-titulo">Crear cuenta</h2>
+    <p>Usa tu número de teléfono para registrarte</p>
+
+    <input type="hidden" name="operacion" value="registro">
+
+    <div class="input">
+        <input type="text" name="nombre" id="reg_nombre" placeholder="Ingrese su nombre" required>
+        <input type="text" name="apellido" id="reg_apellido" placeholder="Ingrese su apellido" required>
+    </div>
+    <div class="input">
+        <input type="tel" name="telefono" id="reg_telefono" placeholder="Ingrese su número" required>
+    </div>
+    <div class="input">
+        <input type="password" name="password" id="reg_password" placeholder="Ingrese su contraseña" required>
+    </div>
+    <div class="buttons">
+        <button type="submit">Registrar</button>
+    </div>
+    <p class="cuenta">¿Ya tiene una cuenta? <a href="#" id="sign-in">Iniciar sesión</a></p>
+</form>
             </div>
         </div>
 
