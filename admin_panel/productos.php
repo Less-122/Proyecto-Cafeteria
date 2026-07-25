@@ -1,3 +1,4 @@
+<?php include 'seguridad_admin.php'; ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -26,7 +27,7 @@
             <div class="select_box">
                 <ion-icon name="pricetag-outline" class="icono_filtro"></ion-icon>
                 <select name="seleccion" id="selector" class="custom_select">
-                    <option value="" disabled selected>Todas las categorías</option>
+                    <option value="" selected>Todas las categorías</option>
                     <option value="Bebidas calientes">Bebidas calientes</option>
                     <option value="Bebidas frias">Bebidas frías</option>
                     <option value="Postres">Postres</option>
@@ -52,6 +53,8 @@
                 <th>Precio</th>
                 <th>img_url</th>
                 <th>Promoción</th>
+                <th>Etiqueta de promoción</th>
+                <th>Descuento en $</th>
             </tr>
             <tr>
                 <td><input type="checkbox" name="seleccion" value="1"></td>
@@ -63,6 +66,8 @@
                 <td>$59</td>
                 <td>imp.jpg</td>
                 <td><input type="checkbox" name="seleccion" value="prom"></td>
+                <td></td>
+                <td></td>
             </tr>
             <tr>
                 <td><input type="checkbox" name="seleccion" value="2"></td>
@@ -74,6 +79,8 @@
                 <td>$78</td>
                 <td>imp.jpg</td>
                 <td><input type="checkbox" name="seleccion" value="prom"></td>
+                <td>2x1 en esta bebida</td>
+                <td>$30</td>
             </tr>
             <tr>
                 <td><input type="checkbox" name="seleccion" value="3"></td>
@@ -85,6 +92,8 @@
                 <td>$55</td>
                 <td>img.jpg</td>
                 <td><input type="checkbox" name="seleccion" value="prom"></td>
+                <td></td>
+                <td></td>
             </tr>
         </table>
     </main>

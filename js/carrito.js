@@ -1,5 +1,3 @@
-
-
 document.addEventListener("DOMContentLoaded", () => {
     const cartItemsSection = document.querySelector(".cart-items-section");
     const btnConfirmar = document.querySelector(".btn-confirm-order");
@@ -41,8 +39,36 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     renderizarCarrito();
-    
-    //  (Sumar, Restar y Eliminar)
+
+
+    // calculo
+    function actualizarTotales() {
+        let subtotal = 0;
+        let totalProductos = 0;
+
+        carrito.forEach(item => {
+            subtotal += item.precio * item.cantidad;
+            totalProductos += item.cantidad;
+        });
+
+        const subtotalLabel = document.querySelector(".summary-row:nth-of-type(1) span:first-child");
+        const subtotalValue = document.querySelector(".summary-row:nth-of-type(1) span:last-child");
+        const totalValue = document.querySelector(".summary-row.total span:last-child");
+
+        if (subtotalLabel && subtotalValue && totalValue) {
+            subtotalLabel.textContent = `Subtotal (${totalProductos} producto${totalProductos !== 1 ? 's' : ''})`;
+            subtotalValue.textContent = `$${subtotal.toFixed(2)}`;
+            totalValue.textContent = `$${subtotal.toFixed(2)}`; 
+        }
+    }
+
+        //actualizar
+    function guardarYActualizar() {
+        localStorage.setItem("carritoCompras", JSON.stringify(carrito));
+        renderizarCarrito();
+    }
+
+        //  (Sumar, Restar y Eliminar)
     if (cartItemsSection) {
         cartItemsSection.addEventListener("click", (e) => {
             const cartItem = e.target.closest(".cart-item");
@@ -68,34 +94,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 guardarYActualizar();
             }
         });
-    }
-
-    //actualizar
-    function guardarYActualizar() {
-        localStorage.setItem("carritoCompras", JSON.stringify(carrito));
-        renderizarCarrito();
-    }
-
-    // calculo
-    function actualizarTotales() {
-        let subtotal = 0;
-        let totalProductos = 0;
-
-        carrito.forEach(item => {
-            subtotal += item.precio * item.cantidad;
-            totalProductos += item.cantidad;
-        });
-
-        const subtotalLabel = document.querySelector(".summary-row:nth-of-type(1) span:first-child");
-        const subtotalValue = document.querySelector(".summary-row:nth-of-type(1) span:last-child");
-        const totalValue = document.querySelector(".summary-row.total span:last-child");
-
-        if (subtotalLabel && subtotalValue && totalValue) {
-            subtotalLabel.textContent = `Subtotal (${totalProductos} producto${totalProductos !== 1 ? 's' : ''})`;
-            subtotalValue.textContent = `$${subtotal.toFixed(2)}`;
-            totalValue.textContent = `$${subtotal.toFixed(2)}`; 
-        }
-    }
+    }   
 
     //confirmacion
     if (btnConfirmar) {
@@ -113,35 +112,90 @@ document.addEventListener("DOMContentLoaded", () => {
             renderizarCarrito();
         });
     }
-        // --- EL NUEVO CÓDIGO VA AQUÍ (DENTRO DEL DOMContentLoaded) ---
-    document.addEventListener("click", (e) => {
-        if (e.target.classList.contains("btn-agregar")) {
-            const contenedorProducto = e.target.closest(".box");
-            
-            if (contenedorProducto) {
-                const nombre = contenedorProducto.querySelector("h3").textContent;
-                const precioTexto = contenedorProducto.querySelector(".precio").textContent;
-                const precio = parseFloat(precioTexto.replace(/[^0-9.]/g, ""));
-                const imagen = contenedorProducto.querySelector("img").getAttribute("src");
 
-                const productoExistente = carrito.find(item => item.nombre === nombre);
-
-                if (productoExistente) {
-                    productoExistente.cantidad++;
-                } else {
-                    const nuevoProducto = {
-                        nombre: nombre,
-                        precio: precio,
-                        imagen: imagen,
-                        cantidad: 1
-                    };
-                    carrito.push(nuevoProducto);
-                }
-
-                guardarYActualizar();
-                alert(`¡${nombre} agregado al carrito!`);
-            }
-        }
-    });
 }); 
+
+// Listener de clics global para agregar productos al carrito
+document.addEventListener('click', (event) => {
+    const boton = event.target.closest('.btn-agCarrito');
+    if (!boton) return;
+
+    // Verifica que el usuario haya iniciado sesión
+    if (!window.usuarioLogueado) {
+        window.location.href = 'login.php';
+        return;
+    }
+
+    // si el usuario ya inicio sesión 
+    const tarjeta = boton.closest('.box, .product-item');
+    if (!tarjeta) return;
+
+    const nombreProducto = tarjeta.querySelector('h3')?.textContent.trim() || 'Producto';
     
+    // Obtiene el precio promocional si existe; si no, el normal
+    const precioElem = tarjeta.querySelector('.precio-promo') || tarjeta.querySelector('.precio');
+    const precioTexto = precioElem ? precioElem.textContent : '$0';
+    
+    const imagenProducto = tarjeta.querySelector('img')?.src || '';
+
+    const producto = {
+        id: nombreProducto.toLowerCase().replace(/\s+/g, '-'),
+        nombre: nombreProducto,
+        precio: parseFloat(precioTexto.replace('$', '').replace(',', '').trim()) || 0,
+        imagen: imagenProducto,
+        cantidad: 1
+    };
+
+    agregarAlLocalStorage(producto);
+    mostrarNotificacion(`${nombreProducto} ha sido agregado al carrito`);
+});
+
+function agregarAlLocalStorage(nuevoProducto) {
+    let carrito = JSON.parse(localStorage.getItem("carritoCompras")) || [];
+
+    const existe = carrito.find(item => item.id === nuevoProducto.id);
+
+    if (existe) {
+        existe.cantidad++; 
+    } else {
+        carrito.push(nuevoProducto); 
+    }
+
+    localStorage.setItem("carritoCompras", JSON.stringify(carrito));
+    // Ya no redirige automáticamente a carrito.php para dejar seguir comprando
+}
+
+// Función para mostrar alerta emergente elegante sin bloquear la navegación
+function mostrarNotificacion(mensaje) {
+    let toast = document.getElementById("toast-notificacion");
+
+    if (!toast) {
+        toast = document.createElement("div");
+        toast.id = "toast-notificacion";
+        toast.style.cssText = `
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #333;
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            font-size: 0.95rem;
+            z-index: 1000;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            opacity: 0;
+            transform: translateY(20px);
+        `;
+        document.body.appendChild(toast);
+    }
+
+    toast.textContent = mensaje;
+    toast.style.opacity = "1";
+    toast.style.transform = "translateY(0)";
+
+    setTimeout(() => {
+        toast.style.opacity = "0";
+        toast.style.transform = "translateY(20px)";
+    }, 2500);
+}

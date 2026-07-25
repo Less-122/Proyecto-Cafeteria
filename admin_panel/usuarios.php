@@ -1,10 +1,18 @@
 <?php
+<<<<<<< HEAD
 include '../conexion.php';
 
 // Consulta SQL ordenada para mostrar los más recientes primero
 $stmt = $conexion->prepare("SELECT id_usuario, nombre, apellido, telefono, password, fecha_registro FROM usuarios ORDER BY id_usuario DESC");
+=======
+include '../config/conexion.php';
+include 'seguridad_admin.php';
+// Consulta para obtener todos los usuarios registrados
+$stmt = $conexion->prepare("SELECT id_usuario, nombre, apellido, telefono, password FROM usuarios");
+>>>>>>> main
 $stmt->execute();
 $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
 ?>
 <!DOCTYPE html>
 <html lang="es">

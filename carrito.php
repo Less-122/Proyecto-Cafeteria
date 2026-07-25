@@ -1,3 +1,6 @@
+<?php 
+    session_start();
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -12,7 +15,9 @@
 </head>
 
 <body>
-    <?php include("includes/header-menu.php"); ?>
+    <?php 
+    include("includes/header-menu.php");
+    ?>
 
     <!-- Contenedor del Carrito -->
     <main class="cart-main-container">

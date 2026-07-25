@@ -1,3 +1,6 @@
+<?php 
+    session_start();
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -13,7 +16,6 @@
 
 <body>
     <?php include("includes/header-menu.php"); ?>
-
     <section id="inicio" class="hero"> <!-- Bienvenida y descripcion-->
         <div class="container hero-content">
             <div class="hero-txt">
@@ -429,6 +431,10 @@ Nos apasiona recibirte con el olor a grano recién molido y pan calientito salie
         </div>
     </section>
     <?php include("includes/footer.php"); ?>
-    <script src="js/carrito.js"></script>
+    <script>
+    // Le preguntamos a PHP si existe la variable de sesión.
+    window.usuarioLogueado = <?php echo isset($_SESSION['id_usuario']) ? 'true' : 'false'; ?>;
+    </script>
+    <script src="js/carrito.js?v=2"></script>
     <script src="js/menu.js"></script> </body>
 </html>

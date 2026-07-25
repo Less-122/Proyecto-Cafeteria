@@ -16,6 +16,7 @@
     <?php include("includes/header-menu.php"); ?>
     
     <main class="login-contenido">
+<<<<<<< HEAD
         <div class="container-login">
             <div class="form-container">
                 <div class="form" id="form">
@@ -56,6 +57,51 @@
                     </form>
 
                 </div>
+=======
+    <div class = "container-login">
+        <div class="form-container">
+            <div class="form" id="form">
+                <!-- FORMULARIO DE INICIO DE SESIÓN -->
+<form class="login" action="controlador\Autenticacion.php" method="POST">
+    <h1 class="txt-titulo">Bienvenid@ </h1>
+
+    <input type="hidden" name="operacion" value="login">
+
+    <div class="input">
+        <input type="tel" name="telefono" id="login_telefono" placeholder="Ingrese su número" required>
+    </div>
+    <div class="input">
+        <input type="password" name="password" id="login_password" placeholder="Ingrese su contraseña" required>
+    </div>
+    <div class="buttons">
+        <button type="submit" id="btnIniciarSesion">Iniciar sesión</button>
+    </div>
+    <p class="cuenta">¿No tiene una cuenta? <a href="#" id="sign-up">Crear cuenta</a></p>
+</form>
+
+<!-- FORMULARIO DE REGISTRO -->
+<form class="registro" action="controlador\Autenticacion.php" method="POST">
+    <h2 class="txt-titulo">Crear cuenta</h2>
+    <p>Usa tu número de teléfono para registrarte</p>
+
+    <input type="hidden" name="operacion" value="registro">
+
+    <div class="input">
+        <input type="text" name="nombre" id="reg_nombre" placeholder="Ingrese su nombre" required>
+        <input type="text" name="apellido" id="reg_apellido" placeholder="Ingrese su apellido" required>
+    </div>
+    <div class="input">
+        <input type="tel" name="telefono" id="reg_telefono" placeholder="Ingrese su número" required>
+    </div>
+    <div class="input">
+        <input type="password" name="password" id="reg_password" placeholder="Ingrese su contraseña" required>
+    </div>
+    <div class="buttons">
+        <button type="submit">Registrar</button>
+    </div>
+    <p class="cuenta">¿Ya tiene una cuenta? <a href="#" id="sign-in">Iniciar sesión</a></p>
+</form>
+>>>>>>> main
             </div>
 
             <div class="banner">
