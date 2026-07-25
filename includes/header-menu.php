@@ -8,12 +8,11 @@
         <a href="index.php#inicio" class="header-brand">
 
             <img
-                src="img/Logo/Isotipo.jpg"
-                alt="Isotipo de Aroma a Café"
+                src="img/Logo/logotipo.jpeg"
+                alt="logotipo de Aroma a Café"
                 class="header-isotipo"
             >
 
-            <span class="header-logo-text">Aroma a Café</span>
 
         </a>
 

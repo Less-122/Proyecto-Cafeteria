@@ -1,15 +1,14 @@
+
 <?php
-$host = 'localhost';
-$db   = 'aroma_cafe';
-$user = 'root';
-$pass = '';
+$host = "localhost";
+$db   = "cafe_db";
+$user = "root"; 
+$pass = "";    
 
 try {
-    $pdo = new PDO("mysql:host=$host;dbname=$db;charset=utf8mb4", $user, $pass, [
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
-    ]);
+    $conexion = new PDO("mysql:host=$host;dbname=$db;charset=utf8", $user, $pass);
+    $conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $e) {
-    die("Error de conexión a la base de datos: " . $e->getMessage());
+    die("Error en la conexión a la BD: " . $e->getMessage());
 }
 ?>

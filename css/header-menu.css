@@ -17,7 +17,7 @@
 /* Contenedor interno */
 .header-container {
     width: min(1200px, 92%);
-    min-height: 85px;
+    min-height: 75px;
     margin: 0 auto;
     padding: 10px 0;
 
@@ -33,7 +33,6 @@
 .header-brand {
     display: flex;
     align-items: center;
-    gap: 10px;
     flex-shrink: 0;
 
     color: #ffffff;
@@ -41,18 +40,11 @@
 }
 
 .header-isotipo {
-    width: 58px;
-    height: 58px;
+    width: 150px;
+    height: auto;
+    object-fit: contain;
+    display: block;
 
-    object-fit: cover;
-    border-radius: 50%;
-}
-
-.header-logo-text {
-    color: #ffffff;
-    font-family: "Roboto";
-    font-size: 27px;
-    white-space: nowrap;
 }
 
 /* Navegación */
@@ -81,7 +73,7 @@
     position: relative;
 
     color: #ffffff;
-    font-family: "PT Sans", sans-serif;
+    font-family: "Roboto Slab", serif;
     font-size: 15px;
     font-weight: 400;
     text-decoration: none;
