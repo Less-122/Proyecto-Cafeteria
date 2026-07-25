@@ -14,8 +14,7 @@
                     <ion-icon name="person-outline" class="header_logo"></ion-icon>
                 </div>
                 <div class="admin_info">
-                    <span class="admin_name">Nombre Apellido</span>
-                    <span class="admin_role">Administrador</span>
+                    <span class="admin_name">Administrador</span>
                 </div>
             </div>
         </div>
