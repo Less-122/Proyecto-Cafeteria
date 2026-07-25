@@ -1,4 +1,23 @@
-<?php include 'seguridad_admin.php'; ?>
+<?php 
+include 'seguridad_admin.php';
+require_once '../usuario_panel/conexion.php';
+
+$sql = "
+    SELECT
+        p.*,
+        c.nombre AS categoria
+    FROM productos p
+    INNER JOIN categorias c
+        ON p.id_categoria_fk = c.id_categoria
+";
+
+$stmt = $conexion->prepare($sql);
+$stmt->execute();
+
+$productos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -53,39 +72,19 @@
                 <th>img_url</th>
                 <th>Promoción</th>
             </tr>
+            <?php foreach($productos as $p): ?>
             <tr>
-                <td><input type="checkbox" name="seleccion" value="1"></td>
-                <td>1</td>
-                <td>Café Mocha</td>
-                <td>Perfecta armonía entre espresso, salsa de chocolate oscuro y leche vaporizada.</td>
-                <td>Bebidas calientes</td>
-                <td>20</td>
-                <td>$59</td>
-                <td>imp.jpg</td>
+                <td><input type="checkbox" name="seleccion" value="<?=$p['id_producto'] ?>"></td>
+                <td><?php echo $p['id_producto']; ?></td>
+                <td><?php echo $p['nombre']; ?></td>
+                <td><?php echo $p['descripcion']; ?></td>
+                <td><?php echo $p['id_categoria_fk']; ?></td>
+                <td><?php echo $p['stock']; ?></td>
+                <td><?php echo $p['precio']; ?></td>
+                <td><?php echo $p['imagen_url']; ?></td>
                 <td><input type="checkbox" name="seleccion" value="prom"></td>
             </tr>
-            <tr>
-                <td><input type="checkbox" name="seleccion" value="2"></td>
-                <td>2</td>
-                <td>Pastel de Zanahoria</td>
-                <td>Bizcocho especiado con nuez y zanahoria rallada, cubierto de betún cremoso de queso de cabra.</td>
-                <td>Postres</td>
-                <td>20</td>
-                <td>$78</td>
-                <td>imp.jpg</td>
-                <td><input type="checkbox" name="seleccion" value="prom"></td>
-            </tr>
-            <tr>
-                <td><input type="checkbox" name="seleccion" value="3"></td>
-                <td>3</td>
-                <td>Iced Americano</td>
-                <td>Doble shot de espresso vertido sobre agua fría y hielos, refrescante e intenso.</td>
-                <td>Bebidas frías</td>
-                <td>20</td>
-                <td>$55</td>
-                <td>img.jpg</td>
-                <td><input type="checkbox" name="seleccion" value="prom"></td>
-            </tr>
+            <?php endforeach; ?>
         </table>
     </main>
 
@@ -94,7 +93,7 @@
   <div class="modal-content">
     <span class="close" data-modal="modalAdd">&times;</span>
     <h2>Añadir nuevo producto</h2>
-    <form id="formAdd" action="#" method="POST">
+    <form id="formAdd" action="crud/productos/crear.php" method="POST" enctype="multipart/form-data">
       <label for="nombre">Nombre:</label>
       <input type="text" id="nombre" name="nombre" required>
 
@@ -103,18 +102,20 @@
 
       <label for="categoria">Categoría:</label>
       <select id="categoria" name="categoria" required class="modal-content">
-                    <option value="Bebida caliente">Bebida caliente</option>
-                    <option value="Bebida fría">Bebida fría</option>
-                    <option value="Postre">Postre</option>
+                    <option value="1">bebidas calientes</option>
+                    <option value="2">bebidas frías</option>
+                    <option value="3">postres</option>
       </select>
 
+      <label for="stock">Stock:</label>
+      <input type="number" id="stock" name="stock" min="0" step="1" required>
+
       <label for="precio">Precio:</label>
-      <input type="number" id="precio" name="precio" step="1">
+      <input type="number" id="precio" name="precio" step="1" min="0" required>
 
-      <label for="img-url">URL de imagen</label>
-      <input type="text" id="img-url" name="img-url">
+      <label for="imagen">Imagen del producto</label>
+      <input type="file" id="imagen" accept="image/*" name="imagen" required>
 
-      <label for="promocion">Promoción</label>
       <input type="checkbox" id="promocion" name="promocion">
 
       <button type="submit">Guardar</button>
@@ -126,7 +127,7 @@
         <div class="modal-content">
             <span class="close" data-modal="modalEdit">&times;</span>
             <h2>Modificar producto</h2>
-            <form id="formEdit" action="#" method="POST">
+            <form id="formEdit" action="modificar_producto.php" method="POST" enctype="multipart/form-data">
                 <label for="editNombre">Nombre:</label>
                 <input type="text" id="editNombre" name="nombre" required>
 
@@ -143,8 +144,8 @@
                 <label for="editPrecio">Precio:</label>
                 <input type="number" id="editPrecio" name="precio" step="1">
 
-                <label for="editImg-url">URL de imagen</label>
-                <input type="text" id="editImg-url" name="img-url">
+                <label for="editImagen">Imagen del producto</label>
+                <input type="file" id="editImagen" accept="image/*" name="imagen">
 
                 <label for="editPromocion">Promoción</label>
                 <input type="checkbox" id="editPromocion" name="promocion">
