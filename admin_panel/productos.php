@@ -6,11 +6,8 @@
     
     <title>Productos</title>
     <link rel="stylesheet" href="../css/admin.css">
-<<<<<<< HEAD
     
-=======
     <link rel="icon" type="image/jpeg" href="../img/Logo/isotipoAzul.jpeg">
->>>>>>> main
 </head>
 <body>
     <div id="header-placeholder" class="header-placeholder"></div>
