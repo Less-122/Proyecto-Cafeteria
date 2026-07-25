@@ -32,7 +32,7 @@ if (heroImage) {
             indiceHero = 0;
         }
         heroImage.src = imagenesHero[indiceHero];
-    }, 4000);
+    }, 1000);
 }
 
 // Listener de clics global para agregar productos al carrito

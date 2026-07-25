@@ -1,5 +1,13 @@
+<?php
+include '../conexion.php';
+
+// Consulta para obtener todos los usuarios registrados
+$stmt = $conexion->prepare("SELECT id_usuario, nombre, apellido, telefono, password FROM usuarios");
+$stmt->execute();
+$usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
+?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,69 +18,68 @@
     <div id="header-placeholder" class="header-placeholder"></div>
 
     <div id="menu-placeholder" class="menu-placeholder"></div>
+
     <main class="main_container">
-        <h1 class="titulo">Gestión de Usuarios</h1>
-    <section>
-        <div class="filtros_container">
-            <div class="search_box">
-                <ion-icon name="search-outline" class="icono_filtro"></ion-icon>
-                <input type="text" id="searchInput" placeholder="Buscar usuarios">
+        <h1 class="titulo" id="titulo-seccion">Gestión de Usuarios</h1>
+        <section>
+            <div class="filtros_container">
+                <div class="search_box">
+                    <ion-icon name="search-outline" class="icono_filtro"></ion-icon>
+                    <input type="text" id="searchInput" placeholder="Buscar usuarios">
+                </div>
             </div>
-        </div>
-       
-        <div>
-            <button data-modal="modalEditUsuario" class="btn-edit">Modificar</button>
-            <button data-modal="modalDeleteUsuario" class="btn-delete">Borrar</button>
-        </div>
-    </section>
+            
+            <div>
+                <button data-modal="modalEditUsuario" class="btn-edit">Modificar</button>
+                <button data-modal="modalDeleteUsuario" class="btn-delete">Borrar</button>
+            </div>
+        </section>
+
         <table>
-            <tr>
-                <th></th>
-                <th>ID</th>
-                <th>Nombre</th>
-                <th>Apellido</th>
-                <th>Correo</th>
-                <th>Contraseña</th>
-                <th>Fecha registro</th>
-            </tr>
-            <tr>
-                <td><input type="checkbox" name="seleccion" value="1"></td>
-                <td>100</td>
-                <td>Juan</td>
-                <td>Dominguez</td>
-                <td>juan123@gmail.com</td>
-                <td>contra123</td>
-                <td>08-07-2026</td>
-            </tr>
-            <tr>
-                <td><input type="checkbox" name="seleccion" value="1"></td>
-                <td>101</td>
-                <td>Pepe</td>
-                <td>Morales</td>
-                <td>pepe123@gmail.com</td>
-                <td>contra123</td>
-                <td>08-07-2026</td>
-            </tr>
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Apellido</th>
+                    <th>Teléfono</th>
+                    <th>Contraseña</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach($usuarios as $u): ?>
+                <tr>
+                    <td><input type="checkbox" name="seleccion" value="<?= $u['id_usuario'] ?>"></td>
+                    <td><?= $u['id_usuario'] ?></td>
+                    <td><?= htmlspecialchars($u['nombre']) ?></td>
+                    <td><?= htmlspecialchars($u['apellido']) ?></td>
+                    <td><?= htmlspecialchars($u['telefono']) ?></td>
+                    <td>••••••••</td> <!-- Enmascarado por seguridad -->
+                </tr>
+                <?php endforeach; ?>
+            </tbody>
         </table>
     </main>
+
     <!-- Modal modificar usuario -->
     <div id="modalEditUsuario" class="modal">
         <div class="modal-content">
             <span class="close" data-modal="modalEditUsuario">&times;</span>
             <h2>Modificar Usuario</h2>
-            <form id="formEditUsuario" action="#" method="POST">
-                <input type="hidden" id="editUserId">
+            <form id="formEditUsuario">
+                <input type="hidden" id="editUserId" name="id_usuario">
+
                 <label for="editUserNombre">Nombre:</label>
                 <input type="text" id="editUserNombre" name="nombre" required>
 
                 <label for="editUserApellido">Apellido:</label>
                 <input type="text" id="editUserApellido" name="apellido" required>
 
-                <label for="editUserCorreo">Correo:</label>
-                <input type="email" id="editUserCorreo" name="correo" required>
+                <label for="editUserTelefono">Teléfono:</label>
+                <input type="text" id="editUserTelefono" name="telefono" required>
 
                 <label for="editUserContra">Contraseña:</label>
-                <input type="text" id="editUserContra" name="contra" required>
+                <input type="password" id="editUserContra" name="password" placeholder="Nueva contraseña (opcional)">
 
                 <button type="submit">Actualizar</button>
             </form>
@@ -95,11 +102,11 @@
         </div>
     </div>
 
-    <!-- Overlay de confirmación si no existe en este HTML -->
+    <!-- Overlay de confirmación -->
     <div id="confirmation-overlay" class="overlay" style="display:none;">
         <div class="modal-confirm">
             <h3>LISTO</h3>
-            <p><br>Los cambios se han guardado correctamente.</br></p>
+            <p><br>Los cambios se han guardado correctamente.</p>
         </div>
     </div>
 

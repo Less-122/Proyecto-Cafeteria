@@ -8,7 +8,7 @@
     margin-top: 50px;
     padding-top: 40px;
     color: #ffffff;
-    font-family: "PT Sans", sans-serif;
+    font-family: "Roboto Slab", serif;
 }
 
 /* Contenedor principal del footer */
@@ -139,7 +139,7 @@
 
 .footer-copy {
     width: 100%;
-    margin: 30px;
+    margin: 30px 0 0;
     padding: 18px 20px;
 
     border-top: 1px solid rgba(255, 255, 255, 0.2);
