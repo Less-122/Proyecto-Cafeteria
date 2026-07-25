@@ -1,9 +1,8 @@
-// 1. Actualizar título dinámicamente
+// Actualizar título dinámicamente
 function actualizarTitulo() {
     const tituloElemento = document.getElementById('titulo-seccion');
     const nombreArchivo = window.location.pathname.split('/').pop();
-    
-    // CORREGIDO: Las claves ahora son .php para coincidir con tus archivos reales
+
     const titulos = {
         'productos.php': 'Gestión de Productos',
         'usuarios.php': 'Gestión de Usuarios',
@@ -11,18 +10,16 @@ function actualizarTitulo() {
         'categorias.php': 'Gestión de Categorías',
         'panel_barista.php': 'Panel de Barista'
     };
-
     const nuevoTitulo = titulos[nombreArchivo] || 'Panel de Administración';
-    
+
     if (tituloElemento) {
         tituloElemento.textContent = nuevoTitulo;
     }
     document.title = nuevoTitulo + ' | Panel Admin';
 }
 
-// 2. Carga dinámica de componentes (Header y Menú) con RUTAS Y EXTENSIONES CORREGIDAS
+// Carga dinámica de componentes (Header y Menú)
 document.addEventListener("DOMContentLoaded", () => {
-    // CORREGIDO: Busca exactamente en la misma carpeta y con extensión .php
     const rutaHeader = 'admin_header.php'; 
     const rutaMenu = 'admin_menu.php'; 
 
@@ -49,7 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 });
 
-// 3. Funciones de UI y Modales
+// Funciones de UI y Modales
 function mostrarAvisoExito() {
     const overlay = document.getElementById('confirmation-overlay');
     if (overlay) {
@@ -61,6 +58,7 @@ function mostrarAvisoExito() {
     }
 }
 
+// Eventos global para clics en la interfaz (Abrir y cerrar modales, botones)
 document.addEventListener('click', function(e) {
     const btnAdd = e.target.closest('.btn-add');
     const btnEdit = e.target.closest('.btn-edit');
@@ -74,29 +72,28 @@ document.addEventListener('click', function(e) {
         if (modal) modal.style.display = 'block';
     }
 
-    // Abrir Modal Modificar y cargar datos
+    // Abrir Modal Modificar y cargar datos a los inputs
     if (btnEdit) {
         const checkbox = document.querySelector('input[name="seleccion"]:checked');
         if (!checkbox) {
             alert("Por favor, selecciona un elemento para modificar.");
             return; 
         }
-
         const fila = checkbox.closest('tr');
         const modalId = btnEdit.getAttribute('data-modal');
 
-        // Lógica de llenado según la sección
         if (document.getElementById('editCatId')) {
             document.getElementById('editCatId').value = fila.cells[1].innerText;
             document.getElementById('editCatNombre').value = fila.cells[2].innerText;
             document.getElementById('editCatDescripcion').value = fila.cells[3].innerText;
         } 
-        else if (document.getElementById('editUserNombre')) {
+        else if (document.getElementById('editUserId')) {
             document.getElementById('editUserId').value = fila.cells[1].innerText;
             document.getElementById('editUserNombre').value = fila.cells[2].innerText;
             document.getElementById('editUserApellido').value = fila.cells[3].innerText;
-            document.getElementById('editUserCorreo').value = fila.cells[4].innerText;
-            document.getElementById('editUserContra').value = fila.cells[5].innerText;
+            document.getElementById('editUserTelefono').value = fila.cells[4].innerText;
+            const inputContra = document.getElementById('editUserContra') || document.getElementById('editUserPassword');
+            if (inputContra) inputContra.value = ''; // Limpiar campo contraseña por seguridad
         }
         else if (document.getElementById('editNombre')) {
             document.getElementById('editNombre').value = fila.cells[2].innerText;
@@ -113,13 +110,13 @@ document.addEventListener('click', function(e) {
         if (modal) modal.style.display = 'block';
     }
 
-    // Abrir Modal Eliminar
+    // Abrir Modal Eliminar y pasar ID
     if (btnDelete) {
         const checkbox = document.querySelector('input[name="seleccion"]:checked');
         if (!checkbox) {
             alert("Por favor, selecciona el elemento que deseas eliminar.");
             return; 
-        }
+        } 
         
         const fila = checkbox.closest('tr');
         const id = fila.cells[1].innerText;
@@ -135,9 +132,31 @@ document.addEventListener('click', function(e) {
         if (modal) modal.style.display = 'block';
     }
 
-    // Confirmar eliminación
+    // Confirmar eliminación de usuario vía Fetch
     if (e.target.id === 'btn-confirmar-eliminar') {
-        mostrarAvisoExito();
+        const deleteUserId = document.getElementById('deleteUserId')?.value;
+        if (!deleteUserId) {
+            alert("No se ha seleccionado ningún usuario para eliminar.");
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('id_usuario', deleteUserId);
+
+        fetch('eliminar_usuario.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                mostrarAvisoExito();
+                setTimeout(() => location.reload(), 1500);
+            } else {
+                alert('Error al eliminar: ' + data.message);
+            }
+        })
+        .catch(err => console.error('Error al procesar la eliminación:', err));
     }
 
     // Cerrar Modales
@@ -154,35 +173,65 @@ document.addEventListener('click', function(e) {
     }
 });
 
-// Cerrar modal al hacer clic afuera
+// Cerrar modal al hacer clic en el fondo gris fuera del contenido
 window.addEventListener('click', function(event) {
     if (event.target.classList.contains('modal')) {
         event.target.style.display = 'none';
     }
 });
 
-// 4. Manejo de Formularios
+// Manejo de Envíos de Formulario (Submit)
 document.addEventListener('submit', function(e) {
-    e.preventDefault(); 
-    mostrarAvisoExito();
-    
-    const formAddCat = document.getElementById('formAddCategoria');
-    const formEditCat = document.getElementById('formEditCategoria');
-    const formAddProd = document.getElementById('formAdd');
-    const formEditProd = document.getElementById('formEdit');
     const formEditUser = document.getElementById('formEditUsuario');
-    
-    if (formAddCat) formAddCat.reset();
-    if (formEditCat) formEditCat.reset();
-    if (formAddProd) formAddProd.reset();
-    if (formEditProd) formEditProd.reset();
-    if (formEditUser) formEditUser.reset();
+    const formAddUser  = document.getElementById('formAgregarUsuario');
+
+    // Formulario: Modificar Usuario
+    if (e.target === formEditUser) {
+        e.preventDefault();
+        const formData = new FormData(formEditUser);
+
+        fetch('editar_usuario.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                mostrarAvisoExito();
+                setTimeout(() => location.reload(), 1500);
+            } else {
+                alert("Error al actualizar: " + data.message);
+            }
+        })
+        .catch(err => console.error("Error al editar usuario:", err));
+    }
+
+    // Formulario: Agregar Usuario
+    if (e.target === formAddUser) {
+        e.preventDefault();
+        const formData = new FormData(formAddUser);
+
+        fetch('agregar_usuario.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                mostrarAvisoExito();
+                setTimeout(() => location.reload(), 1500);
+            } else {
+                alert("Error al agregar: " + data.message);
+            }
+        })
+        .catch(err => console.error("Error al agregar usuario:", err));
+    }
 });
 
 // 5. Motor de Búsqueda
 document.addEventListener('DOMContentLoaded', () => {
     const searchInput = document.getElementById('searchInput');
-    
+
     if (searchInput) {
         searchInput.addEventListener('input', function() {
             const textoBusqueda = this.value.toLowerCase();
@@ -190,7 +239,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             filas.forEach((fila, indice) => {
                 if (indice === 0) return; 
-           
+
                 const columnaID_Pedidos = fila.cells[0] ? fila.cells[0].innerText.toLowerCase() : '';
                 const columnaID_Productos = fila.cells[1] ? fila.cells[1].innerText.toLowerCase() : '';
                 const columnaNombre_Pedidos = fila.cells[1] ? fila.cells[1].innerText.toLowerCase() : '';
@@ -215,7 +264,7 @@ document.addEventListener('DOMContentLoaded', () => {
 document.addEventListener('DOMContentLoaded', function() {
     const selectorCategoria = document.querySelector('#selector');
     const tabla = document.querySelector('table');
-    
+
     if (!selectorCategoria || !tabla) return; 
 
     const mapaCategorias = {
@@ -227,16 +276,14 @@ document.addEventListener('DOMContentLoaded', function() {
     function filtrarPorCategoria() {
         const valorSeleccionado = selectorCategoria.value;
         const categoriaSeleccionada = mapaCategorias[valorSeleccionado] || '';
-
         const filas = tabla.querySelectorAll('tr');
+
         for (let i = 1; i < filas.length; i++) {
             const fila = filas[i];
             const celdas = fila.querySelectorAll('td');
             if (celdas.length === 0) continue;
-
             const celdaCategoria = celdas[4];
             if (!celdaCategoria) continue; 
-
             const textoCategoria = celdaCategoria.textContent.trim();
 
             if (categoriaSeleccionada === '' || textoCategoria === categoriaSeleccionada) {
