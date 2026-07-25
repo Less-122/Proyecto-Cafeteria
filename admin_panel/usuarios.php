@@ -1,5 +1,5 @@
 <?php
-include '../conexion.php';
+include '../config/conexion.php';
 include 'seguridad_admin.php';
 // Consulta para obtener todos los usuarios registrados
 $stmt = $conexion->prepare("SELECT id_usuario, nombre, apellido, telefono, password FROM usuarios");
