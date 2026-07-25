@@ -1,8 +1,8 @@
 <?php
 include '../conexion.php';
 
-// Consulta para obtener todos los usuarios registrados
-$stmt = $conexion->prepare("SELECT id_usuario, nombre, apellido, telefono, password FROM usuarios");
+// 1. Agregamos fecha_registro a la consulta SQL
+$stmt = $conexion->prepare("SELECT id_usuario, nombre, apellido, telefono, password, fecha_registro FROM usuarios");
 $stmt->execute();
 $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
@@ -45,6 +45,7 @@ $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <th>Apellido</th>
                     <th>Teléfono</th>
                     <th>Contraseña</th>
+                    <th>Fecha de Registro</th> <!-- Nueva columna en el encabezado -->
                 </tr>
             </thead>
             <tbody>
@@ -56,6 +57,10 @@ $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <td><?= htmlspecialchars($u['apellido']) ?></td>
                     <td><?= htmlspecialchars($u['telefono']) ?></td>
                     <td>••••••••</td> <!-- Enmascarado por seguridad -->
+                    <!-- Nueva celda para la fecha y hora -->
+                    <td>
+                        <?= !empty($u['fecha_registro']) ? date('d/m/Y H:i', strtotime($u['fecha_registro'])) : 'N/A' ?>
+                    </td>
                 </tr>
                 <?php endforeach; ?>
             </tbody>
