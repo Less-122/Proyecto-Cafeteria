@@ -1,5 +1,5 @@
 <?php
-include 'seguridad_admin.php.php';
+include 'seguridad_admin.php';
 ?>
 <!DOCTYPE html>
 <html lang="es">
