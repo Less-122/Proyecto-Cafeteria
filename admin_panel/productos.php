@@ -45,7 +45,7 @@ $productos = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <div class="select_box">
                 <ion-icon name="pricetag-outline" class="icono_filtro"></ion-icon>
                 <select name="seleccion" id="selector" class="custom_select">
-                    <option value="" disabled selected>Todas las categorías</option>
+                    <option value="" selected>Todas las categorías</option>
                     <option value="Bebidas calientes">Bebidas calientes</option>
                     <option value="Bebidas frias">Bebidas frías</option>
                     <option value="Postres">Postres</option>
@@ -71,6 +71,8 @@ $productos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <th>Precio</th>
                 <th>img_url</th>
                 <th>Promoción</th>
+                <th>Etiqueta de promoción</th>
+                <th>Descuento en $</th>
             </tr>
             <?php foreach($productos as $p): ?>
             <tr>
@@ -83,6 +85,8 @@ $productos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <td><?php echo $p['precio']; ?></td>
                 <td><?php echo $p['imagen_url']; ?></td>
                 <td><input type="checkbox" name="seleccion" value="prom"></td>
+                <td></td>
+                <td></td>
             </tr>
             <?php endforeach; ?>
         </table>
