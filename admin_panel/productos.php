@@ -74,7 +74,7 @@ $productos = $stmt->fetchAll(PDO::FETCH_ASSOC);
             </tr>
             <?php foreach($productos as $p): ?>
             <tr>
-                <td><input type="checkbox" name="seleccion" value="<?=$p['id_producto'] ?>"></td>
+                <td><input type="checkbox" class="producto-check" name="seleccion" value="<?=$p['id_producto'] ?>"></td>
                 <td><?php echo $p['id_producto']; ?></td>
                 <td><?php echo $p['nombre']; ?></td>
                 <td><?php echo $p['descripcion']; ?></td>
