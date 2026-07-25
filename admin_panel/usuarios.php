@@ -1,8 +1,9 @@
 <?php
 include '../config/conexion.php';
 include 'seguridad_admin.php';
-// Consulta para obtener todos los usuarios registrados
-$stmt = $conexion->prepare("SELECT id_usuario, nombre, apellido, telefono, password FROM usuarios");
+
+// Consulta para obtener todos los usuarios registrados (incluyendo la fecha de registro)
+$stmt = $conexion->prepare("SELECT id_usuario, nombre, apellido, telefono, password, fecha_registro FROM usuarios");
 $stmt->execute();
 $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -125,4 +126,4 @@ $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <script type="module" src="https://unpkg.com/ionicons@8.0.13/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@8.0.13/dist/ionicons/ionicons.js"></script>
 </body>
-</html> 
+</html>
