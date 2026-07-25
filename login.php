@@ -16,48 +16,6 @@
     <?php include("includes/header-menu.php"); ?>
     
     <main class="login-contenido">
-<<<<<<< HEAD
-        <div class="container-login">
-            <div class="form-container">
-                <div class="form" id="form">
-                    
-                    <!-- Formulario de Iniciar Sesión (Apunta a php/login_be.php o donde tengas el script de login) -->
-                    <form class="login" action="php/login_be.php" method="POST">
-                        <h1 class="txt-titulo">Bienvenid@</h1>
-                        <div class="input">
-                            <input type="tel" name="telefono" id="login_telefono" placeholder="Ingrese su numero" maxlength="10" required>
-                        </div>
-                        <div class="input">
-                            <input type="password" name="password" id="login_password" placeholder="Ingrese su contraseña" required>
-                        </div>
-                        <div class="buttons">
-                            <button type="submit" id="btnIniciarSesion">Iniciar sesión</button>
-                        </div>
-                        <p class="cuenta">¿No tiene una cuenta? <a href="#" id="sign-up">Crear cuenta</a></p>
-                    </form>
-
-                    <!-- Formulario de Registro (Ruta corregida hacia usuario_panel/registro_be.php) -->
-                    <form class="registro" action="usuario_panel/registro_be.php" method="POST">
-                        <h2 class="txt-titulo">Crear cuenta</h2>
-                        <p>Usa tu numero de telefono para registrarte</p>
-                        <div class="input">
-                            <input type="text" name="nombre" id="reg_nombre" placeholder="Ingrese su nombre" required>
-                            <input type="text" name="apellido" id="reg_apellido" placeholder="Ingrese su apellido" required>
-                        </div>
-                        <div class="input">
-                            <input type="tel" name="telefono" id="reg_telefono" placeholder="Ingrese su numero" maxlength="10" required>
-                        </div>
-                        <div class="input">
-                            <input type="password" name="password" id="reg_password" placeholder="Ingrese su contraseña" required>
-                        </div>
-                        <div class="buttons">
-                            <button type="submit">Registrar</button>
-                        </div>
-                        <p class="cuenta">¿Ya tiene una cuenta? <a href="#" id="sign-in">Iniciar sesión</a></p>
-                    </form>
-
-                </div>
-=======
     <div class = "container-login">
         <div class="form-container">
             <div class="form" id="form">
@@ -101,7 +59,6 @@
     </div>
     <p class="cuenta">¿Ya tiene una cuenta? <a href="#" id="sign-in">Iniciar sesión</a></p>
 </form>
->>>>>>> main
             </div>
 
             <div class="banner">

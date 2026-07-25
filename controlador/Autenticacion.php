@@ -9,37 +9,39 @@ $operacion = $_POST['operacion'] ?? '';
 switch ($operacion) {
     
     case 'registro':
-        $nombre = $_POST['nombre'];
-        $apellido = $_POST['apellido'];
-        $telefono = $_POST['telefono'];
-        $password_segura = password_hash($_POST['password'], PASSWORD_DEFAULT);
+        $nombre = $_POST['nombre'] ?? '';
+        $apellido = $_POST['apellido'] ?? '';
+        $telefono = $_POST['telefono'] ?? '';
+        $password_segura = password_hash($_POST['password'] ?? '', PASSWORD_DEFAULT);
 
-        // Preparamos la consulta para evitar inyecciones SQL
+        // Preparamos la consulta con PDO
         $stmt = $conexion->prepare("INSERT INTO usuarios (nombre, apellido, telefono, password) VALUES (?, ?, ?, ?)");
-        $stmt->bind_param("ssss", $nombre, $apellido, $telefono, $password_segura);
         
-        if ($stmt->execute()) {
+        // En PDO pasamos los valores como un array directamente al execute()
+        if ($stmt->execute([$nombre, $apellido, $telefono, $password_segura])) {
             header("Location: ../login.php?mensaje=registrado");
+            exit();
         } else {
             header("Location: ../login.php?error=registro");
+            exit();
         }
-        $stmt->close();
         break;
 
     case 'login':
-        $telefono = $_POST['telefono'];
-        $password = $_POST['password'];
+        $telefono = $_POST['telefono'] ?? '';
+        $password = $_POST['password'] ?? '';
 
-        // Buscamos al usuario por su teléfono
+        // Buscamos al usuario por su teléfono usando PDO
         $sql = "SELECT id_usuario, nombre, password FROM usuarios WHERE telefono = ?";
-        $stmt = $conexion -> prepare($sql);
-        $stmt->bind_param("s", $telefono);
-        $stmt->execute();
-        $resultado = $stmt->get_result();
+        $stmt = $conexion->prepare($sql);
+        $stmt->execute([$telefono]);
+        
+        // En PDO usamos fetch() en lugar de fetch_assoc()
+        $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if ($usuario = $resultado->fetch_assoc()) {
+        if ($usuario) {
             if (password_verify($password, $usuario['password'])) {
-                //variables de sesión
+                // Variables de sesión
                 $_SESSION['id_usuario'] = $usuario['id_usuario'];
                 $_SESSION['nombre'] = $usuario['nombre'];
             
@@ -47,15 +49,17 @@ switch ($operacion) {
                 exit();
             } else {
                 header("Location: ../login.php?error=credenciales");
+                exit();
             }
         } else {
             header("Location: ../login.php?error=credenciales");
+            exit();
         }
-        $stmt->close();
         break;
         
     default:
-        header("Location: login.php");
+        header("Location: ../login.php");
+        exit();
         break;
 }
 ?>
