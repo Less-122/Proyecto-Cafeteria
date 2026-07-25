@@ -42,7 +42,7 @@ switch ($operacion) {
                 //variables de sesión
                 $_SESSION['id_usuario'] = $usuario['id_usuario'];
                 $_SESSION['nombre'] = $usuario['nombre'];
-              
+            
                 header("Location: ../index.php");
                 exit();
             } else {
