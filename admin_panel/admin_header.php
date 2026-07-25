@@ -1,6 +1,6 @@
 <header class="header">
         <div class="header_menu">
-            <img src="../img/logoAzul.jpeg" alt="" class="header_logo">
+            <img src="../img/Logo/logoAzul.jpeg" alt="" class="header_logo">
         </div>
 
     

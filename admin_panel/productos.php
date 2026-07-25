@@ -3,9 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
     <title>Productos</title>
     <link rel="stylesheet" href="../css/admin.css">
+<<<<<<< HEAD
     
+=======
+    <link rel="icon" type="image/jpeg" href="../img/Logo/isotipoAzul.jpeg">
+>>>>>>> main
 </head>
 <body>
     <div id="header-placeholder" class="header-placeholder"></div>
@@ -46,6 +51,7 @@
                 <th>Nombre</th>
                 <th>Descripción</th>
                 <th>Categoría</th>
+                <th>Stock</th>
                 <th>Precio</th>
                 <th>img_url</th>
                 <th>Promoción</th>
@@ -56,6 +62,7 @@
                 <td>Café Mocha</td>
                 <td>Perfecta armonía entre espresso, salsa de chocolate oscuro y leche vaporizada.</td>
                 <td>Bebidas calientes</td>
+                <td>20</td>
                 <td>$59</td>
                 <td>imp.jpg</td>
                 <td><input type="checkbox" name="seleccion" value="prom"></td>
@@ -66,6 +73,7 @@
                 <td>Pastel de Zanahoria</td>
                 <td>Bizcocho especiado con nuez y zanahoria rallada, cubierto de betún cremoso de queso de cabra.</td>
                 <td>Postres</td>
+                <td>20</td>
                 <td>$78</td>
                 <td>imp.jpg</td>
                 <td><input type="checkbox" name="seleccion" value="prom"></td>
@@ -76,6 +84,7 @@
                 <td>Iced Americano</td>
                 <td>Doble shot de espresso vertido sobre agua fría y hielos, refrescante e intenso.</td>
                 <td>Bebidas frías</td>
+                <td>20</td>
                 <td>$55</td>
                 <td>img.jpg</td>
                 <td><input type="checkbox" name="seleccion" value="prom"></td>
