@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,10 +10,11 @@
     <title>Registro | Aroma a Café</title>
 
     <link rel="icon" type="image/jpeg" href="img/Logo/isotipo.jpg">
-
 </head>
+
 <body>
     <?php include("includes/header-menu.php"); ?>
+    
     <main class="login-contenido">
     <div class = "container-login">
         <div class="form-container">
@@ -60,16 +60,15 @@
     <p class="cuenta">¿Ya tiene una cuenta? <a href="#" id="sign-in">Iniciar sesión</a></p>
 </form>
             </div>
-        </div>
 
             <div class="banner">
                 <div class="logo_container">
-                    <img src="img/Logo/Imagotipo.png" alt="">
+                    <img src="img/Logo/Imagotipo.png" alt="Aroma a Café Logo">
                 </div>
             </div>
             
-    </div>
-</main>
+        </div>
+    </main>
   
     <script src="js/login.js"></script>
     <script src="js/menu.js"></script>

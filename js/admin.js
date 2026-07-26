@@ -119,7 +119,7 @@ document.addEventListener('click', function(e) {
         } 
         
         const fila = checkbox.closest('tr');
-        const id = fila.cells[1].innerText;
+        const id = fila.cells[1].innerText.trim();
 
         const deleteCatInput = document.getElementById('deleteCatId');
         if (deleteCatInput) deleteCatInput.value = id;
@@ -143,11 +143,25 @@ document.addEventListener('click', function(e) {
         const formData = new FormData();
         formData.append('id_usuario', deleteUserId);
 
-        fetch('eliminar_usuario.php', {
+        fetch('../usuario_panel/eliminar_usuario.php', {
             method: 'POST',
             body: formData
         })
-        .then(res => res.json())
+        .then(async res => {
+            const textoRespuesta = await res.text();
+            
+            // Si la respuesta es HTTP 404
+            if (res.status === 404) {
+                throw new Error("No se encontró el archivo 'eliminar_usuario.php'. Verifica su ubicación en la estructura de tu proyecto.");
+            }
+
+            try {
+                return JSON.parse(textoRespuesta);
+            } catch (err) {
+                // Si la respuesta no es un JSON válido, mostramos en pantalla el contenido que respondió Apache/PHP
+                throw new Error("El servidor no devolvió JSON válido. Respuesta recibida:\n\n" + textoRespuesta);
+            }
+        })
         .then(data => {
             if (data.success) {
                 mostrarAvisoExito();
@@ -156,7 +170,10 @@ document.addEventListener('click', function(e) {
                 alert('Error al eliminar: ' + data.message);
             }
         })
-        .catch(err => console.error('Error al procesar la eliminación:', err));
+        .catch(err => {
+            console.error('Error en la petición de eliminación:', err);
+            alert(err.message);
+        });
     }
 
     // Cerrar Modales
@@ -190,11 +207,24 @@ document.addEventListener('submit', function(e) {
         e.preventDefault();
         const formData = new FormData(formEditUser);
 
-        fetch('editar_usuario.php', {
+        // Si tu editar_usuario.php está en la raíz, cambia esta ruta a 'editar_usuario.php'
+        fetch('../usuario_panel/editar_usuario.php', {
             method: 'POST',
             body: formData
         })
-        .then(res => res.json())
+        .then(async res => {
+            const textoRespuesta = await res.text();
+
+            if (res.status === 404) {
+                throw new Error("No se encontró el archivo 'editar_usuario.php'. Verifica su ubicación.");
+            }
+
+            try {
+                return JSON.parse(textoRespuesta);
+            } catch (err) {
+                throw new Error("El servidor no devolvió un JSON válido. Respuesta recibida:\n\n" + textoRespuesta);
+            }
+        })
         .then(data => {
             if (data.success) {
                 mostrarAvisoExito();
@@ -203,10 +233,13 @@ document.addEventListener('submit', function(e) {
                 alert("Error al actualizar: " + data.message);
             }
         })
-        .catch(err => console.error("Error al editar usuario:", err));
+        .catch(err => {
+            console.error("Error al editar usuario:", err);
+            alert(err.message);
+        });
     }
 
-    // Formulario: Agregar Usuario
+    // Formulario: Agregar Usuario (se mantiene)
     if (e.target === formAddUser) {
         e.preventDefault();
         const formData = new FormData(formAddUser);
@@ -228,7 +261,7 @@ document.addEventListener('submit', function(e) {
     }
 });
 
-// 5. Motor de Búsqueda
+// Motor de Búsqueda
 document.addEventListener('DOMContentLoaded', () => {
     const searchInput = document.getElementById('searchInput');
 
@@ -260,7 +293,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// 6. Filtro por Categorías
+// Filtro por Categorías
 document.addEventListener('DOMContentLoaded', function() {
     const selectorCategoria = document.querySelector('#selector');
     const tabla = document.querySelector('table');
@@ -292,6 +325,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 fila.style.display = 'none';
             }
         }
+
+        
     }
 
     selectorCategoria.addEventListener('change', filtrarPorCategoria);

@@ -16,6 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_pedido'], $_POST['
     exit;
 }
 
+
 // 3. Obtener los pedidos separados por estado
 function obtenerPedidos($pdo, $estado) {
     $stmt = $pdo->prepare("SELECT * FROM pedidos WHERE estado = :estado ORDER BY fecha_creacion ASC");

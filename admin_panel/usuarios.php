@@ -1,8 +1,9 @@
 <?php
 include '../config/conexion.php';
 include 'seguridad_admin.php';
-// Consulta para obtener todos los usuarios registrados
-$stmt = $conexion->prepare("SELECT id_usuario, nombre, apellido, telefono, password FROM usuarios");
+
+// Consulta para obtener todos los usuarios registrados (incluyendo la fecha de registro)
+$stmt = $conexion->prepare("SELECT id_usuario, nombre, apellido, telefono, password, fecha_registro FROM usuarios");
 $stmt->execute();
 $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -12,12 +13,12 @@ $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Usuarios</title>
+    <title>Usuarios | Admin</title>
     <link rel="stylesheet" href="../css/admin.css">
 </head>
 <body>
+    
     <div id="header-placeholder" class="header-placeholder"></div>
-
     <div id="menu-placeholder" class="menu-placeholder"></div>
 
     <main class="main_container">
@@ -45,19 +46,29 @@ $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <th>Apellido</th>
                     <th>Teléfono</th>
                     <th>Contraseña</th>
+                    <th>Fecha de Registro</th>
                 </tr>
             </thead>
             <tbody>
-                <?php foreach($usuarios as $u): ?>
-                <tr>
-                    <td><input type="checkbox" name="seleccion" value="<?= $u['id_usuario'] ?>"></td>
-                    <td><?= $u['id_usuario'] ?></td>
-                    <td><?= htmlspecialchars($u['nombre']) ?></td>
-                    <td><?= htmlspecialchars($u['apellido']) ?></td>
-                    <td><?= htmlspecialchars($u['telefono']) ?></td>
-                    <td>••••••••</td> <!-- Enmascarado por seguridad -->
-                </tr>
-                <?php endforeach; ?>
+                <?php if (empty($usuarios)): ?>
+                    <tr>
+                        <td colspan="7" style="text-align: center;">No hay usuarios registrados.</td>
+                    </tr>
+                <?php else: ?>
+                    <?php foreach($usuarios as $u): ?>
+                    <tr>
+                        <td><input type="checkbox" name="seleccion" value="<?= htmlspecialchars($u['id_usuario']) ?>"></td>
+                        <td><?= htmlspecialchars($u['id_usuario']) ?></td>
+                        <td><?= htmlspecialchars($u['nombre']) ?></td>
+                        <td><?= htmlspecialchars($u['apellido']) ?></td>
+                        <td><?= htmlspecialchars($u['telefono']) ?></td>
+                        <td>••••••••</td>
+                        <td>
+                            <?= !empty($u['fecha_registro']) ? date('d/m/Y H:i', strtotime($u['fecha_registro'])) : 'N/A' ?>
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
+                <?php endif; ?>
             </tbody>
         </table>
     </main>

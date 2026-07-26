@@ -67,7 +67,7 @@ function crearProducto(mysqli $conexion): void
 
 
     /* Procesar imagen */
-    $imagenUrl = procesarImagen();
+    $imagenUrl = procesarImagen($idCategoria);
 
 
     /* Insertar producto */
@@ -242,7 +242,7 @@ function modificarProducto(mysqli $conexion): void
         $_FILES['imagen']['error'] === UPLOAD_ERR_OK
     ) {
 
-        $imagenUrl = procesarImagen();
+        $imagenUrl = procesarImagen($idCategoria);
 
         $hayNuevaImagen = true;
     }
@@ -508,26 +508,17 @@ function validarProducto(
    PROCESAR IMAGEN
 ===================================================== */
 
-function procesarImagen(): string
+function procesarImagen(int $idCategoria): string
 {
     if (
         !isset($_FILES['imagen']) ||
-        $_FILES['imagen']['error']
-            !== UPLOAD_ERR_OK
+        $_FILES['imagen']['error'] !== UPLOAD_ERR_OK
     ) {
-
-        die(
-            'Debes seleccionar una imagen válida.'
-        );
+        die('Debes seleccionar una imagen válida.');
     }
 
-
-    $archivoTemporal =
-        $_FILES['imagen']['tmp_name'];
-
-    $nombreOriginal =
-        $_FILES['imagen']['name'];
-
+    $archivoTemporal = $_FILES['imagen']['tmp_name'];
+    $nombreOriginal = $_FILES['imagen']['name'];
 
     $extension = strtolower(
         pathinfo(
@@ -536,14 +527,12 @@ function procesarImagen(): string
         )
     );
 
-
     $extensionesPermitidas = [
         'jpg',
         'jpeg',
         'png',
         'webp'
     ];
-
 
     if (
         !in_array(
@@ -552,26 +541,48 @@ function procesarImagen(): string
             true
         )
     ) {
-
-        die(
-            'El formato de imagen no está permitido.'
-        );
+        die('El formato de imagen no está permitido.');
     }
 
 
+    /* ================================================
+       DETERMINAR CARPETA SEGÚN CATEGORÍA
+    ================================================= */
+
+    switch ($idCategoria) {
+
+        case 1:
+            $carpetaCategoria = 'Bebidas-calientes';
+            break;
+
+        case 2:
+            $carpetaCategoria = 'Bebidas-frias';
+            break;
+
+        case 3:
+            $carpetaCategoria = 'Postres';
+            break;
+
+        default:
+            die('Categoría no válida.');
+    }
+
+
+    /* Crear nombre único */
     $nombreImagen =
-        uniqid(
-            'producto_',
-            true
-        )
+        uniqid('producto_', true)
         . '.'
         . $extension;
 
 
+    /* Carpeta física */
     $carpetaDestino =
-        '../img/productos/';
+        '../img/productos/'
+        . $carpetaCategoria
+        . '/';
 
 
+    /* Crear carpeta si no existe */
     if (!is_dir($carpetaDestino)) {
 
         mkdir(
@@ -587,20 +598,24 @@ function procesarImagen(): string
         . $nombreImagen;
 
 
+    /* Guardar archivo */
     if (
         !move_uploaded_file(
             $archivoTemporal,
             $rutaDestino
         )
     ) {
-
-        die(
-            'No se pudo guardar la imagen.'
-        );
+        die('No se pudo guardar la imagen.');
     }
 
 
-    return $nombreImagen;
+    /*
+     * Esto es lo que guardamos en MySQL.
+     *
+     * Ejemplo:
+     * Bebidas-calientes/producto_123.jpeg
+     */
+    return $carpetaCategoria . '/' . $nombreImagen;
 }
 
 
@@ -615,15 +630,10 @@ function eliminarImagenAnterior(
     if (empty($imagen)) {
         return;
     }
-
-
     $ruta =
         '../img/productos/'
         . $imagen;
-
-
     if (is_file($ruta)) {
-
         unlink($ruta);
     }
 }
