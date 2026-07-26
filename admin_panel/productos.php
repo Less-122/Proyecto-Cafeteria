@@ -16,7 +16,6 @@ $sql = "
 $stmt = $conexion->prepare($sql);
 $stmt->execute();
 
-// Corrección para PDO:
 $productos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 ?>
@@ -28,13 +27,15 @@ $productos = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Productos</title>
-    <link rel="stylesheet" href="../css/admin.css">
-    <link rel="icon" type="image/jpeg" href="../img/Logo/isotipoAzul.jpeg">
+    <!-- Rutas absolutas para los assets -->
+    <link rel="stylesheet" href="/Proyecto-Cafeteria/css/admin.css">
+    <link rel="icon" type="image/jpeg" href="/Proyecto-Cafeteria/img/Logo/isotipoAzul.jpeg">
 </head>
 
 <body>
-    <div id="header-placeholder" class="header-placeholder"></div>
-    <div id="menu-placeholder" class="menu-placeholder"></div>
+    <!-- Inserción directa con PHP, eliminando los placeholders de JS -->
+    <?php include 'admin_header.php'; ?>
+    <?php include 'admin_menu.php'; ?>
 
     <main class="main_container">
 
@@ -116,7 +117,8 @@ $productos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <td>$<?= number_format((float) $p['precio'], 2) ?></td>
                             <td>
                                 <?php if (!empty($p['imagen_url'])): ?>
-                                    <img src="../img/productos/<?= htmlspecialchars($p['imagen_url'], ENT_QUOTES, 'UTF-8') ?>" alt="<?= htmlspecialchars($p['nombre'], ENT_QUOTES, 'UTF-8') ?>" width="70">
+                                    <!-- Ruta absoluta corregida para la imagen -->
+                                    <img src="/Proyecto-Cafeteria/img/productos/<?= htmlspecialchars($p['imagen_url'], ENT_QUOTES, 'UTF-8') ?>" alt="<?= htmlspecialchars($p['nombre'], ENT_QUOTES, 'UTF-8') ?>" width="70">
                                 <?php else: ?>
                                     Sin imagen
                                 <?php endif; ?>
@@ -145,7 +147,8 @@ $productos = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <div class="modal-content">
             <span class="close" data-modal="modalAdd">&times;</span>
             <h2>Añadir nuevo producto</h2>
-            <form id="formAdd" action="../controlador/productos_controlador.php" method="POST" enctype="multipart/form-data">
+            <!-- Ruta absoluta en el form -->
+            <form id="formAdd" action="/Proyecto-Cafeteria/controlador/productos_controlador.php" method="POST" enctype="multipart/form-data">
                 <input type="hidden" name="accion" value="crear">
 
                 <label for="nombre">Nombre:</label>
@@ -184,7 +187,8 @@ $productos = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <div class="modal-content">
             <span class="close" data-modal="modalEdit">&times;</span>
             <h2>Modificar producto</h2>
-            <form id="formEdit" action="../controlador/productos_controlador.php" method="POST" enctype="multipart/form-data">
+            <!-- Ruta absoluta en el form -->
+            <form id="formEdit" action="/Proyecto-Cafeteria/controlador/productos_controlador.php" method="POST" enctype="multipart/form-data">
                 <input type="hidden" name="accion" value="modificar">
                 <input type="hidden" id="editIdProducto" name="id_producto">
 
@@ -229,7 +233,8 @@ $productos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <br><br>
                 ¿Estás seguro de que deseas eliminar el producto seleccionado?
             </p>
-            <form id="formEliminarProducto" action="../controlador/productos_controlador.php" method="POST">
+            <!-- Ruta absoluta en el form -->
+            <form id="formEliminarProducto" action="/Proyecto-Cafeteria/controlador/productos_controlador.php" method="POST">
                 <input type="hidden" name="accion" value="eliminar">
                 <input type="hidden" id="deleteProdId" name="id_producto">
                 <div class="modal-buttons">
@@ -248,9 +253,9 @@ $productos = $stmt->fetchAll(PDO::FETCH_ASSOC);
         </div>
     </div>
 
-    <!-- SCRIPTS -->
-    <script src="../js/admin.js"></script>
-    <script src="../js/productos.js"></script>
+    <!-- SCRIPTS corregidos con rutas absolutas -->
+    <script src="/Proyecto-Cafeteria/js/admin.js"></script>
+    <script src="/Proyecto-Cafeteria/js/productos.js"></script>
     <script type="module" src="https://unpkg.com/ionicons@8.0.13/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@8.0.13/dist/ionicons/ionicons.js"></script>
 </body>

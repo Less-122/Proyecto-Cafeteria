@@ -24,6 +24,14 @@
                         <p class="menu_text">Categorías</p>
                 </a>
             </li>
+             <li>
+    <a href="/Proyecto-Cafeteria/admin_panel/panel_barista.php" class="menu_element">
+        <ion-icon name="cafe-outline" class="menu_icon"></ion-icon>
+        <p class="menu_text">Barista</p>
+    </a>
+</li>
+          
+
          </ul>
     </aside>
     

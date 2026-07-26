@@ -97,20 +97,53 @@ document.addEventListener("DOMContentLoaded", () => {
     }   
 
     //confirmacion
+   // confirmacion conectada a la base de datos
+   // Confirmación conectada a la base de datos (Corrección de doble click)
     if (btnConfirmar) {
-        btnConfirmar.addEventListener("click", () => {
+        btnConfirmar.onclick = function() {
             if (carrito.length === 0) {
                 alert("Tu carrito está vacío. Agrega productos antes de confirmar.");
                 return;
             }
 
-            const totalText = document.querySelector(".summary-row.total span:last-child").textContent;
-            alert(`Pedido confirmado. Total a pagar en sucursal: ${totalText}`);
-            
-            localStorage.removeItem("carritoCompras");
-            carrito = [];
-            renderizarCarrito();
-        });
+            // Desactivar el botón para evitar que el nerviosismo cause un doble envío
+            btnConfirmar.disabled = true;
+            btnConfirmar.textContent = "Procesando...";
+
+            let totalPedido = 0;
+            carrito.forEach(item => totalPedido += (item.precio * item.cantidad));
+
+            const datosPedido = {
+                carrito: carrito,
+                total: totalPedido
+            };
+
+            fetch('/Proyecto-Cafeteria/controlador/procesar_pedido.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(datosPedido)
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    alert(`Pedido confirmado con éxito. Tu número de pedido es #${data.id_pedido}`);
+                    localStorage.removeItem("carritoCompras");
+                    carrito = [];
+                    renderizarCarrito();
+                } else {
+                    alert('Error al procesar el pedido: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Ocurrió un error crítico al enviar el pedido.');
+            })
+            .finally(() => {
+                // Restaurar el botón sin importar si hubo error o éxito
+                btnConfirmar.disabled = false;
+                btnConfirmar.textContent = "Confirmar Pedido";
+            });
+        };
     }
 
 }); 

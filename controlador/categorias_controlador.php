@@ -18,25 +18,23 @@ switch ($operacion) {
             break;
         }
 
+        // PDO: Verificar si existe
         $stmt = $conexion->prepare("SELECT id_categoria FROM categorias WHERE nombre = ?");
-        $stmt->bind_param("s", $nombre);
-        $stmt->execute();
-        $stmt->store_result();
-        if ($stmt->num_rows > 0) {
+        $stmt->execute([$nombre]);
+        
+        if ($stmt->rowCount() > 0) {
             $respuesta['message'] = 'Ya existe una categoría con ese nombre.';
-            $stmt->close();
             break;
         }
-        $stmt->close();
 
+        // PDO: Insertar
         $stmt = $conexion->prepare("INSERT INTO categorias (nombre, descripcion) VALUES (?, ?)");
-        $stmt->bind_param("ss", $nombre, $descripcion);
-        if ($stmt->execute()) {
+        if ($stmt->execute([$nombre, $descripcion])) {
             $respuesta = ['success' => true, 'message' => 'Categoría agregada correctamente.'];
         } else {
-            $respuesta['message'] = 'Error al guardar: ' . $stmt->error;
+            $errorInfo = $stmt->errorInfo();
+            $respuesta['message'] = 'Error al guardar: ' . $errorInfo[2];
         }
-        $stmt->close();
         break;
 
     case 'editar':
@@ -53,26 +51,23 @@ switch ($operacion) {
             break;
         }
 
-        // Verificar que el nombre no exista en otra categoría
+        // PDO: Verificar que el nombre no exista en otra categoría
         $stmt = $conexion->prepare("SELECT id_categoria FROM categorias WHERE nombre = ? AND id_categoria != ?");
-        $stmt->bind_param("si", $nombre, $id);
-        $stmt->execute();
-        $stmt->store_result();
-        if ($stmt->num_rows > 0) {
+        $stmt->execute([$nombre, $id]);
+        
+        if ($stmt->rowCount() > 0) {
             $respuesta['message'] = 'Ya existe otra categoría con ese nombre.';
-            $stmt->close();
             break;
         }
-        $stmt->close();
 
+        // PDO: Actualizar
         $stmt = $conexion->prepare("UPDATE categorias SET nombre = ?, descripcion = ? WHERE id_categoria = ?");
-        $stmt->bind_param("ssi", $nombre, $descripcion, $id);
-        if ($stmt->execute()) {
+        if ($stmt->execute([$nombre, $descripcion, $id])) {
             $respuesta = ['success' => true, 'message' => 'Categoría actualizada correctamente.'];
         } else {
-            $respuesta['message'] = 'Error al actualizar: ' . $stmt->error;
+            $errorInfo = $stmt->errorInfo();
+            $respuesta['message'] = 'Error al actualizar: ' . $errorInfo[2];
         }
-        $stmt->close();
         break;
 
     case 'eliminar':
@@ -82,27 +77,24 @@ switch ($operacion) {
             break;
         }
 
-        // Verificar si hay productos asociados
+        // PDO: Verificar si hay productos asociados usando fetchColumn()
         $stmt = $conexion->prepare("SELECT COUNT(*) FROM productos WHERE id_categoria_fk = ?");
-        $stmt->bind_param("i", $id);
-        $stmt->execute();
-        $stmt->bind_result($total);
-        $stmt->fetch();
-        $stmt->close();
+        $stmt->execute([$id]);
+        $total = $stmt->fetchColumn();
 
         if ($total > 0) {
             $respuesta['message'] = "No se puede eliminar la categoría porque tiene $total producto(s) asociado(s).";
             break;
         }
 
+        // PDO: Eliminar
         $stmt = $conexion->prepare("DELETE FROM categorias WHERE id_categoria = ?");
-        $stmt->bind_param("i", $id);
-        if ($stmt->execute()) {
+        if ($stmt->execute([$id])) {
             $respuesta = ['success' => true, 'message' => 'Categoría eliminada correctamente.'];
         } else {
-            $respuesta['message'] = 'Error al eliminar: ' . $stmt->error;
+            $errorInfo = $stmt->errorInfo();
+            $respuesta['message'] = 'Error al eliminar: ' . $errorInfo[2];
         }
-        $stmt->close();
         break;
 
     default:

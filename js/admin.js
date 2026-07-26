@@ -18,34 +18,6 @@ function actualizarTitulo() {
     document.title = nuevoTitulo + ' | Panel Admin';
 }
 
-// Carga dinámica de componentes (Header y Menú)
-document.addEventListener("DOMContentLoaded", () => {
-    const rutaHeader = 'admin_header.php'; 
-    const rutaMenu = 'admin_menu.php'; 
-
-    fetch(rutaHeader)
-        .then(response => {
-            if (!response.ok) throw new Error(`Header 404: No se encontró en ${rutaHeader}`);
-            return response.text();
-        })
-        .then(headerData => {
-            document.getElementById('header-placeholder').innerHTML = headerData;
-            return fetch(rutaMenu);
-        })
-        .then(response => {
-            if (!response.ok) throw new Error(`Menú 404: No se encontró en ${rutaMenu}`);
-            return response.text();
-        })
-        .then(menuData => {
-            document.getElementById('menu-placeholder').innerHTML = menuData;
-            actualizarTitulo();
-        })
-        .catch(error => {
-            console.error('Fallo en la arquitectura de la interfaz:', error);
-            document.getElementById('header-placeholder').innerHTML = `<div style="background:red; color:white; padding:10px;">Error crítico de carga. Revisa consola.</div>`;
-        });
-});
-
 // Funciones de UI y Modales
 function mostrarAvisoExito() {
     const overlay = document.getElementById('confirmation-overlay');
@@ -143,7 +115,7 @@ document.addEventListener('click', function(e) {
         const formData = new FormData();
         formData.append('id_usuario', deleteUserId);
 
-        fetch('../usuario_panel/eliminar_usuario.php', {
+        fetch('/Proyecto-Cafeteria/controlador/categorias_controlador.php', {
             method: 'POST',
             body: formData
         })
@@ -158,7 +130,6 @@ document.addEventListener('click', function(e) {
             try {
                 return JSON.parse(textoRespuesta);
             } catch (err) {
-                // Si la respuesta no es un JSON válido, mostramos en pantalla el contenido que respondió Apache/PHP
                 throw new Error("El servidor no devolvió JSON válido. Respuesta recibida:\n\n" + textoRespuesta);
             }
         })
@@ -207,8 +178,7 @@ document.addEventListener('submit', function(e) {
         e.preventDefault();
         const formData = new FormData(formEditUser);
 
-        // Si tu editar_usuario.php está en la raíz, cambia esta ruta a 'editar_usuario.php'
-        fetch('../usuario_panel/editar_usuario.php', {
+        fetch('/Proyecto-Cafeteria/usuario_panel/editar_usuario.php', {
             method: 'POST',
             body: formData
         })
@@ -239,12 +209,12 @@ document.addEventListener('submit', function(e) {
         });
     }
 
-    // Formulario: Agregar Usuario (se mantiene)
+    // Formulario: Agregar Usuario
     if (e.target === formAddUser) {
         e.preventDefault();
         const formData = new FormData(formAddUser);
 
-        fetch('agregar_usuario.php', {
+        fetch('/Proyecto-Cafeteria/usuario_panel/agregar_usuario.php', {
             method: 'POST',
             body: formData
         })
@@ -325,8 +295,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 fila.style.display = 'none';
             }
         }
-
-        
     }
 
     selectorCategoria.addEventListener('change', filtrarPorCategoria);

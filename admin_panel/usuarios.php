@@ -14,12 +14,14 @@ $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Usuarios | Admin</title>
-    <link rel="stylesheet" href="../css/admin.css">
+    <!-- Ruta absoluta corregida -->
+    <link rel="stylesheet" href="/Proyecto-Cafeteria/css/admin.css">
 </head>
 <body>
     
-    <div id="header-placeholder" class="header-placeholder"></div>
-    <div id="menu-placeholder" class="menu-placeholder"></div>
+    <!-- Inserción directa con PHP, eliminando los placeholders de JS -->
+    <?php include 'admin_header.php'; ?>
+    <?php include 'admin_menu.php'; ?>
 
     <main class="main_container">
         <h1 class="titulo" id="titulo-seccion">Gestión de Usuarios</h1>
@@ -122,8 +124,9 @@ $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
         </div>
     </div>
 
-    <script src="../js/admin.js"></script>
-    <script src="../js/usuarios.js"></script>
+    <!-- Rutas absolutas para los scripts -->
+    <script src="/Proyecto-Cafeteria/js/admin.js"></script>
+    <script src="/Proyecto-Cafeteria/js/usuarios.js"></script>
     <script type="module" src="https://unpkg.com/ionicons@8.0.13/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@8.0.13/dist/ionicons/ionicons.js"></script>
 </body>
