@@ -30,7 +30,7 @@ $productosPorCategoria = [];
 
 if ($resultado) {
 
-    while ($producto = $resultado->fetch_assoc()) {
+    while ($producto = $resultado->fetch(PDO::FETCH_ASSOC)) {
 
         $idCategoria = (int) $producto['id_categoria_fk'];
 

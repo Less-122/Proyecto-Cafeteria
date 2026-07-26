@@ -42,7 +42,7 @@ switch ($accion) {
    CREAR PRODUCTO
 ===================================================== */
 
-function crearProducto(mysqli $conexion): void
+function crearProducto(PDO $conexion): void
 {
     $nombre = trim($_POST['nombre'] ?? '');
     $descripcion = trim($_POST['descripcion'] ?? '');
@@ -57,7 +57,7 @@ function crearProducto(mysqli $conexion): void
         isset($_POST['promocion']) ? 1 : 0;
 
 
-    /* Validar información */
+    /* Validar datos */
     validarProducto(
         $nombre,
         $idCategoria,
@@ -66,7 +66,7 @@ function crearProducto(mysqli $conexion): void
     );
 
 
-    /* Procesar imagen */
+    /* Guardar imagen en su carpeta correspondiente */
     $imagenUrl = procesarImagen($idCategoria);
 
 
@@ -81,48 +81,42 @@ function crearProducto(mysqli $conexion): void
             imagen_url,
             tiene_promocion
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?)
+        VALUES (
+            :nombre,
+            :descripcion,
+            :categoria,
+            :precio,
+            :stock,
+            :imagen,
+            :promocion
+        )
     ";
 
-    $stmt = $conexion->prepare($sql);
 
+    try {
 
-    if (!$stmt) {
-        die(
-            'Error al preparar la consulta: '
-            . $conexion->error
-        );
-    }
+        $stmt = $conexion->prepare($sql);
 
+        $stmt->execute([
+            ':nombre' => $nombre,
+            ':descripcion' => $descripcion,
+            ':categoria' => $idCategoria,
+            ':precio' => $precio,
+            ':stock' => $stock,
+            ':imagen' => $imagenUrl,
+            ':promocion' => $tienePromocion
+        ]);
 
-    $stmt->bind_param(
-        "ssidisi",
-        $nombre,
-        $descripcion,
-        $idCategoria,
-        $precio,
-        $stock,
-        $imagenUrl,
-        $tienePromocion
-    );
+    } catch (PDOException $e) {
 
-
-    if (!$stmt->execute()) {
-
-        /*
-         * Si falla el INSERT, eliminar la imagen
-         * que acabamos de subir.
-         */
+        /* Si falla el INSERT, borrar la imagen subida */
         eliminarImagenAnterior($imagenUrl);
 
         die(
             'Error al guardar el producto: '
-            . $stmt->error
+            . $e->getMessage()
         );
     }
-
-
-    $stmt->close();
 
 
     header(
@@ -137,7 +131,7 @@ function crearProducto(mysqli $conexion): void
    MODIFICAR PRODUCTO
 ===================================================== */
 
-function modificarProducto(mysqli $conexion): void
+function modificarProducto(PDO $conexion): void
 {
     $idProducto =
         (int) ($_POST['id_producto'] ?? 0);
@@ -181,39 +175,18 @@ function modificarProducto(mysqli $conexion): void
     $sqlActual = "
         SELECT imagen_url
         FROM productos
-        WHERE id_producto = ?
+        WHERE id_producto = :id
     ";
 
     $stmtActual =
         $conexion->prepare($sqlActual);
 
-
-    if (!$stmtActual) {
-        die(
-            'Error al buscar el producto: '
-            . $conexion->error
-        );
-    }
-
-
-    $stmtActual->bind_param(
-        "i",
-        $idProducto
-    );
-
-
-    $stmtActual->execute();
-
-
-    $resultadoActual =
-        $stmtActual->get_result();
-
+    $stmtActual->execute([
+        ':id' => $idProducto
+    ]);
 
     $productoActual =
-        $resultadoActual->fetch_assoc();
-
-
-    $stmtActual->close();
+        $stmtActual->fetch(PDO::FETCH_ASSOC);
 
 
     if (!$productoActual) {
@@ -221,20 +194,18 @@ function modificarProducto(mysqli $conexion): void
     }
 
 
-    /*
-     * Por defecto conservamos la imagen
-     * que ya tenía el producto.
-     */
+    /* Conservar imagen actual */
     $imagenUrl =
         $productoActual['imagen_url'];
 
-    $imagenAnterior = $imagenUrl;
+    $imagenAnterior =
+        $productoActual['imagen_url'];
 
     $hayNuevaImagen = false;
 
 
     /* =================================================
-       NUEVA IMAGEN
+       SI SE SUBIÓ UNA NUEVA IMAGEN
     ================================================= */
 
     if (
@@ -242,7 +213,8 @@ function modificarProducto(mysqli $conexion): void
         $_FILES['imagen']['error'] === UPLOAD_ERR_OK
     ) {
 
-        $imagenUrl = procesarImagen($idCategoria);
+        $imagenUrl =
+            procesarImagen($idCategoria);
 
         $hayNuevaImagen = true;
     }
@@ -255,51 +227,38 @@ function modificarProducto(mysqli $conexion): void
     $sql = "
         UPDATE productos
         SET
-            nombre = ?,
-            descripcion = ?,
-            id_categoria_fk = ?,
-            precio = ?,
-            stock = ?,
-            imagen_url = ?,
-            tiene_promocion = ?
-        WHERE id_producto = ?
+            nombre = :nombre,
+            descripcion = :descripcion,
+            id_categoria_fk = :categoria,
+            precio = :precio,
+            stock = :stock,
+            imagen_url = :imagen,
+            tiene_promocion = :promocion
+        WHERE id_producto = :id
     ";
 
 
-    $stmt = $conexion->prepare($sql);
+    try {
 
+        $stmt =
+            $conexion->prepare($sql);
 
-    if (!$stmt) {
+        $stmt->execute([
+            ':nombre' => $nombre,
+            ':descripcion' => $descripcion,
+            ':categoria' => $idCategoria,
+            ':precio' => $precio,
+            ':stock' => $stock,
+            ':imagen' => $imagenUrl,
+            ':promocion' => $tienePromocion,
+            ':id' => $idProducto
+        ]);
 
-        if ($hayNuevaImagen) {
-            eliminarImagenAnterior($imagenUrl);
-        }
-
-        die(
-            'Error al preparar la actualización: '
-            . $conexion->error
-        );
-    }
-
-
-    $stmt->bind_param(
-        "ssidisii",
-        $nombre,
-        $descripcion,
-        $idCategoria,
-        $precio,
-        $stock,
-        $imagenUrl,
-        $tienePromocion,
-        $idProducto
-    );
-
-
-    if (!$stmt->execute()) {
+    } catch (PDOException $e) {
 
         /*
-         * Si falla la actualización,
-         * borramos solamente la nueva imagen.
+         * Si se había subido una imagen nueva
+         * pero falló el UPDATE, eliminarla.
          */
         if ($hayNuevaImagen) {
             eliminarImagenAnterior($imagenUrl);
@@ -307,17 +266,14 @@ function modificarProducto(mysqli $conexion): void
 
         die(
             'Error al modificar el producto: '
-            . $stmt->error
+            . $e->getMessage()
         );
     }
 
 
-    $stmt->close();
-
-
     /*
-     * Solo después de actualizar correctamente
-     * eliminamos la imagen anterior.
+     * Si se actualizó correctamente y había
+     * una imagen nueva, borrar la anterior.
      */
     if (
         $hayNuevaImagen &&
@@ -342,7 +298,7 @@ function modificarProducto(mysqli $conexion): void
    ELIMINAR PRODUCTO
 ===================================================== */
 
-function eliminarProducto(mysqli $conexion): void
+function eliminarProducto(PDO $conexion): void
 {
     $idProducto =
         (int) ($_POST['id_producto'] ?? 0);
@@ -360,40 +316,19 @@ function eliminarProducto(mysqli $conexion): void
     $sqlBuscar = "
         SELECT imagen_url
         FROM productos
-        WHERE id_producto = ?
+        WHERE id_producto = :id
     ";
 
 
     $stmtBuscar =
         $conexion->prepare($sqlBuscar);
 
-
-    if (!$stmtBuscar) {
-        die(
-            'Error al buscar el producto: '
-            . $conexion->error
-        );
-    }
-
-
-    $stmtBuscar->bind_param(
-        "i",
-        $idProducto
-    );
-
-
-    $stmtBuscar->execute();
-
-
-    $resultado =
-        $stmtBuscar->get_result();
-
+    $stmtBuscar->execute([
+        ':id' => $idProducto
+    ]);
 
     $producto =
-        $resultado->fetch_assoc();
-
-
-    $stmtBuscar->close();
+        $stmtBuscar->fetch(PDO::FETCH_ASSOC);
 
 
     if (!$producto) {
@@ -402,38 +337,25 @@ function eliminarProducto(mysqli $conexion): void
 
 
     /* =================================================
-       ELIMINAR PRODUCTO
+       ELIMINAR DE LA BASE DE DATOS
     ================================================= */
 
     $sqlEliminar = "
         DELETE FROM productos
-        WHERE id_producto = ?
+        WHERE id_producto = :id
     ";
-
-
-    $stmtEliminar =
-        $conexion->prepare($sqlEliminar);
-
-
-    if (!$stmtEliminar) {
-        die(
-            'Error al preparar la eliminación: '
-            . $conexion->error
-        );
-    }
-
-
-    $stmtEliminar->bind_param(
-        "i",
-        $idProducto
-    );
 
 
     try {
 
-        $stmtEliminar->execute();
+        $stmtEliminar =
+            $conexion->prepare($sqlEliminar);
 
-    } catch (mysqli_sql_exception $e) {
+        $stmtEliminar->execute([
+            ':id' => $idProducto
+        ]);
+
+    } catch (PDOException $e) {
 
         die(
             'No se pudo eliminar el producto. '
@@ -443,11 +365,8 @@ function eliminarProducto(mysqli $conexion): void
     }
 
 
-    $stmtEliminar->close();
-
-
     /* =================================================
-       ELIMINAR IMAGEN
+       ELIMINAR IMAGEN DEL PRODUCTO
     ================================================= */
 
     if (!empty($producto['imagen_url'])) {
@@ -512,13 +431,22 @@ function procesarImagen(int $idCategoria): string
 {
     if (
         !isset($_FILES['imagen']) ||
-        $_FILES['imagen']['error'] !== UPLOAD_ERR_OK
+        $_FILES['imagen']['error']
+            !== UPLOAD_ERR_OK
     ) {
-        die('Debes seleccionar una imagen válida.');
+
+        die(
+            'Debes seleccionar una imagen válida.'
+        );
     }
 
-    $archivoTemporal = $_FILES['imagen']['tmp_name'];
-    $nombreOriginal = $_FILES['imagen']['name'];
+
+    $archivoTemporal =
+        $_FILES['imagen']['tmp_name'];
+
+    $nombreOriginal =
+        $_FILES['imagen']['name'];
+
 
     $extension = strtolower(
         pathinfo(
@@ -527,12 +455,14 @@ function procesarImagen(int $idCategoria): string
         )
     );
 
+
     $extensionesPermitidas = [
         'jpg',
         'jpeg',
         'png',
         'webp'
     ];
+
 
     if (
         !in_array(
@@ -541,26 +471,32 @@ function procesarImagen(int $idCategoria): string
             true
         )
     ) {
-        die('El formato de imagen no está permitido.');
+
+        die(
+            'El formato de imagen no está permitido.'
+        );
     }
 
 
-    /* ================================================
-       DETERMINAR CARPETA SEGÚN CATEGORÍA
+    /* =================================================
+       CARPETA SEGÚN CATEGORÍA
     ================================================= */
 
     switch ($idCategoria) {
 
         case 1:
-            $carpetaCategoria = 'Bebidas-calientes';
+            $carpetaCategoria =
+                'Bebidas-calientes';
             break;
 
         case 2:
-            $carpetaCategoria = 'Bebidas-frias';
+            $carpetaCategoria =
+                'Bebidas-frias';
             break;
 
         case 3:
-            $carpetaCategoria = 'Postres';
+            $carpetaCategoria =
+                'Postres';
             break;
 
         default:
@@ -568,21 +504,26 @@ function procesarImagen(int $idCategoria): string
     }
 
 
-    /* Crear nombre único */
+    /* =================================================
+       NOMBRE ÚNICO
+    ================================================= */
+
     $nombreImagen =
-        uniqid('producto_', true)
+        uniqid('producto_')
         . '.'
         . $extension;
 
 
-    /* Carpeta física */
+    /* =================================================
+       RUTA DONDE SE GUARDARÁ
+    ================================================= */
+
     $carpetaDestino =
         '../img/productos/'
         . $carpetaCategoria
         . '/';
 
 
-    /* Crear carpeta si no existe */
     if (!is_dir($carpetaDestino)) {
 
         mkdir(
@@ -598,24 +539,33 @@ function procesarImagen(int $idCategoria): string
         . $nombreImagen;
 
 
-    /* Guardar archivo */
+    /* =================================================
+       GUARDAR IMAGEN
+    ================================================= */
+
     if (
         !move_uploaded_file(
             $archivoTemporal,
             $rutaDestino
         )
     ) {
-        die('No se pudo guardar la imagen.');
+
+        die(
+            'No se pudo guardar la imagen.'
+        );
     }
 
 
     /*
-     * Esto es lo que guardamos en MySQL.
+     * Esto se guarda en imagen_url.
      *
      * Ejemplo:
      * Bebidas-calientes/producto_123.jpeg
      */
-    return $carpetaCategoria . '/' . $nombreImagen;
+    return
+        $carpetaCategoria
+        . '/'
+        . $nombreImagen;
 }
 
 
@@ -630,10 +580,15 @@ function eliminarImagenAnterior(
     if (empty($imagen)) {
         return;
     }
+
+
     $ruta =
         '../img/productos/'
         . $imagen;
+
+
     if (is_file($ruta)) {
+
         unlink($ruta);
     }
 }
