@@ -12,7 +12,8 @@ CREATE TABLE usuarios (
     nombre VARCHAR(30) NOT NULL,
     apellido VARCHAR(30) NOT NULL,
     telefono VARCHAR(10) UNIQUE NOT NULL, 
-    password VARCHAR(255) NOT NULL
+    password VARCHAR(255) NOT NULL,
+    fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE productos (
@@ -81,9 +82,8 @@ ADD CONSTRAINT ck_usuario_nombre
     CHECK (nombre REGEXP '^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$'),
 ADD CONSTRAINT ck_usuario_apellido 
     CHECK (apellido REGEXP '^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$'),
-ADD CONSTRAINT ck_usuario_correo 
-    CHECK (correo REGEXP '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$');
-
+ADD CONSTRAINT ck_usuario_telefono 
+    CHECK (telefono REGEXP '^[0-9]{10}$');
 -- 2. Restricciones para Categorías
 ALTER TABLE categorias
 ADD CONSTRAINT ck_categoria_nombre 

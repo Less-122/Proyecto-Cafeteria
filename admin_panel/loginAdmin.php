@@ -10,19 +10,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // Buscamos específicamente a un usuario que se llame 'administrador'
     $sql = "SELECT id_usuario, nombre, password FROM usuarios WHERE telefono = ? AND nombre = 'administrador'";
+    
+    // Preparación y ejecución con sintaxis PDO
     $stmt = $conexion->prepare($sql);
-    $stmt->bind_param("s", $telefono);
-    $stmt->execute();
-    $resultado = $stmt->get_result();
+    $stmt->execute([$telefono]);
+    $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if ($usuario = $resultado->fetch_assoc()) {
+    if ($usuario) {
         // Verificamos la contraseña encriptada
         if (password_verify($password, $usuario['password'])) {
-            // Creamos las sesiones mágicas
+            // Guardamos las variables de sesión requeridas por seguridad_admin.php
             $_SESSION['id_usuario'] = $usuario['id_usuario'];
             $_SESSION['nombre'] = $usuario['nombre'];
             
-            // Te mandamos directo a tu panel, no al index de clientes
+            // Redirección al panel
             header("Location: productos.php"); 
             exit();
         } else {
@@ -31,7 +32,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     } else {
         $error = "No tienes permisos de administrador o los datos son incorrectos.";
     }
-    $stmt->close();
 }
 ?>
 
@@ -41,7 +41,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <meta charset="UTF-8">
     <title>Acceso Administrativo - Aroma a Café</title>
     <style>
-        /* Unos estilos rápidos para que no se vea feo mientras lo adaptas a tu CSS */
         body { font-family: Arial, sans-serif; background-color: #2c3e50; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
         .admin-login-box { background: white; padding: 40px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); width: 100%; max-width: 350px; text-align: center; }
         input { width: 90%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; }

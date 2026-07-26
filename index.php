@@ -50,6 +50,7 @@ if ($resultado) {
     <link rel="icon" type="image/jpeg" href="img/Logo/isotipo.jpg">
 </head>
 
+
 <body>
     <?php include("includes/header-menu.php"); ?>
     <section id="inicio" class="hero"> <!-- Bienvenida y descripcion-->
@@ -543,4 +544,4 @@ Nos apasiona recibirte con el olor a grano recién molido y pan calientito salie
     </script>
     <script src="js/carrito.js?v=2"></script>
     <script src="js/menu.js"></script> </body>
-</html>
+</html>    
