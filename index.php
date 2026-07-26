@@ -1,5 +1,42 @@
 <?php 
-    session_start();
+session_start();
+
+require_once 'config/conexion.php';
+
+/* Obtener productos junto con su categoría */
+$sql = "
+    SELECT
+        p.id_producto,
+        p.nombre,
+        p.descripcion,
+        p.id_categoria_fk,
+        p.precio,
+        p.stock,
+        p.imagen_url,
+        p.tiene_promocion,
+        p.etiqueta_promo,
+        p.precio_descuento,
+        c.nombre AS categoria
+    FROM productos AS p
+    INNER JOIN categorias AS c
+        ON p.id_categoria_fk = c.id_categoria
+    ORDER BY p.id_producto ASC
+";
+
+$resultado = $conexion->query($sql);
+
+/* Separar productos por categoría */
+$productosPorCategoria = [];
+
+if ($resultado) {
+
+    while ($producto = $resultado->fetch_assoc()) {
+
+        $idCategoria = (int) $producto['id_categoria_fk'];
+
+        $productosPorCategoria[$idCategoria][] = $producto;
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -102,113 +139,135 @@ Nos apasiona recibirte con el olor a grano recién molido y pan calientito salie
     <section id="calientes" class="categoria-seccion container">
         <h2>Bebidas Calientes</h2>
         <p class="subtitulo">Tazas elaboradas con técnica experta</p>
-        
         <div class="box-container limit-grid">
-            <div class="box product-item">
-                <img src="img/productos/Bebidas-calientes/Primer-sorbo.jpeg" alt="Primer sorbo">
+            <?php if (!empty($productosPorCategoria[1])): ?>
+            <?php $contador = 0;
+            foreach ($productosPorCategoria[1] as $producto):
+                $contador++;
+                $claseProducto =
+                $contador <= 4
+                ? 'product-item'
+                : 'product-item-extra';
+            ?>
+            <div class="box <?= $claseProducto ?>">
+                <?php if (!empty($producto['imagen_url'])): ?>
+                    <img
+                    src="img/productos/<?= htmlspecialchars(
+                        $producto['imagen_url'],
+                        ENT_QUOTES,
+                        'UTF-8'
+                ) ?>"
+                alt="<?= htmlspecialchars(
+                    $producto['nombre'],
+                    ENT_QUOTES,
+                    'UTF-8'
+                ) ?>" >
+                <?php endif; ?>
                 <div class="product-txt">
-                    <h3>Primer sorbo</h3>
-                    <p>Espresso doble.
-                        El equilibrio perfecto entre intensidad y aroma. Un café corto, fuerte y lleno de carácter para comenzar el día con energía.</p>
-                    <div class="producto-footer">
-                        <span class="precio">$59.00</span>
-                        <button class="btn-agCarrito">Agregar</button>
+                    <h3>
+                        <?= htmlspecialchars(
+                            $producto['nombre'],
+                            ENT_QUOTES,
+                            'UTF-8'
+                        ) ?>
+                        </h3>
+
+                        <p>
+                            <?= htmlspecialchars(
+                                $producto['descripcion'],
+                                ENT_QUOTES,
+                                'UTF-8'
+                            ) ?>
+                        </p>
+
+                        <div class="producto-footer">
+
+                            <?php if (
+                                !empty($producto['tiene_promocion'])
+                                &&
+                                !empty($producto['precio_descuento'])
+                            ): ?>
+
+                                <span class="precio-anterior">
+                                    $<?= number_format(
+                                        (float) $producto['precio'],
+                                        2
+                                    ) ?>
+                                </span>
+
+                                <span class="precio-promo">
+                                    $<?= number_format(
+                                        (float) $producto['precio_descuento'],
+                                        2
+                                    ) ?>
+                                </span>
+
+                            <?php else: ?>
+
+                                <span class="precio">
+                                    $<?= number_format(
+                                        (float) $producto['precio'],
+                                        2
+                                    ) ?>
+                                </span>
+
+                            <?php endif; ?>
+
+
+                            <button
+                                class="btn-agCarrito"
+                                data-id="<?= (int) $producto['id_producto'] ?>"
+                                data-nombre="<?= htmlspecialchars(
+                                    $producto['nombre'],
+                                    ENT_QUOTES,
+                                    'UTF-8'
+                                ) ?>"
+                                data-precio="<?= (float) $producto['precio'] ?>"
+                                data-imagen="<?= htmlspecialchars(
+                                    $producto['imagen_url'],
+                                    ENT_QUOTES,
+                                    'UTF-8'
+                                ) ?>"
+                            >
+                                Agregar
+                            </button>
+
+                        </div>
+
                     </div>
+
                 </div>
-            </div>
-            <div class="box product-item">
-        <img src="img/productos/Bebidas-calientes/brisa-de-canela.jpeg" alt="Brisa de Canela">
-        <div class="product-txt">
-            <h3>Brisa de Canela</h3>
-            <p>Latte con canela.
-                El equilibrio perfecto entre intensidad y aroma. Un café corto, fuerte y lleno de carácter para comenzar el día con energía.
-            </p>
-            <div class="producto-footer">
-                <span class="precio">$49.00</span>
-                <button class="btn-agCarrito">Agregar</button>
-            </div>
-        </div>
-    </div>
-           <div class="box product-item">
-        <img src="img/productos/Bebidas-calientes/Moka-dorado.jpeg" alt="Moka Dorado">
-        <div class="product-txt">
-            <h3>Moka Dorado</h3>
-            <p>Café mocha.
-                La mezcla ideal entre café espresso y chocolate, coronada con espuma de leche para un sabor dulce e irresistible.
-            </p>
-            <div class="producto-footer">
-                <span class="precio">$59.00</span>
-                <button class="btn-agCarrito">Agregar</button>
-            </div>
-        </div>
+
+            <?php endforeach; ?>
+
+        <?php else: ?>
+
+            <p>No hay bebidas calientes disponibles.</p>
+
+        <?php endif; ?>
+
     </div>
 
-    <div class="box product-item">
-        <img src="img/productos/Bebidas-calientes/Nube-vainilla.jpeg" alt="Nube de vainilla">
-        <div class="product-txt">
-            <h3>Nube de vainilla </h3>
-            <p>Latte de vainilla. Leche vaporizada, espresso y vainilla natural que crean una bebida suave, cremosa y reconfortante.</p>
-            <div class="producto-footer">
-                <span class="precio">$89.00</span>
-                <button class="btn-agCarrito">Agregar</button>
-            </div>
-        </div>
-    </div>
 
-    <div class="box product-item-extra">
-        <img src="img/productos/Bebidas-calientes/Caramelo-Tostado.jpeg" alt="Caramelo Tostado">
-        <div class="product-txt">
-            <h3>Caramelo Tostado </h3>
-            <p>Cappuccino de caramelo. Un cappuccino clásico con espuma ligera y un toque de caramelo que aporta dulzura en cada taza.</p>
-            <div class="producto-footer">
-                <span class="precio">$96.00</span>
-                <button class="btn-agCarrito">Agregar</button>
-            </div>
-        </div>
-    </div>
+    <?php if (
+        !empty($productosPorCategoria[1])
+        && count($productosPorCategoria[1]) > 4
+    ): ?>
 
-    <div class="box product-item-extra">
-        <img src="img/productos/Bebidas-calientes/Cacao-cremoso.jpeg" alt="Cacao cremoso">
-        <div class="product-txt">
-            <h3>Cacao cremoso </h3>
-            <p>Chocolate caliente. Chocolate preparado con leche caliente y una textura cremosa que recuerda el sabor de casa.</p>
-            <div class="producto-footer">
-                <span class="precio">$66.00</span>
-                <button class="btn-agCarrito">Agregar</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="box product-item-extra">
-        <img src="img/productos/Bebidas-calientes/manzanilla.jpeg" alt="Té del Jardín">
-        <div class="product-txt">
-            <h3>Té del Jardín </h3>
-            <p>Té de manzanilla con miel.
-                Una infusión ligera acompañada de miel natural, perfecta para disfrutar un momento de tranquilidad.</p>
-            <div class="producto-footer">
-                <span class="precio">$45.00</span>
-                <button class="btn-agCarrito">Agregar</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="box product-item-extra">
-        <img src="img/productos/Bebidas-calientes/otoño.jpeg" alt="Otoño">
-        <div class="product-txt">
-            <h3>Otoño </h3>
-            <p>Café de olla tradicional. Café preparado al estilo tradicional con piloncillo y canela, lleno de aromas que evocan los sabores de México.</p>
-            <div class="producto-footer">
-                <span class="precio">$79.00</span>
-                <button class="btn-agCarrito"<>Agregar</button>
-            </div>
-        </div>
-    </div>
-            </div>
-        
         <div class="btn-container-center">
-            <button id="btn-masBcalientes" class="btn-secundario">Ver más productos</button>
+
+            <button
+                id="btn-masBcalientes"
+                class="btn-secundario"
+            >
+                Ver más productos
+            </button>
+
         </div>
-    </section>
+
+    <?php endif; ?>
+
+</section>
 
  <!-- CATEGORIA DE BEBIDAS FRIAS-->
 
