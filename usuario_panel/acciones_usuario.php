@@ -5,6 +5,7 @@ header('Content-Type: application/json');
 $accion = $_POST['accion'] ?? '';
 
 if ($accion === 'modificar') {
+    
     $id = $_POST['id_usuario'];
     $nombre = $_POST['nombre'];
     $apellido = $_POST['apellido'];

@@ -40,6 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ob_clean();
         echo json_encode(['success' => true, 'message' => 'Usuario eliminado exitosamente.']);
         exit;
+        
 
     } catch (PDOException $e) {
         ob_clean();

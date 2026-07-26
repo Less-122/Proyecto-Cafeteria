@@ -325,6 +325,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 fila.style.display = 'none';
             }
         }
+
+        
     }
 
     selectorCategoria.addEventListener('change', filtrarPorCategoria);
