@@ -107,7 +107,7 @@ $resultado = $conexion->query($sql);
         
         <div class="modal-buttons">
             <button type="button" class="btn-cancelar" onclick="document.getElementById('modalDeleteCategoria').style.display='none'">Cancelar</button>
-            <button type="button" id="btn-confirmar-eliminar" class="btn-danger">Confirmar Eliminar</button>
+            <button type="button" id="btn-confirmar-eliminar-categoria" class="btn-danger">Confirmar Eliminar</button>
         </div>
     </div>
 </div>
