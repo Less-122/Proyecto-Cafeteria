@@ -1,6 +1,21 @@
 <?php
 include 'seguridad_admin.php';
+require_once __DIR__ . '/../config/conexion.php';
+
+$sql = "SELECT 
+            c.id_categoria,
+            c.nombre,
+            c.descripcion,
+            COUNT(p.id_producto) AS total_productos
+        FROM categorias c
+        LEFT JOIN productos p ON c.id_categoria = p.id_categoria_fk
+        GROUP BY c.id_categoria
+        ORDER BY c.id_categoria ASC";
+$resultado = $conexion->query($sql);
 ?>
+<!DOCTYPE html>
+<html lang="es">
+<head>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -35,34 +50,32 @@ include 'seguridad_admin.php';
     </section>
 
     <table>
-        <tr>
-            <th></th>
-            <th>ID</th>
-            <th>Nombre</th>
-            <th>Descripción</th>
-            <th>Cantidad de productos</th>
-        </tr>
-        <tr>
-            <td><input type="checkbox" name="seleccion" value="1"></td>
-            <td>001</td>
-            <td>Bebidas calientes</td>
-            <td>Lorem, ipsum dolor sit amet consectetur adipisicing elit.</td>
-            <td>8</td>
-        </tr>
-        <tr>
-            <td><input type="checkbox" name="seleccion" value="1"></td>
-            <td>002</td>
-            <td>Bebidas frías</td>
-            <td>Lorem, ipsum dolor sit amet consectetur adipisicing elit.</td>
-            <td>9</td>
-        </tr>
-        <tr>
-            <td><input type="checkbox" name="seleccion" value="1"></td>
-            <td>003</td>
-            <td>Postres</td>
-            <td>Lorem, ipsum dolor sit amet consectetur adipisicing elit.</td>
-            <td>9</td>
-        </tr>
+        <thead>
+            <tr>
+                <th></th>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th>Cantidad de productos</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php if ($resultado && $resultado->num_rows > 0): ?>
+                <?php while ($fila = $resultado->fetch_assoc()): ?>
+                    <tr>
+                        <td><input type="radio" name="seleccion" value="<?php echo $fila['id_categoria']; ?>"></td>
+                        <td><?php echo str_pad($fila['id_categoria'], STR_PAD_LEFT); ?></td>
+                        <td><?php echo htmlspecialchars($fila['nombre']); ?></td>
+                        <td><?php echo htmlspecialchars($fila['descripcion']); ?></td>
+                        <td><?php echo $fila['total_productos']; ?></td>
+                    </tr>
+                <?php endwhile; ?>
+            <?php else: ?>
+                <tr>
+                    <td colspan="5" style="text-align:center; padding:20px;">No hay categorías registradas.</td>
+                </tr>
+            <?php endif; ?>
+        </tbody>
     </table>
 
     <!-- Modal para añadir categoría -->
@@ -70,7 +83,8 @@ include 'seguridad_admin.php';
     <div class="modal-content">
         <span class="close" data-modal="modalAddCategoria">&times;</span>
         <h2>Añadir Nueva Categoría</h2>
-        <form id="formAddCategoria" action="guardar_categoria.php" method="POST">
+        
+        <form id="formAddCategoria" action="../controlador/categorias_controlador.php" method="POST">
         <label for="catNombre">Nombre:</label>
         <input type="text" id="catNombre" name="nombre" required>
         <label for="catDescripcion">Descripción:</label>
@@ -103,7 +117,7 @@ include 'seguridad_admin.php';
     <div class="modal-content">
         <span class="close" data-modal="modalEditCategoria">&times;</span>
         <h2>Modificar Categoría</h2>
-        <form id="formEditCategoria">
+        <form id="formEditCategoria" action="../controlador/categorias_controlador.php" method="POST">
             <input type="hidden" id="editCatId" name="id">
             
             <label for="editCatNombre">Nombre:</label>
@@ -128,6 +142,7 @@ include 'seguridad_admin.php';
 
     </main>
     <script src="../js/admin.js"></script>
+    <script src="../js/categorias.js"></script>
     <script type="module" src="https://unpkg.com/ionicons@8.0.13/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@8.0.13/dist/ionicons/ionicons.js"></script>
 </body>
