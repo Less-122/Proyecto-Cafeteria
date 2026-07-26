@@ -300,3 +300,12 @@ document.addEventListener('DOMContentLoaded', function() {
     selectorCategoria.addEventListener('change', filtrarPorCategoria);
     filtrarPorCategoria();
 });
+
+
+// Ejecutar la actualización del título en cuanto cargue la página
+document.addEventListener("DOMContentLoaded", () => {
+    // Verificamos que el elemento exista antes de intentar cambiarlo
+    if (document.getElementById('titulo-seccion')) {
+        actualizarTitulo();
+    }
+});

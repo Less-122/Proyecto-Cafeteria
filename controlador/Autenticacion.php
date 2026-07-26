@@ -19,8 +19,21 @@ switch ($operacion) {
         
         // En PDO pasamos los valores como un array directamente al execute()
         if ($stmt->execute([$nombre, $apellido, $telefono, $password_segura])) {
-            header("Location: ../login.php?mensaje=registrado");
+            
+            
+            // 1. Recuperamos el ID del nuevo usuario usando la sintaxis de PDO
+            $id_nuevo_usuario = $conexion->lastInsertId();
+
+            // 2. Declaramos las variables de sesión que tu index necesita para reconocerlo
+            $_SESSION['id_usuario'] = $id_nuevo_usuario;
+            $_SESSION['nombre'] = $nombre;
+            
+            // 3. Redirigimos al index. ¡Ahora sí será reconocido y aparecerá el botón Salir!
+            header("Location: ../index.php");
             exit();
+            
+            // --- FIN DEL AUTO-LOGIN ---
+            
         } else {
             header("Location: ../login.php?error=registro");
             exit();

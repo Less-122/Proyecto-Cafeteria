@@ -16,6 +16,7 @@
                 </div>
                 <div class="admin_info">
                     <span class="admin_name">Administrador</span>
+                    <a href="../logout.php" class="btn-salir-admin">Salir</a>
                 </div>
             </div>
         </div>

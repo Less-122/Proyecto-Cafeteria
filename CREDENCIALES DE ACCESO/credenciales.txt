@@ -1,0 +1,10 @@
+Usuario cliente
+Nombre: Juan
+Telefono (se requiere para iniciar sesión): 7356667788
+Contraseña: prueba123
+
+
+Administrador
+Nombre: administrador
+Teléfono (se requiere para iniciar sesión): 1234567890
+Contraseña: admin123

@@ -48,7 +48,7 @@
                     </div>
                     <p class="summary-note">* Recuerda que tu pedido se pagará directamente en la sucursal física.</p>
                     <button class="btn-confirm-order">Confirmar Pedido</button>
-                    <a href="#" class="keep-shopping">← Ver menú</a>
+                    <a href="index.php" class="keep-shopping">← Ver menú</a>
                 </div>
             </aside>
         </div>

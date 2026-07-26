@@ -92,6 +92,20 @@ body{
     color: #9ca3af;
     font-size: 0.75rem;
 }
+.btn-salir-admin {
+    color: #d90429 !important; /* El !important obliga al navegador a usar este color */
+    font-weight: bold;
+    text-decoration: none !important; /* Quitamos el subrayado feo */
+    margin-left: 15px;
+    font-size: 0.9rem; /* Un poquito más pequeño que el nombre */
+    transition: color 0.3s ease;
+    align-self: center; /* Ayuda a centrarlo si el contenedor es flex */
+}
+
+.btn-salir-admin:hover {
+    color: #a0031e !important;
+    text-decoration: underline !important;
+}
 
 .menu {
     background-color: #1F2937;
