@@ -17,7 +17,7 @@ if (btnCarrito) {
 
 // Carrusel de fotos hero (presentación)
 const imagenesHero = [
-    "img/productos/Postres/sueño-chocolate.jpeg",
+    "img/productos/Postres/producto_6a658017028190.67328164.jpeg",
     "img/productos/Promociones/Combo-dulce.jpeg",
     "img/productos/Promociones/Desayuno-Amanecer.jpeg",
     "img/productos/Promociones/Doble-felicidad.jpeg"

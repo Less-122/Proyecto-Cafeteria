@@ -64,7 +64,7 @@ Nos apasiona recibirte con el olor a grano recién molido y pan calientito salie
              
             </div>
             <div class="hero-img">
-                <img id="PromoImagen" src="img/productos/Postres/sueño-chocolate.jpeg" alt="Delicias de café y helado" alt="Promociones">
+                <img id="PromoImagen" src="img/productos/Postres/producto_6a658017028190.67328164.jpeg" alt="Delicias de café y helado" alt="Promociones">
             </div>
         </div>
     </section>
@@ -119,7 +119,7 @@ Nos apasiona recibirte con el olor a grano recién molido y pan calientito salie
                 </div>
                 <div class="box">
                     <div class="tag-oferta">Nuevo</div>
-                    <img src="img/productos/Postres/sueño-chocolate.jpeg" alt="Promoción 4">
+                    <img src="img/productos/Postres/producto_6a658017028190.67328164.jpeg" alt="Promoción 4">
                     <div class="product-txt">
                         <h3>Especial Sueño de chocolate</h3>
                         <p>Cremoso helado de chocolate elaborado con cacao de alta calidad, de textura <br>
@@ -134,6 +134,8 @@ Nos apasiona recibirte con el olor a grano recién molido y pan calientito salie
             <button class="carousel-btn" id="btn-next">❯</button>
         </div>
     </section>
+
+    <!-- APARTADO DE bebidas calientes-->
 
     <section id="calientes" class="categoria-seccion container">
         <h2>Bebidas Calientes</h2>
@@ -240,7 +242,7 @@ Nos apasiona recibirte con el olor a grano recién molido y pan calientito salie
             <?php endforeach; ?>
 
         <?php else: ?>
-
+            
             <p>No hay bebidas calientes disponibles.</p>
 
         <?php endif; ?>
@@ -267,227 +269,273 @@ Nos apasiona recibirte con el olor a grano recién molido y pan calientito salie
     <?php endif; ?>
 
 </section>
-
  <!-- CATEGORIA DE BEBIDAS FRIAS-->
-
     <section id="frias" class="categoria-seccion container">
-        <h2>Bebidas Frías</h2>
-        <p class="subtitulo">¡Especialmente para esta temporada de calor!</p>
+        <h2>Bebidas Frias</h2>
+        <p class="subtitulo">Refrescantes y deliciosas</p>
         <div class="box-container limit-grid">
+            <?php if (!empty($productosPorCategoria[2])): ?>
+            <?php $contador = 0;
+            foreach ($productosPorCategoria[2] as $producto):
+                $contador++;
+                $claseProducto =
+                $contador <= 4
+                ? 'product-item'
+                : 'product-item-extra';
+            ?>
+            <div class="box <?= $claseProducto ?>">
+                <?php if (!empty($producto['imagen_url'])): ?>
+                    <img
+                    src="img/productos/<?= htmlspecialchars(
+                        $producto['imagen_url'],
+                        ENT_QUOTES,
+                        'UTF-8'
+                ) ?>"
+                alt="<?= htmlspecialchars(
+                    $producto['nombre'],
+                    ENT_QUOTES,
+                    'UTF-8'
+                ) ?>" >
+                <?php endif; ?>
+                <div class="product-txt">
+                    <h3>
+                        <?= htmlspecialchars(
+                            $producto['nombre'],
+                            ENT_QUOTES,
+                            'UTF-8'
+                        ) ?>
+                        </h3>
 
-    <div class="box product-item">
-        <img src="img/productos/Bebidas-frias/Bosque-Purpura.jpeg" alt="Bosque-Purpura">
-        <div class="product-txt">
-            <h3>Bosque purpura</h3>
-            <p> Mezcla de frutos naturales con una textura ligera y un sabor fresco lleno de color.</p>
-            <div class="producto-footer">
-                <span class="precio">$55.00</span>
-                <button class="btn-agCarrito">Agregar</button>
-            </div>
-        </div>
+                        <p>
+                            <?= htmlspecialchars(
+                                $producto['descripcion'],
+                                ENT_QUOTES,
+                                'UTF-8'
+                            ) ?>
+                        </p>
+
+                        <div class="producto-footer">
+
+                            <?php if (
+                                !empty($producto['tiene_promocion'])
+                                &&
+                                !empty($producto['precio_descuento'])
+                            ): ?>
+
+                                <span class="precio-anterior">
+                                    $<?= number_format(
+                                        (float) $producto['precio'],
+                                        2
+                                    ) ?>
+                                </span>
+
+                                <span class="precio-promo">
+                                    $<?= number_format(
+                                        (float) $producto['precio_descuento'],
+                                        2
+                                    ) ?>
+                                </span>
+
+                            <?php else: ?>
+
+                                <span class="precio">
+                                    $<?= number_format(
+                                        (float) $producto['precio'],
+                                        2
+                                    ) ?>
+                                </span>
+
+                            <?php endif; ?>
+
+
+                            <button
+                                class="btn-agCarrito"
+                                data-id="<?= (int) $producto['id_producto'] ?>"
+                                data-nombre="<?= htmlspecialchars(
+                                    $producto['nombre'],
+                                    ENT_QUOTES,
+                                    'UTF-8'
+                                ) ?>"
+                                data-precio="<?= (float) $producto['precio'] ?>"
+                                data-imagen="<?= htmlspecialchars(
+                                    $producto['imagen_url'],
+                                    ENT_QUOTES,
+                                    'UTF-8'
+                                ) ?>"
+                            >
+                                Agregar
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            <?php endforeach; ?>
+
+        <?php else: ?>
+            
+            <p>No hay bebidas frias disponibles.</p>
+
+        <?php endif; ?>
+
     </div>
 
-    <div class="box product-item">
-        <img src="img/productos/Bebidas-frias/Brisa-fria.jpeg" alt="Brisa-fria">
-        <div class="product-txt">
-            <h3>Brisa Fría</h3>
-            <p>Cold Brew. Café preparado lentamente en frío durante varias horas para lograr un sabor suave, refrescante y de baja acidez.</p>
-            <div class="producto-footer">
-                <span class="precio">$68.00</span>
-                <button class="btn-agCarrito">Agregar</button>
-            </div>
-        </div>
-    </div>
 
-    <div class="box product-item">
-        <img src="img/productos/Bebidas-frias/Nube-helada.jpeg" alt="Nube Helada">
-        <div class="product-txt">
-            <h3>Nube Helada</h3>
-            <p>Frappé de vainilla. Bebida cremosa con hielo triturado y un delicado sabor a vainilla que refresca cada momento. </p>
-            <div class="producto-footer">
-                <span class="precio">$75.00</span>
-                <button class="btn-agCarrito">Agregar</button>
-            </div>
-        </div>
-    </div>
+    <?php if (
+        !empty($productosPorCategoria[2])
+        && count($productosPorCategoria[2]) > 4
+    ): ?>
 
-
-    <div class="box product-item">
-        <img src="img/productos/Bebidas-frias/Moka-ice.jpeg" alt="Moka Ice">
-        <div class="product-txt">
-            <h3>Moka Ice</h3>
-            <p>Frappé moka. Café, chocolate y hielo mezclados en una bebida cremosa ideal para los amantes del moka.</p>
-            <div class="producto-footer">
-                <span class="precio">$65.00</span>
-                <button class="btn-agCarrito">Agregar</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="box product-item-extra">
-        <img src="img/productos/Bebidas-frias/Dulce-felicidad.jpeg" alt="Dulce-felicidad">
-        <div class="product-txt">
-            <h3>Dulce Felicidad</h3>
-            <p>Frappé de caramelo. Una combinación de café, leche y caramelo con una textura suave y un dulzor perfectamente equilibrado.</p>
-            <div class="producto-footer">
-                <span class="precio">$88.00</span>
-                <button class="btn-agCarrito">Agregar</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="box product-item-extra">
-        <img src="img/productos/Bebidas-frias/Tropica-lFresh.jpeg" alt="Tropical Fresh">
-        <div class="product-txt">
-            <h3>Tropical Fresh</h3>
-            <p>Té helado de durazno. Té frío con un delicado toque de durazno que ofrece una bebida ligera y muy refrescante.</p>
-            <div class="producto-footer">
-                <span class="precio">$68.00</span>
-                <button class="btn-agCarrito">Agregar</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="box product-item-extra">
-        <img src="img/productos/Bebidas-frias/Espuma-Gelada.jpeg" alt="Espuma Helada">
-        <div class="product-txt">
-            <h3>Espuma Helada</h3>
-            <p>Iced Latte. Espresso servido sobre hielo con leche fría, logrando una bebida cremosa y refrescante.</p>
-            <div class="producto-footer">
-                <span class="precio">$96.00</span>
-                <button class="btn-agCarrito">Agregar</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="box product-item-extra">
-        <img src="img/productos/Bebidas-frias/Cafe-nevado.jpeg" alt="Café Nevado">
-        <div class="product-txt">
-            <h3>Café Nevado</h3>
-            <p>Café frío con helado. Café helado acompañado de una bola de helado que aporta suavidad y un toque especial en cada sorbo.</p>
-            <div class="producto-footer">
-                <span class="precio">$99.00</span>
-                <button class="btn-agCarrito">Agregar</button>
-            </div>
-        </div>
-    </div>
-
-</div>
         <div class="btn-container-center">
-            <button id="btn-masBFrias" class="btn-secundario">Ver más productos</button>
+
+            <button
+                id="btn-masBFrias"
+                class="btn-secundario"
+            >
+                Ver más productos
+            </button>
+
         </div>
 
+    <?php endif; ?>
 
-    </section>
+</section>
 
 <!-- CATEGORIA DE POSTRES -->
-    <section id="postres" class="categoria-seccion container">
+     <section id="postres" class="categoria-seccion container">
         <h2>Postres</h2>
-        <p class="subtitulo">¡Date un gusto de la vida!</p>
-          <div class="box-container limit-grid">
+        <p class="subtitulo">Deliciosos postres para endulzar tu día</p>
+        <div class="box-container limit-grid">
+            <?php if (!empty($productosPorCategoria[3])): ?>
+            <?php $contador = 0;
+            foreach ($productosPorCategoria[3] as $producto):
+                $contador++;
+                $claseProducto =
+                $contador <= 4
+                ? 'product-item'
+                : 'product-item-extra';
+            ?>
+            <div class="box <?= $claseProducto ?>">
+                <?php if (!empty($producto['imagen_url'])): ?>
+                    <img
+                    src="img/productos/<?= htmlspecialchars(
+                        $producto['imagen_url'],
+                        ENT_QUOTES,
+                        'UTF-8'
+                ) ?>"
+                alt="<?= htmlspecialchars(
+                    $producto['nombre'],
+                    ENT_QUOTES,
+                    'UTF-8'
+                ) ?>" >
+                <?php endif; ?>
+                <div class="product-txt">
+                    <h3>
+                        <?= htmlspecialchars(
+                            $producto['nombre'],
+                            ENT_QUOTES,
+                            'UTF-8'
+                        ) ?>
+                        </h3>
 
-    <div class="box product-item">
-        <img src="img/productos/Postres/Dulce-tentacion.jpeg" alt="Dulce Tentación">
-        <div class="product-txt">
-            <h3>Dulce Tentación</h3>
-            <p>Brownie de chocolate. Brownie recién horneado con un intenso sabor a chocolate y una textura suave por dentro.</p>
-            <div class="producto-footer">
-                <span class="precio">$78.00</span>
-                <button class="btn-agCarrito">Agregar</button>
-            </div>
-        </div>
+                        <p>
+                            <?= htmlspecialchars(
+                                $producto['descripcion'],
+                                ENT_QUOTES,
+                                'UTF-8'
+                            ) ?>
+                        </p>
+
+                        <div class="producto-footer">
+
+                            <?php if (
+                                !empty($producto['tiene_promocion'])
+                                &&
+                                !empty($producto['precio_descuento'])
+                            ): ?>
+
+                                <span class="precio-anterior">
+                                    $<?= number_format(
+                                        (float) $producto['precio'],
+                                        2
+                                    ) ?>
+                                </span>
+
+                                <span class="precio-promo">
+                                    $<?= number_format(
+                                        (float) $producto['precio_descuento'],
+                                        2
+                                    ) ?>
+                                </span>
+
+                            <?php else: ?>
+
+                                <span class="precio">
+                                    $<?= number_format(
+                                        (float) $producto['precio'],
+                                        2
+                                    ) ?>
+                                </span>
+
+                            <?php endif; ?>
+
+
+                            <button
+                                class="btn-agCarrito"
+                                data-id="<?= (int) $producto['id_producto'] ?>"
+                                data-nombre="<?= htmlspecialchars(
+                                    $producto['nombre'],
+                                    ENT_QUOTES,
+                                    'UTF-8'
+                                ) ?>"
+                                data-precio="<?= (float) $producto['precio'] ?>"
+                                data-imagen="<?= htmlspecialchars(
+                                    $producto['imagen_url'],
+                                    ENT_QUOTES,
+                                    'UTF-8'
+                                ) ?>"
+                            >
+                                Agregar
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            <?php endforeach; ?>
+
+        <?php else: ?>
+            
+            <p>No hay postres disponibles.</p>
+
+        <?php endif; ?>
+
     </div>
 
-    <div class="box product-item">
-        <img src="img/productos/Postres/Momento-Dulce.jpeg" alt="Momento Dulce">
-        <div class="product-txt">
-            <h3>Momento Dulce</h3>
-            <p>Cheesecake de frutos rojos. Suave pastel de queso acompañado de una deliciosa salsa de frutos rojos que equilibra cada bocado.</p>
-            <div class="producto-footer">
-                <span class="precio">$69.00</span>
-                <button class="btn-agCarrito">Agregar</button>
-            </div>
-        </div>
-    </div>
 
-    <div class="box product-item">
-        <img src="img/productos/Postres/Dulce-Zanahoria.jpeg" alt="Delicia de Zanahoria">
-        <div class="product-txt">
-            <h3>Delicia de Zanahoria</h3>
-            <p>Pastel de zanahoria. Esponjoso pastel elaborado con zanahoria y especias, cubierto con un cremoso betún de queso.</p>
-            <div class="producto-footer">
-                <span class="precio">$65.00</span>
-                <button class="btn-agCarrito">Agregar</button>
-            </div>
-        </div>
-    </div>
+    <?php if (
+        !empty($productosPorCategoria[3])
+        && count($productosPorCategoria[3]) > 4
+    ): ?>
 
-    <div class="box product-item">
-        <img src="img/productos/Postres/Nuez-dorada.jpeg" alt="Nuez Dorada">
-        <div class="product-txt">
-            <h3>Nuez Dorada</h3>
-            <p>Muffin de nuez. Muffin suave con trozos de nuez que aportan un ligero toque crujiente y un sabor casero.</p>
-            <div class="producto-footer">
-                <span class="precio">$77.00</span>
-                <button class="btn-agCarrito">Agregar</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="box product-item-extra">
-        <img src="img/productos/Postres/Deditos-dorados.png" alt="Deditos Dorados">
-        <div class="product-txt">
-            <h3>Deditos Dorados</h3>
-            <p>Churros tradicionales. Delicados churros recién preparados, espolvoreados con azúcar y canela, perfectos para acompañar una taza de café o chocolate caliente.</p>
-            <div class="producto-footer">
-                <span class="precio">$48.00</span>
-                <button class="btn-agCarrito">Agregar</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="box product-item-extra">
-        <img src="img/productos/Postres/sueño-chocolate.jpeg" alt="Sueño de Chocolate">
-        <div class="product-txt">
-            <h3>Sueño de Chocolate</h3>
-            <p>Helado de chocolate. Cremoso helado de chocolate elaborado con cacao de alta calidad, de textura suave y un sabor intenso que conquista desde la primera cucharada.</p>
-            <div class="producto-footer">
-                <span class="precio">$62.00</span>
-                <button class="btn-agCarrito">Agregar</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="box product-item-extra">
-        <img src="img/productos/Postres/Dulce recuerdo.jpeg" alt=" Dulce Recuerdo">
-        <div class="product-txt">
-            <h3>Dulce Recuerdo</h3>
-            <p>Arroz con leche. Un postre tradicional preparado con arroz, leche y un toque de canela, cuya receta casera evoca los sabores y recuerdos de hogar.</p>
-            <div class="producto-footer">
-                <span class="precio">$55.00</span>
-                <button class="btn-agCarrito">Agregar</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="box product-item-extra">
-        <img src="img/productos/Postres/cielo-chocolate.jpeg" alt="Cielo de Chocolate">
-        <div class="product-txt">
-            <h3>Cielo de Chocolate</h3>
-            <p>Pastel de chocolate. Capas de bizcocho de chocolate cubiertas con una cremosa ganache que conquista desde el primer bocado.</p>
-            <div class="producto-footer">
-                <span class="precio">$87.00</span>
-                <button class="btn-agCarrito">Agregar</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-        
         <div class="btn-container-center">
-            <button id="btn-masPostres" class="btn-secundario">Ver más productos</button>
+
+            <button
+                id="btn-masPostres"
+                class="btn-secundario"
+            >
+                Ver más productos
+            </button>
+
         </div>
-    </section>
+
+    <?php endif; ?>
+
+</section>
     <?php include("includes/footer.php"); ?>
     <script>
     // Le preguntamos a PHP si existe la variable de sesión.
