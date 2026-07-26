@@ -47,3 +47,72 @@ document.addEventListener("DOMContentLoaded", () => {
         modalEdit.style.display = "block";
     });
 });
+
+//Eliminar producto
+document.addEventListener("DOMContentLoaded", () => {
+
+    const btnEliminarProducto =
+        document.getElementById("btnEliminarProducto");
+
+    const modalDeleteProducto =
+        document.getElementById("modalDeleteProducto");
+
+    const deleteProdId =
+        document.getElementById("deleteProdId");
+
+
+    if (
+        btnEliminarProducto &&
+        modalDeleteProducto &&
+        deleteProdId
+    ) {
+
+        btnEliminarProducto.addEventListener("click", () => {
+
+            const seleccionados =
+                document.querySelectorAll(
+                    ".producto-check:checked"
+                );
+
+
+            // No seleccionó ningún producto
+            if (seleccionados.length === 0) {
+
+                alert(
+                    "Selecciona un producto para eliminar."
+                );
+
+                return;
+            }
+
+
+            // Seleccionó más de uno
+            if (seleccionados.length > 1) {
+
+                alert(
+                    "Selecciona solamente un producto."
+                );
+
+                return;
+            }
+
+
+            // Tomamos el producto seleccionado
+            const productoSeleccionado =
+                seleccionados[0];
+
+
+            // Guardamos el ID en el input oculto
+            deleteProdId.value =
+                productoSeleccionado.value;
+
+
+            // Abrimos el modal
+            modalDeleteProducto.style.display =
+                "block";
+
+        });
+
+    }
+
+});

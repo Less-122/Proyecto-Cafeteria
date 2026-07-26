@@ -1,7 +1,7 @@
 <?php
 
 include 'seguridad_admin.php';
-require_once '../usuario_panel/conexion.php';
+require_once '../config/conexion.php';
 
 $sql = "
     SELECT
@@ -16,7 +16,9 @@ $sql = "
 $stmt = $conexion->prepare($sql);
 $stmt->execute();
 
-$productos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$resultado= $stmt->get_result();
+
+$productos = $resultado->fetch_all(MYSQLI_ASSOC);
 
 ?>
 
@@ -616,13 +618,13 @@ $productos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         .getElementById('modalDeleteProducto')
                         .style.display = 'none'
                     "> Cancelar </button>
-
                 <button
                     type="submit"
-                    id="btn-confirmar-eliminar"
+                    id="btnConfirmarEliminarProducto"
                     class="btn-danger"
                 >Confirmar eliminar</button>
             </div>
+            </form>
         </div>
     </div>
 
