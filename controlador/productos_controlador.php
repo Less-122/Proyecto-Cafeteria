@@ -13,11 +13,12 @@ switch ($accion) {
     case 'crear':
         crearProducto($conexion);
         break;
-
     case 'modificar':
         modificarProducto($conexion);
         break;
-
+    case 'eliminar':
+        eliminarProducto($conexion);
+        break;
     default:
         die('Acción no válida.');
 }
@@ -281,4 +282,81 @@ function eliminarImagenAnterior(?string $imagen): void
     if (is_file($ruta)) {
         unlink($ruta);
     }
+}
+
+/* =====================================================
+   ELIMINAR PRODUCTO
+===================================================== */
+
+function eliminarProducto(PDO $conexion): void
+{
+    $idProducto = (int) ($_POST['id_producto'] ?? 0);
+
+    if ($idProducto <= 0) {
+        die('Producto no válido.');
+    }
+
+
+    /* Buscar el producto antes de eliminarlo */
+    $sqlBuscar = "
+        SELECT imagen_url
+        FROM productos
+        WHERE id_producto = :id
+    ";
+
+    $stmtBuscar = $conexion->prepare($sqlBuscar);
+
+    $stmtBuscar->execute([
+        ':id' => $idProducto
+    ]);
+
+    $producto = $stmtBuscar->fetch(PDO::FETCH_ASSOC);
+
+
+    if (!$producto) {
+        die('El producto no existe.');
+    }
+
+
+    /* Eliminar producto de la base de datos */
+    $sqlEliminar = "
+        DELETE FROM productos
+        WHERE id_producto = :id
+    ";
+
+    $stmtEliminar = $conexion->prepare($sqlEliminar);
+
+    try {
+
+        $stmtEliminar->execute([
+            ':id' => $idProducto
+        ]);
+
+    } catch (PDOException $e) {
+
+        die(
+            'No se pudo eliminar el producto. '
+            . 'Es posible que esté relacionado con un pedido.'
+        );
+    }
+
+
+    /* Eliminar también su imagen */
+    if (!empty($producto['imagen_url'])) {
+
+        $rutaImagen =
+            '../img/productos/' . $producto['imagen_url'];
+
+        if (is_file($rutaImagen)) {
+            unlink($rutaImagen);
+        }
+    }
+
+
+    /* Regresar a productos */
+    header(
+        'Location: ../admin_panel/productos.php?eliminado=1'
+    );
+
+    exit;
 }

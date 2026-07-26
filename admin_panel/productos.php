@@ -128,13 +128,7 @@ $productos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     Modificar
                 </button>
 
-                <button
-                    type="button"
-                    data-modal="modalDeleteProducto"
-                    class="btn-delete"
-                >
-                    Borrar
-                </button>
+                <button id="btnEliminarProducto" type="button" class="btn-delete">Borrar</button>
 
             </div>
 
@@ -590,19 +584,28 @@ $productos = $stmt->fetchAll(PDO::FETCH_ASSOC);
             </span>
 
             <h2>¿Eliminar producto?</h2>
-
+            <br>
             <p>
                 Esta acción no se puede deshacer.
                 <br><br>
                 ¿Estás seguro de que deseas eliminar
                 el producto seleccionado?
             </p>
+            <form id="formEliminarProducto" action="../controlador/productos_controlador.php" method="POST">
 
+            <!-- le dice al controlador que hacer -->
             <input
-                type="hidden"
-                id="deleteProdId"
+            type="hidden"
+            name="accion"
+            value="eliminar"
             >
 
+                <!-- javascript pone el id -->
+                <input
+                    type="hidden"
+                    id="deleteProdId"
+                    name="id_producto"
+                >
             <div class="modal-buttons">
 
                 <button
@@ -612,23 +615,15 @@ $productos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         document
                         .getElementById('modalDeleteProducto')
                         .style.display = 'none'
-                    "
-                >
-                    Cancelar
-                </button>
+                    "> Cancelar </button>
 
                 <button
-                    type="button"
+                    type="submit"
                     id="btn-confirmar-eliminar"
                     class="btn-danger"
-                >
-                    Confirmar eliminar
-                </button>
-
+                >Confirmar eliminar</button>
             </div>
-
         </div>
-
     </div>
 
 
