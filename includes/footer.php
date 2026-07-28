@@ -38,7 +38,7 @@
         </div>
         <div class="footer-copy">
     <p>© 2026 Aroma a Café. Todos los derechos reservados. | Proyecto desarrollado por el equipo Aroma a Café.</p>
-    <a href="admin_panel/loginAdmin.php" class="btn-acceso-admin">Acceso Administrativo</a>
+   
 </div>
         
 </footer>

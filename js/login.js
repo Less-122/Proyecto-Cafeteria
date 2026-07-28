@@ -1,15 +1,14 @@
-//Animacion para cambiar entre inicio de sesion y crear cuenta
+// Animacion para cambiar entre inicio de sesion y crear cuenta
+const signIn = document.getElementById('sign-in');
+const signUp = document.getElementById('sign-up');
+const form = document.getElementById('form');
 
-const signIn = document.getElementById('sign-in')
-const signUp = document.getElementById('sign-up')
-const form = document.getElementById('form')
-
-signIn.addEventListener('click',()=>{
-    form.classList.remove('toggle')
-})
-signUp.addEventListener('click',()=>{
-    form.classList.add('toggle')
-})
+signIn.addEventListener('click', () => {
+    form.classList.remove('toggle');
+});
+signUp.addEventListener('click', () => {
+    form.classList.add('toggle');
+});
 
 document.addEventListener("DOMContentLoaded", () => {
     
@@ -56,12 +55,12 @@ document.addEventListener("DOMContentLoaded", () => {
             let hasError = false; 
             clearAllErrors(formLogin); 
             
-            const inputTelefono = formLogin.querySelector('#login_telefono');
+            const inputCorreo = formLogin.querySelector('#login_correo');
             const inputPassword = formLogin.querySelector('#login_password');
-            const regexTelefono = /^\d{10}$/;
+            const regexCorreo = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
-            if (!regexTelefono.test(inputTelefono.value)) {
-                showInputError(inputTelefono, 'Introduce un número válido de 10 dígitos');
+            if (!regexCorreo.test(inputCorreo.value)) {
+                showInputError(inputCorreo, 'Introduce un correo electrónico válido');
                 hasError = true;
             }
             
@@ -83,11 +82,11 @@ document.addEventListener("DOMContentLoaded", () => {
             
             const inputNombre = formRegistro.querySelector('#reg_nombre');
             const inputApellido = formRegistro.querySelector('#reg_apellido');
-            const inputTelefono = formRegistro.querySelector('#reg_telefono');
+            const inputCorreo = formRegistro.querySelector('#reg_correo');
             const inputPassword = formRegistro.querySelector('#reg_password');
 
             const contieneNumeros = /[0-9]/;
-            const regexTelefono = /^\d{10}$/;
+            const regexCorreo = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
             // Validar Nombre
             if (inputNombre.value.trim().length < 2) {
@@ -107,9 +106,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 hasError = true;
             }
 
-            // Validar Teléfono
-            if (!regexTelefono.test(inputTelefono.value)) {
-                showInputError(inputTelefono, 'Introduce un número válido de 10 dígitos');
+            // Validar Correo
+            if (!regexCorreo.test(inputCorreo.value)) {
+                showInputError(inputCorreo, 'Introduce un correo electrónico válido');
                 hasError = true;
             }
 
@@ -123,7 +122,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // --- 4. ATRAPAR LOS ERRORES QUE MANDA PHP POR LA URL ---
+    // --- ATRAPAR LOS ERRORES QUE MANDA PHP POR LA URL ---
     const urlParams = new URLSearchParams(window.location.search);
     const errorPHP = urlParams.get('error');
     const mensajePHP = urlParams.get('mensaje');
@@ -132,15 +131,15 @@ document.addEventListener("DOMContentLoaded", () => {
     if (errorPHP === 'credenciales') {
         const inputPasswordLogin = document.querySelector('#login_password');
         if (inputPasswordLogin) {
-            showInputError(inputPasswordLogin, 'Teléfono o contraseña incorrectos');
+            showInputError(inputPasswordLogin, 'Correo o contraseña incorrectos');
         }
     }
     
     // Si PHP regresa al usuario porque la base de datos rechazó el registro
     if (errorPHP === 'registro') {
-        const inputTelefonoReg = document.querySelector('#reg_telefono');
-        if (inputTelefonoReg) {
-            showInputError(inputTelefonoReg, 'Este teléfono ya está registrado o los datos son inválidos');
+        const inputCorreoReg = document.querySelector('#reg_correo');
+        if (inputCorreoReg) {
+            showInputError(inputCorreoReg, 'Este correo ya está registrado o los datos son inválidos');
         }
     }
 });

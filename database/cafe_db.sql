@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 26-07-2026 a las 21:41:17
+-- Tiempo de generación: 28-07-2026 a las 05:22:05
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -21,6 +21,23 @@ SET time_zone = "+00:00";
 -- Base de datos: `cafe_db`
 --
 
+DELIMITER $$
+--
+-- Funciones
+--
+CREATE DEFINER=`root`@`localhost` FUNCTION `generar_clave_retiro` () RETURNS VARCHAR(10) CHARSET utf8mb4 COLLATE utf8mb4_general_ci DETERMINISTIC BEGIN
+    DECLARE chars VARCHAR(36) DEFAULT 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    DECLARE clave VARCHAR(10) DEFAULT '';
+    DECLARE i INT DEFAULT 0;
+    WHILE i < 6 DO
+        SET clave = CONCAT(clave, SUBSTRING(chars, FLOOR(1 + RAND() * 36), 1));
+        SET i = i + 1;
+    END WHILE;
+    RETURN clave;
+END$$
+
+DELIMITER ;
+
 -- --------------------------------------------------------
 
 --
@@ -31,7 +48,7 @@ CREATE TABLE `categorias` (
   `id_categoria` int(11) NOT NULL,
   `nombre` varchar(30) NOT NULL,
   `descripcion` varchar(100) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ;
 
 --
 -- Volcado de datos para la tabla `categorias`
@@ -54,7 +71,7 @@ CREATE TABLE `detalles_pedido` (
   `id_producto_fk` int(11) DEFAULT NULL,
   `cantidad` int(11) NOT NULL,
   `precio_unitario` decimal(10,2) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ;
 
 -- --------------------------------------------------------
 
@@ -64,29 +81,25 @@ CREATE TABLE `detalles_pedido` (
 
 CREATE TABLE `pedidos` (
   `id_pedido` int(11) NOT NULL,
-  `id_usuario_fk` int(11) DEFAULT NULL,
-  `detalle_pedido` text DEFAULT NULL,
-  `fecha_pedido` date NOT NULL,
+  `id_usuario_fk` int(11) NOT NULL,
   `fecha_vencimiento` date DEFAULT NULL,
-  `clave_retiro` varchar(50) DEFAULT NULL,
+  `clave_retiro` varchar(10) DEFAULT NULL,
   `total` decimal(10,2) NOT NULL,
   `estado` enum('pendiente','entregado','vencido') NOT NULL DEFAULT 'pendiente',
   `fecha_creacion` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ;
 
 --
--- Volcado de datos para la tabla `pedidos`
+-- Disparadores `pedidos`
 --
-
-INSERT INTO `pedidos` (`id_pedido`, `id_usuario_fk`, `detalle_pedido`, `fecha_pedido`, `fecha_vencimiento`, `clave_retiro`, `total`, `estado`, `fecha_creacion`) VALUES
-(1, 1, '3x Doble felicidad ($88)\n1x Combo Dulce ($132.6)', '2026-07-26', NULL, '358427', 396.60, '', '2026-07-26 10:17:23'),
-(2, 1, '3x Doble felicidad ($88)\n1x Combo Dulce ($132.6)', '2026-07-26', NULL, '748080', 396.60, '', '2026-07-26 10:17:23'),
-(3, 1, '2x Doble felicidad ($88)', '2026-07-26', NULL, '715835', 176.00, '', '2026-07-26 10:21:50'),
-(4, 1, '3x Combo Dulce ($132.6)\n2x Café Mocha ($59)', '2026-07-26', NULL, '338416', 515.80, '', '2026-07-26 10:25:44'),
-(5, 1, '1x Latte Macchiato ($49)', '2026-07-26', NULL, '293300', 49.00, '', '2026-07-26 10:34:07'),
-(6, 1, '1x Doble felicidad ($88)', '2026-07-26', NULL, '881500', 88.00, '', '2026-07-26 10:35:56'),
-(7, 1, '1x Doble felicidad ($88)\n1x Combo Dulce ($132.6)', '2026-07-26', NULL, '996342', 220.60, 'pendiente', '2026-07-26 18:24:46'),
-(8, 1, '1x Doble felicidad ($88)', '2026-07-26', NULL, '552741', 88.00, 'pendiente', '2026-07-26 19:04:15');
+DELIMITER $$
+CREATE TRIGGER `before_insert_pedidos` BEFORE INSERT ON `pedidos` FOR EACH ROW BEGIN
+    IF NEW.clave_retiro IS NULL THEN
+        SET NEW.clave_retiro = generar_clave_retiro();
+    END IF;
+END
+$$
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -97,33 +110,33 @@ INSERT INTO `pedidos` (`id_pedido`, `id_usuario_fk`, `detalle_pedido`, `fecha_pe
 CREATE TABLE `productos` (
   `id_producto` int(11) NOT NULL,
   `nombre` varchar(30) NOT NULL,
-  `descripcion` varchar(100) DEFAULT NULL,
+  `descripcion` text DEFAULT NULL,
   `id_categoria_fk` int(11) DEFAULT NULL,
   `precio` decimal(10,2) NOT NULL,
-  `imagen_url` varchar(100) DEFAULT NULL,
+  `imagen_url` varchar(255) DEFAULT NULL,
   `tiene_promocion` tinyint(1) DEFAULT 0,
   `etiqueta_promo` varchar(30) DEFAULT NULL,
   `precio_descuento` decimal(10,2) DEFAULT NULL,
   `stock` int(11) NOT NULL DEFAULT 0
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ;
 
 --
 -- Volcado de datos para la tabla `productos`
 --
 
 INSERT INTO `productos` (`id_producto`, `nombre`, `descripcion`, `id_categoria_fk`, `precio`, `imagen_url`, `tiene_promocion`, `etiqueta_promo`, `precio_descuento`, `stock`) VALUES
-(1, 'Blanco plano', 'Microespuma terciopelo vertida sobre un doble ristretto.', 1, 59.00, 'blanco_plano.jpg', 0, NULL, NULL, 0),
-(2, 'Latte Macchiato', 'Leche manchada con un shot de espresso sedoso y una capa ligera de espuma.', 1, 49.00, 'latte_macchiato.jpg', 0, NULL, NULL, 0),
-(3, 'Café Mocha', 'Perfecta armonía entre espresso, salsa de chocolate oscuro y leche vaporizada.', 1, 59.00, 'cafe_mocha.jpg', 0, NULL, NULL, 0),
-(4, 'Cold Brew Clásico', 'Café extraído en frío por 18 horas, resultando en una bebida suave y de baja acidez.', 1, 89.00, 'cold_brew.jpg', 0, NULL, NULL, 0),
-(5, 'Iced Americano', 'Doble shot de espresso vertido sobre agua fría y hielos, refrescante e intenso.', 2, 55.00, 'iced_americano.jpg', 0, NULL, NULL, 0),
-(6, 'Iced Latte Vainilla', 'Espresso con leche fría, hielo y un toque exacto de jarabe artesanal de vainilla.', 2, 68.00, 'iced_latte_vainilla.jpg', 0, NULL, NULL, 0),
-(7, 'Frappé de Oreo', 'Base cremosa licuada con hielo y galletas Oreo, decorado con crema batida y chocolate.', 2, 75.00, 'frappe_oreo.jpg', 0, NULL, NULL, 0),
-(8, 'Espresso Tónica', 'Una combinación audaz de agua tónica premium, hielo y un shot de espresso flotando.', 2, 65.00, 'espresso_tonica.jpg', 0, NULL, NULL, 0),
-(9, 'Pastel de Zanahoria', 'Bizcocho especiado con nuez y zanahoria rallada, cubierto de betún cremoso de queso de cabra.', 3, 78.00, 'pastel_zanahoria.jpg', 0, NULL, NULL, 0),
-(10, 'Brownie Fudge', 'Bizcocho denso de chocolate semi-amargo con trozos de nuez pecana, crujiente por fuera.', 3, 52.00, 'brownie_fudge.jpg', 0, NULL, NULL, 0),
-(11, 'Tartaleta de Frutas', 'Base de masa quebrada rellena de crema pastelera de vainilla, decorada con fresas y kiwi.', 3, 65.00, 'tartaleta_frutas.jpg', 0, NULL, NULL, 0),
-(12, 'Tiramisú de la Casa', 'Soletas bañadas en café espresso y licor, intercaladas con crema de queso mascarpone.', 3, 85.00, 'tiramisu_casa.jpg', 0, NULL, NULL, 0);
+(1, 'Blanco plano', 'Microespuma terciopelo vertida sobre un doble ristretto.', 1, 59.00, 'blanco_plano.jpg', 0, NULL, NULL, 10),
+(2, 'Latte Macchiato', 'Leche manchada con un shot de espresso sedoso y una capa ligera de espuma.', 1, 49.00, 'latte_macchiato.jpg', 0, NULL, NULL, 15),
+(3, 'Café Mocha', 'Perfecta armonía entre espresso, salsa de chocolate oscuro y leche vaporizada.', 1, 59.00, 'cafe_mocha.jpg', 0, NULL, NULL, 12),
+(4, 'Cold Brew Clásico', 'Café extraído en frío por 18 horas, resultando en una bebida suave y de baja acidez.', 1, 89.00, 'cold_brew.jpg', 0, NULL, NULL, 8),
+(5, 'Iced Americano', 'Doble shot de espresso vertido sobre agua fría y hielos, refrescante e intenso.', 2, 55.00, 'iced_americano.jpg', 0, NULL, NULL, 20),
+(6, 'Iced Latte Vainilla', 'Espresso con leche fría, hielo y un toque exacto de jarabe artesanal de vainilla.', 2, 68.00, 'iced_latte_vainilla.jpg', 0, NULL, NULL, 18),
+(7, 'Frappé de Oreo', 'Base cremosa licuada con hielo y galletas Oreo, decorado con crema batida y chocolate.', 2, 75.00, 'frappe_oreo.jpg', 0, NULL, NULL, 10),
+(8, 'Espresso Tónica', 'Una combinación audaz de agua tónica premium, hielo y un shot de espresso flotando.', 2, 65.00, 'espresso_tonica.jpg', 0, NULL, NULL, 12),
+(9, 'Pastel de Zanahoria', 'Bizcocho especiado con nuez y zanahoria rallada, cubierto de betún cremoso de queso de cabra.', 3, 78.00, 'pastel_zanahoria.jpg', 0, NULL, NULL, 5),
+(10, 'Brownie Fudge', 'Bizcocho denso de chocolate semi-amargo con trozos de nuez pecana, crujiente por fuera.', 3, 52.00, 'brownie_fudge.jpg', 0, NULL, NULL, 8),
+(11, 'Tartaleta de Frutas', 'Base de masa quebrada rellena de crema pastelera de vainilla, decorada con fresas y kiwi.', 3, 65.00, 'tartaleta_frutas.jpg', 0, NULL, NULL, 6),
+(12, 'Tiramisú de la Casa', 'Soletas bañadas en café espresso y licor, intercaladas con crema de queso mascarpone.', 3, 85.00, 'tiramisu_casa.jpg', 0, NULL, NULL, 4);
 
 -- --------------------------------------------------------
 
@@ -135,20 +148,11 @@ CREATE TABLE `usuarios` (
   `id_usuario` int(11) NOT NULL,
   `nombre` varchar(30) NOT NULL,
   `apellido` varchar(30) NOT NULL,
-  `telefono` varchar(10) NOT NULL,
+  `correo` varchar(100) NOT NULL,
   `password` varchar(255) NOT NULL,
+  `rol` enum('admin','cliente') NOT NULL DEFAULT 'cliente',
   `fecha_registro` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `usuarios`
---
-
-INSERT INTO `usuarios` (`id_usuario`, `nombre`, `apellido`, `telefono`, `password`, `fecha_registro`) VALUES
-(1, 'ALBERTO', 'PROCOPIO', '7341291742', '$2y$10$rSJqGULG7qcpEhff7hoBLeYqCgcPf7bJkXpVb3Ztf4xMizzwpN3YS', '2026-07-26 06:56:43'),
-(2, 'Leslie', 'Contreras', '7352148787', '$2y$10$ZT4FMdTwYzakA5jTiER8HOsA6rqVcZKk8SRQdQqXH8bxi7VMeEWh6', '2026-07-26 18:24:01'),
-(3, 'administrador', 'admin', '1234567890', '$2y$10$.o2970Ctwzkws2swZ0gGfO/5IM0bjjlAeT9rQUC/PDlrlYYFK0Er2', '2026-07-26 18:25:54'),
-(4, 'Juan', 'prueba', '7356667788', '$2y$10$O5.JQdXfGL7yujVEUE8OCeHtHvlIMZ3TaVHRSlM6qMmNJg3.McqeW', '2026-07-26 19:00:01');
+) ;
 
 --
 -- Índices para tablas volcadas
@@ -187,7 +191,7 @@ ALTER TABLE `productos`
 --
 ALTER TABLE `usuarios`
   ADD PRIMARY KEY (`id_usuario`),
-  ADD UNIQUE KEY `telefono` (`telefono`);
+  ADD UNIQUE KEY `correo` (`correo`);
 
 --
 -- AUTO_INCREMENT de las tablas volcadas
@@ -197,7 +201,7 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT de la tabla `categorias`
 --
 ALTER TABLE `categorias`
-  MODIFY `id_categoria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id_categoria` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `detalles_pedido`
@@ -209,19 +213,19 @@ ALTER TABLE `detalles_pedido`
 -- AUTO_INCREMENT de la tabla `pedidos`
 --
 ALTER TABLE `pedidos`
-  MODIFY `id_pedido` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id_pedido` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `productos`
 --
 ALTER TABLE `productos`
-  MODIFY `id_producto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id_producto` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- Restricciones para tablas volcadas

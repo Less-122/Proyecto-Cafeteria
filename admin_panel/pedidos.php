@@ -6,16 +6,11 @@ require_once '../config/conexion.php';
 $sql = "
     SELECT
         p.id_pedido,
-        u.nombre,
-        u.apellido,
-        DATE_FORMAT(p.fecha_pedido, '%d-%m-%Y') AS fecha_pedido_fmt,
+        p.id_usuario_fk,
         DATE_FORMAT(p.fecha_vencimiento, '%d-%m-%Y') AS fecha_vencimiento_fmt,
         p.clave_retiro,
         p.total,
-        p.estado
-    FROM pedidos AS p
-    INNER JOIN usuarios AS u
-        ON p.id_usuario_fk = u.id_usuario
+        p.estado,
     ORDER BY p.fecha_pedido DESC, p.id_pedido DESC
 ";
 

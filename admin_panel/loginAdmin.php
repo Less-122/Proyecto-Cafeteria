@@ -5,15 +5,15 @@ require_once '../config/conexion.php';
 $error = '';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $telefono = $_POST['telefono'];
+    $correo = $_POST['correo'];
     $password = $_POST['password'];
 
     // Buscamos específicamente a un usuario que se llame 'administrador'
-    $sql = "SELECT id_usuario, nombre, password FROM usuarios WHERE telefono = ? AND nombre = 'administrador'";
+    $sql = "SELECT id_usuario, nombre, password FROM usuarios WHERE correo = ? AND nombre = 'administrador'";
     
     // Preparación y ejecución con sintaxis PDO
     $stmt = $conexion->prepare($sql);
-    $stmt->execute([$telefono]);
+    $stmt->execute([$correo]);
     $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if ($usuario) {
@@ -60,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <?php endif; ?>
 
         <form method="POST" action="">
-            <input type="tel" name="telefono" placeholder="Teléfono del Admin" required>
+            <input type="correo" name="correo" placeholder="Correo del Admin" required>
             <input type="password" name="password" placeholder="Contraseña" required>
             <button type="submit">Entrar al Panel</button>
         </form>
