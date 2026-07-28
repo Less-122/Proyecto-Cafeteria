@@ -9,9 +9,8 @@ $sql = "
         p.id_producto,
         p.nombre,
         p.descripcion,
-        p.id_categoria_fk,
+        p.id_categoria,
         p.precio,
-        p.stock,
         p.imagen_url,
         p.tiene_promocion,
         p.etiqueta_promo,
@@ -19,7 +18,7 @@ $sql = "
         c.nombre AS categoria
     FROM productos AS p
     INNER JOIN categorias AS c
-        ON p.id_categoria_fk = c.id_categoria
+        ON p.id_categoria = c.id_categoria
     ORDER BY p.id_producto ASC
 ";
 
@@ -32,7 +31,7 @@ if ($resultado) {
 
     while ($producto = $resultado->fetch(PDO::FETCH_ASSOC)) {
 
-        $idCategoria = (int) $producto['id_categoria_fk'];
+        $idCategoria = (int) $producto['id_categoria'];
 
         $productosPorCategoria[$idCategoria][] = $producto;
     }
