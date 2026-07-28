@@ -1,5 +1,26 @@
 <?php
 include 'seguridad_admin.php';
+require_once '../config/conexion.php';
+
+/* Obtener pedidos junto con el nombre del cliente que lo hizo */
+$sql = "
+    SELECT
+        p.id_pedido,
+        u.nombre,
+        u.apellido,
+        DATE_FORMAT(p.fecha_pedido, '%d-%m-%Y') AS fecha_pedido_fmt,
+        DATE_FORMAT(p.fecha_vencimiento, '%d-%m-%Y') AS fecha_vencimiento_fmt,
+        p.clave_retiro,
+        p.total,
+        p.estado
+    FROM pedidos AS p
+    INNER JOIN usuarios AS u
+        ON p.id_usuario_fk = u.id_usuario
+    ORDER BY p.fecha_pedido DESC, p.id_pedido DESC
+";
+
+$resultado = $conexion->query($sql);
+$pedidos = $resultado ? $resultado->fetchAll(PDO::FETCH_ASSOC) : [];
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -28,7 +49,7 @@ include 'seguridad_admin.php';
             </div>
         </section>
 
-        <table>
+        <table id="tablaPedidos">
             <tr>
                 <th>ID</th>
                 <th>Nombre</th>
@@ -38,78 +59,37 @@ include 'seguridad_admin.php';
                 <th>Total</th>
                 <th>Estado</th>
             </tr>
-            <tr>
-                <td>778</td>
-                <td>Martha</td>
-                <td>08-07-2026</td>
-                <td>09-07-2026</td>
-                <td>456789</td>
-                <td>450</td>
-                <td>Pendiente</td>
-            </tr>
-            <tr>
-                <td>779</td>
-                <td>Carlos</td>
-                <td>08-07-2026</td>
-                <td>09-07-2026</td>
-                <td>123456</td>
-                <td>120</td>
-                <td>Completado</td>
-            </tr>
-            <tr>
-                <td>780</td>
-                <td>Laura</td>
-                <td>09-07-2026</td>
-                <td>10-07-2026</td>
-                <td>987654</td>
-                <td>340</td>
-                <td>Pendiente</td>
-            </tr>
-            <tr>
-                <td>781</td>
-                <td>Diego</td>
-                <td>09-07-2026</td>
-                <td>10-07-2026</td>
-                <td>112233</td>
-                <td>85</td>
-                <td>Vencido</td>
-            </tr>
-            <tr>
-                <td>782</td>
-                <td>Ana</td>
-                <td>09-07-2026</td>
-                <td>10-07-2026</td>
-                <td>445566</td>
-                <td>210</td>
-                <td>Completado</td>
-            </tr>
-            <tr>
-                <td>783</td>
-                <td>Pedro</td>
-                <td>10-07-2026</td>
-                <td>11-07-2026</td>
-                <td>778899</td>
-                <td>500</td>
-                <td>Pendiente</td>
-            </tr>
-            <tr>
-                <td>784</td>
-                <td>Sofía</td>
-                <td>10-07-2026</td>
-                <td>11-07-2026</td>
-                <td>334455</td>
-                <td>150</td>
-                <td>Pendiente</td>
-            </tr>
-            <tr>
-                <td>785</td>
-                <td>Miguel</td>
-                <td>10-07-2026</td>
-                <td>11-07-2026</td>
-                <td>667788</td>
-                <td>280</td>
-                <td>Completado</td>
-            </tr>
+
+            <?php if (!empty($pedidos)): ?>
+
+                <?php foreach ($pedidos as $pedido): ?>
+                    <tr>
+                        <td><?= (int) $pedido['id_pedido'] ?></td>
+                        <td><?= htmlspecialchars(
+                            $pedido['nombre'] . ' ' . $pedido['apellido'],
+                            ENT_QUOTES,
+                            'UTF-8'
+                        ) ?></td>
+                        <td><?= htmlspecialchars($pedido['fecha_pedido_fmt'], ENT_QUOTES, 'UTF-8') ?></td>
+                        <td><?= htmlspecialchars($pedido['fecha_vencimiento_fmt'], ENT_QUOTES, 'UTF-8') ?></td>
+                        <td><?= htmlspecialchars($pedido['clave_retiro'], ENT_QUOTES, 'UTF-8') ?></td>
+                        <td>$<?= number_format((float) $pedido['total'], 2) ?></td>
+                        <td>
+                            <span class="estado-badge estado-<?= htmlspecialchars($pedido['estado'], ENT_QUOTES, 'UTF-8') ?>">
+                                <?= htmlspecialchars(ucfirst($pedido['estado']), ENT_QUOTES, 'UTF-8') ?>
+                            </span>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+
+            <?php else: ?>
+
+                <tr>
+                    <td colspan="7" style="text-align:center;">No hay pedidos registrados.</td>
+                </tr>
+
+            <?php endif; ?>
+
         </table>
 
     </main>

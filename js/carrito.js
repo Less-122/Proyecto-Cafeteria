@@ -126,7 +126,7 @@ document.addEventListener("DOMContentLoaded", () => {
             .then(res => res.json())
             .then(data => {
                 if (data.success) {
-                    alert(`Pedido confirmado con éxito. Tu número de pedido es #${data.id_pedido}`);
+                   alert(`Pedido confirmado con éxito.\nNúmero de pedido: #${data.id_pedido}\nClave de retiro: ${data.clave_retiro}`);
                     localStorage.removeItem("carritoCompras");
                     carrito = [];
                     renderizarCarrito();
