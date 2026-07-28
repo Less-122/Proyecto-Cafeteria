@@ -18,7 +18,11 @@ ul {
 body {
     font-family: "Roboto Slab", serif;
     background-color: #F5EDD6; /* Fondo Crema */
+<<<<<<< HEAD
     color: #f5f0ec;
+=======
+    color: #ebe7e4;
+>>>>>>> Kaori
 }
 
 .container {
