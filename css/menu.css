@@ -167,11 +167,12 @@ body {
 .carrusel-container {
     display: flex;
     overflow-x: auto;
-    scroll-snap-type: x mandatory; 
+    scroll-snap-type: x proximity; /* menos agresivo */
     gap: 20px;
     padding: 10px 0;
     scroll-behavior: smooth;
     width: 100%;
+    overscroll-behavior-x: contain; /* evita que el scroll del carrusel "se filtre" o afecte al padre */
 }
 
 .carrusel-container::-webkit-scrollbar { 

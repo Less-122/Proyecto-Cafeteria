@@ -132,25 +132,12 @@ enlacesMenu.forEach((enlace) => {
     });
 });
 
-window.addEventListener("load", () => {
-    const idDestino = window.location.hash;
-
-    if (!idDestino) {
-        return;
-    }
-
-    const seccion = document.querySelector(idDestino);
-
-    if (!seccion) {
-        return;
-    }
-
-    window.scrollTo(0, 0);
-
-    setTimeout(() => {
-        animarHaciaSeccion(seccion);
-    }, 150);
-});
+// NOTA: Se eliminó el listener de "load" que forzaba scrollTo(0,0) y luego
+// animaba hacia la sección del hash al cargar la página. Ese bloque competía
+// con el scroll del usuario durante ~1.5s después de cada carga (por eso se
+// sentía "trabado" al volver de login), y era redundante: el navegador ya
+// posiciona correctamente la sección gracias a "scroll-margin-top: 100px"
+// definido en menu.css, sin necesidad de JavaScript.
 
 // Control del Header Fijo
 let ubicacionPrincipal = window.scrollY;
@@ -188,3 +175,8 @@ if (carousel && btnPrev && btnNext) {
         carousel.scrollBy({ left: -getScrollAmount(), behavior: 'smooth' });
     });
 }
+document.querySelector('.carrusel-container').addEventListener('wheel', function(e) {
+    if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+        return; // deja que el scroll vertical de la página funcione normal
+    }
+}, { passive: true });
