@@ -3,7 +3,7 @@ include '../config/conexion.php';
 include 'seguridad_admin.php';
 
 // Consulta para obtener todos los usuarios registrados (incluyendo la fecha de registro)
-$stmt = $conexion->prepare("SELECT id_usuario, nombre, apellido, telefono, password, fecha_registro FROM usuarios");
+$stmt = $conexion->prepare("SELECT id_usuario, nombre, apellido, correo, password, fecha_registro FROM usuarios");
 $stmt->execute();
 $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -63,7 +63,7 @@ $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <td><?= htmlspecialchars($u['id_usuario']) ?></td>
                         <td><?= htmlspecialchars($u['nombre']) ?></td>
                         <td><?= htmlspecialchars($u['apellido']) ?></td>
-                        <td><?= htmlspecialchars($u['telefono']) ?></td>
+                        <td><?= htmlspecialchars($u['correo']) ?></td>
                         <td>••••••••</td>
                         <td>
                             <?= !empty($u['fecha_registro']) ? date('d/m/Y H:i', strtotime($u['fecha_registro'])) : 'N/A' ?>
@@ -89,8 +89,8 @@ $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <label for="editUserApellido">Apellido:</label>
                 <input type="text" id="editUserApellido" name="apellido" required>
 
-                <label for="editUserTelefono">Teléfono:</label>
-                <input type="text" id="editUserTelefono" name="telefono" required>
+                <label for="editUserCorreo">Correo:</label>
+                <input type="text" id="editUserCorreo" name="correo" required>
 
                 <label for="editUserContra">Contraseña:</label>
                 <input type="password" id="editUserContra" name="password" placeholder="Nueva contraseña (opcional)">

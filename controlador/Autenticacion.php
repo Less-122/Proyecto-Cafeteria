@@ -11,14 +11,14 @@ switch ($operacion) {
     case 'registro':
         $nombre = $_POST['nombre'] ?? '';
         $apellido = $_POST['apellido'] ?? '';
-        $telefono = $_POST['telefono'] ?? '';
+        $correo = $_POST['correo'] ?? '';
         $password_segura = password_hash($_POST['password'] ?? '', PASSWORD_DEFAULT);
 
         // Preparamos la consulta con PDO
-        $stmt = $conexion->prepare("INSERT INTO usuarios (nombre, apellido, telefono, password) VALUES (?, ?, ?, ?)");
+        $stmt = $conexion->prepare("INSERT INTO usuarios (nombre, apellido, correo, password) VALUES (?, ?, ?, ?)");
         
         // En PDO pasamos los valores como un array directamente al execute()
-        if ($stmt->execute([$nombre, $apellido, $telefono, $password_segura])) {
+        if ($stmt->execute([$nombre, $apellido, $correo, $password_segura])) {
             
             
             // 1. Recuperamos el ID del nuevo usuario usando la sintaxis de PDO
@@ -41,13 +41,13 @@ switch ($operacion) {
         break;
 
     case 'login':
-        $telefono = $_POST['telefono'] ?? '';
+        $correo = $_POST['correo'] ?? '';
         $password = $_POST['password'] ?? '';
 
         // Buscamos al usuario por su teléfono usando PDO
-        $sql = "SELECT id_usuario, nombre, password FROM usuarios WHERE telefono = ?";
+        $sql = "SELECT id_usuario, nombre, password FROM usuarios WHERE correo = ?";
         $stmt = $conexion->prepare($sql);
-        $stmt->execute([$telefono]);
+        $stmt->execute([$correo]);
         
         // En PDO usamos fetch() en lugar de fetch_assoc()
         $usuario = $stmt->fetch(PDO::FETCH_ASSOC);

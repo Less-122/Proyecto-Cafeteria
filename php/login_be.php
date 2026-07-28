@@ -5,11 +5,11 @@ include '../conexion.php'; // Asegúrate de que la ruta a tu archivo de conexió
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // 1. Sanitizar y limpiar entradas
-    $telefono = trim($_POST['telefono'] ?? '');
+    $correo = trim($_POST['correo'] ?? '');
     $password = trim($_POST['password'] ?? '');
 
     // Validar que los campos no estén vacíos
-    if (empty($telefono) || empty($password)) {
+    if (empty($correo) || empty($password)) {
         echo '
             <script>
                 alert("Por favor, llena todos los campos.");
@@ -20,9 +20,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     try {
-        // 2. Consultar el usuario en la base de datos por teléfono
-        $stmt = $conexion->prepare("SELECT id_usuario, nombre, apellido, telefono, password FROM usuarios WHERE telefono = :telefono LIMIT 1");
-        $stmt->bindParam(':telefono', $telefono, PDO::PARAM_STR);
+        // 2. Consultar el usuario en la base de datos por email
+        $stmt = $conexion->prepare("SELECT id_usuario, nombre, apellido, correo, password FROM usuarios WHERE telefono = :telefono LIMIT 1");
+        $stmt->bindParam(':correo', $correo, PDO::PARAM_STR);
         $stmt->execute();
 
         $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -36,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['usuario_id'] = $usuario['id_usuario'];
             $_SESSION['nombre'] = $usuario['nombre'];
             $_SESSION['apellido'] = $usuario['apellido'];
-            $_SESSION['telefono'] = $usuario['telefono'];
+            $_SESSION['correo'] = $usuario['correo'];
 
             // 5. Redireccionar al usuario al catálogo/inicio
             header("Location: ../index.php"); // o la página principal de tu cafetería
@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Contraseña incorrecta o usuario no encontrado
             echo '
                 <script>
-                    alert("Número de teléfono o contraseña incorrectos.");
+                    alert("Correo o contraseña incorrectos.");
                     window.location = "../login.php";
                 </script>
             ';

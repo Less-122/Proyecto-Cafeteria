@@ -63,7 +63,7 @@ document.addEventListener('click', function(e) {
             document.getElementById('editUserId').value = fila.cells[1].innerText;
             document.getElementById('editUserNombre').value = fila.cells[2].innerText;
             document.getElementById('editUserApellido').value = fila.cells[3].innerText;
-            document.getElementById('editUserTelefono').value = fila.cells[4].innerText;
+            document.getElementById('editUserCorreo').value = fila.cells[4].innerText;
             const inputContra = document.getElementById('editUserContra') || document.getElementById('editUserPassword');
             if (inputContra) inputContra.value = ''; // Limpiar campo contraseña por seguridad
         }

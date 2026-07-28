@@ -26,7 +26,7 @@
     <input type="hidden" name="operacion" value="login">
 
     <div class="input">
-        <input type="tel" name="telefono" id="login_telefono" placeholder="Ingrese su número" required>
+        <input type="correo" name="correo" id="login_correo" placeholder="Ingrese su correo" required>
     </div>
     <div class="input">
         <input type="password" name="password" id="login_password" placeholder="Ingrese su contraseña" required>
@@ -40,7 +40,7 @@
 <!-- FORMULARIO DE REGISTRO -->
 <form class="registro" action="controlador\Autenticacion.php" method="POST">
     <h2 class="txt-titulo">Crear cuenta</h2>
-    <p>Usa tu número de teléfono para registrarte</p>
+    <p>Usa tu correo para registrarte</p>
 
     <input type="hidden" name="operacion" value="registro">
 
@@ -49,7 +49,7 @@
         <input type="text" name="apellido" id="reg_apellido" placeholder="Ingrese su apellido" required>
     </div>
     <div class="input">
-        <input type="tel" name="telefono" id="reg_telefono" placeholder="Ingrese su número" required>
+        <input type="correo" name="correo" id="reg_correo" placeholder="Ingrese su correo" required>
     </div>
     <div class="input">
         <input type="password" name="password" id="reg_password" placeholder="Ingrese su contraseña" required>
