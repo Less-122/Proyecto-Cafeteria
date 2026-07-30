@@ -58,7 +58,7 @@ switch ($operacion) {
 
             // Redirección según rol
             if ($usuario['rol'] === 'admin') {
-                header("Location: /Proyecto-Cafeteria/admin_panel/usuarios.php");
+                header("Location: /Proyecto-Cafeteria/admin_panel/productos.php");
                 exit();
             } else {
                 header("Location: ../index.php");
