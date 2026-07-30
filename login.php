@@ -72,5 +72,6 @@
   
     <script src="js/login.js"></script>
     <script src="js/menu.js"></script>
+    <script src="js/header-menu.js"></script>
 </body>
 </html>

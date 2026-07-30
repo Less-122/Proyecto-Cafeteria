@@ -82,6 +82,28 @@
     transition: color 0.3s ease;
 }
 
+.header-menu-icon{
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+    pointer-events: none;
+}
+
+.header-menu-toggle{
+    position: relative;
+}
+
+.header-menu-toggle:hover{
+    content: "";
+}
+.header-menu-toggle.mostrar-cerrar::after{
+    content: "x";
+    color:#f5f0f0;
+    font-size: 24px;
+    font-weight: 300;
+    line-height: 1;
+}
+
 /* Línea animada debajo del enlace */
 .header-menu a::after {
     content: "";
@@ -210,11 +232,38 @@
         left: 0;
         width: 100%;
         background-color: #2C1A0E;
-        border-top: 1px solid rgba(0, 0, 0, 0.2);
+        border-radius: 0 0 12px 12px;
         box-shadow: 0 3px 12px rgba(0, 0, 0, 0.2);
+        opacity: 0;
+        visibility: hidden;
+        transition:max-height 0.35s ease, opacity 0.25s ease, visibility 0.25s ease;
+    }
+    .header-navbar.menu-abierto{
+        opacity: 1;
+        visibility: visible;
+        max-height: 500px;
+    }
+    .header-menu li{
+        width: 100%;
+    }
+    .header-menu a{
+        width: 100%;
+        padding: 13px 10px;
+        color: #ffffff;
+        font-size:16px;
+        text-align:left;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .header-menu li:last-child a{
+        border-bottom: none;
+    }
+    .header-menu a::after{
         display: none;
     }
-
+    .header-menu a:hover{
+        padding-left: 18px;
+        background-color: rgba(255, 255, 255, 0.8);
+    }
     .header-menu {
         gap: 15px;
     }
@@ -223,7 +272,23 @@
         font-size: 14px;
     }
 }
-
+/*tabletas*/
+@media (max-width: 1050px) {
+    .header-container {
+        width: 95%;
+        gap: 15px;
+    }
+    .header-imagotipo{
+        width: 130px;
+        height: 60px;
+    }
+    .header-menu {
+        gap: 14px;
+    }
+    .header-menu a {
+        font-size: 14px;
+    }
+}
 /* Celulares y tabletas pequeñas */
 @media (max-width: 430px) {
     .header-container {
