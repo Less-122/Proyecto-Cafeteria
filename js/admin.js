@@ -115,7 +115,7 @@ document.addEventListener('click', function(e) {
         const formData = new FormData();
         formData.append('id_usuario', deleteUserId);
 
-        fetch('/Proyecto-Cafeteria/controlador/categorias_controlador.php', {
+        fetch('/Proyecto-Cafeteria/usuario_panel/eliminar_usuario.php', {
             method: 'POST',
             body: formData
         })
