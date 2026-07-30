@@ -78,7 +78,7 @@ switch ($operacion) {
         }
 
         // PDO: Verificar si hay productos asociados usando fetchColumn()
-        $stmt = $conexion->prepare("SELECT COUNT(*) FROM productos WHERE id_categoria_fk = ?");
+        $stmt = $conexion->prepare("SELECT COUNT(*) FROM productos WHERE id_categoria = ?");
         $stmt->execute([$id]);
         $total = $stmt->fetchColumn();
 

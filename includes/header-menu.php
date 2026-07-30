@@ -35,12 +35,12 @@
             <?php if (isset($_SESSION['id_usuario'])): ?>
                 
                 <!-- 1. VISTA PARA USUARIOS LOGUEADOS -->
-                <span class="nombre-usuario" style="margin-right: 15px; font-weight: 600;">
+                <span class="nombre-usuario" style="margin-right: 15px; font-weight: 600; color: white;">
                     Hola, <?php echo $_SESSION['nombre']; ?>
                 </span>
                 
                 <a href="logout.php" class="header-icon-btn" style="text-decoration: none; color: #cc0c39; font-weight: bold; margin-right: 15px;" aria-label="Cerrar sesión">
-                    Salir
+                    Cerrar sesión
                 </a>
 
             <?php else: ?>

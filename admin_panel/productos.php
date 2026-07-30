@@ -9,7 +9,7 @@ $sql = "
         c.nombre AS categoria
     FROM productos AS p
     INNER JOIN categorias AS c
-        ON p.id_categoria_fk = c.id_categoria
+        ON p.id_categoria = c.id_categoria
     ORDER BY p.id_producto ASC
 ";
 
@@ -103,7 +103,7 @@ $productos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     value="<?= (int) $p['id_producto'] ?>"
                                     data-nombre="<?= htmlspecialchars($p['nombre'], ENT_QUOTES, 'UTF-8') ?>"
                                     data-descripcion="<?= htmlspecialchars($p['descripcion'] ?? '', ENT_QUOTES, 'UTF-8') ?>"
-                                    data-categoria="<?= (int) $p['id_categoria_fk'] ?>"
+                                    data-categoria="<?= (int) $p['id_categoria'] ?>"
                                     data-stock="<?= (int) $p['stock'] ?>"
                                     data-precio="<?= htmlspecialchars($p['precio'], ENT_QUOTES, 'UTF-8') ?>"
                                     data-promocion="<?= (int) ($p['tiene_promocion'] ?? 0) ?>"

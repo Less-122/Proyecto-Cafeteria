@@ -6,12 +6,17 @@ require_once '../config/conexion.php';
 $sql = "
     SELECT
         p.id_pedido,
-        p.id_usuario_fk,
-        DATE_FORMAT(p.fecha_vencimiento, '%d-%m-%Y') AS fecha_vencimiento_fmt,
+        p.id_usuario,
+        DATE_FORMAT(p.fecha_creacion, '%d-%m-%Y %H:%i') AS fecha_creacion,
+        DATE_FORMAT(p.fecha_vencimiento, '%d-%m-%Y') AS fecha_vencimiento,
         p.clave_retiro,
         p.total,
         p.estado,
-    ORDER BY p.fecha_pedido DESC, p.id_pedido DESC
+        u.nombre,
+        u.apellido
+    FROM pedidos p
+    LEFT JOIN usuarios u ON p.id_usuario = u.id_usuario
+    ORDER BY p.fecha_creacion DESC, p.id_pedido DESC
 ";
 
 $resultado = $conexion->query($sql);
@@ -65,8 +70,8 @@ $pedidos = $resultado ? $resultado->fetchAll(PDO::FETCH_ASSOC) : [];
                             ENT_QUOTES,
                             'UTF-8'
                         ) ?></td>
-                        <td><?= htmlspecialchars($pedido['fecha_pedido_fmt'], ENT_QUOTES, 'UTF-8') ?></td>
-                        <td><?= htmlspecialchars($pedido['fecha_vencimiento_fmt'], ENT_QUOTES, 'UTF-8') ?></td>
+                        <td><?= htmlspecialchars($pedido['fecha_creacion'], ENT_QUOTES, 'UTF-8') ?></td>
+                        <td><?= htmlspecialchars($pedido['fecha_vencimiento'], ENT_QUOTES, 'UTF-8') ?></td>
                         <td><?= htmlspecialchars($pedido['clave_retiro'], ENT_QUOTES, 'UTF-8') ?></td>
                         <td>$<?= number_format((float) $pedido['total'], 2) ?></td>
                         <td>

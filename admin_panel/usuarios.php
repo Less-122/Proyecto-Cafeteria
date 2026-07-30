@@ -3,7 +3,7 @@ include '../config/conexion.php';
 include 'seguridad_admin.php';
 
 // Consulta para obtener todos los usuarios registrados (incluyendo la fecha de registro)
-$stmt = $conexion->prepare("SELECT id_usuario, nombre, apellido, correo, password, fecha_registro FROM usuarios");
+$stmt = $conexion->prepare("SELECT id_usuario, nombre, apellido, correo, password, fecha_registro, rol FROM usuarios");
 $stmt->execute();
 $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -46,9 +46,10 @@ $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <th>ID</th>
                     <th>Nombre</th>
                     <th>Apellido</th>
-                    <th>Teléfono</th>
+                    <th>Correo</th>
                     <th>Contraseña</th>
                     <th>Fecha de Registro</th>
+                    <th>Rol</th>
                 </tr>
             </thead>
             <tbody>
@@ -59,7 +60,7 @@ $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <?php else: ?>
                     <?php foreach($usuarios as $u): ?>
                     <tr>
-                        <td><input type="checkbox" name="seleccion" value="<?= htmlspecialchars($u['id_usuario']) ?>"></td>
+                        <td><input type="radio" name="seleccion" value="<?= htmlspecialchars($u['id_usuario']) ?>"></td>
                         <td><?= htmlspecialchars($u['id_usuario']) ?></td>
                         <td><?= htmlspecialchars($u['nombre']) ?></td>
                         <td><?= htmlspecialchars($u['apellido']) ?></td>
@@ -68,6 +69,7 @@ $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <td>
                             <?= !empty($u['fecha_registro']) ? date('d/m/Y H:i', strtotime($u['fecha_registro'])) : 'N/A' ?>
                         </td>
+                        <td><?= htmlspecialchars($u['rol']) ?></td>
                     </tr>
                     <?php endforeach; ?>
                 <?php endif; ?>
@@ -94,6 +96,13 @@ $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                 <label for="editUserContra">Contraseña:</label>
                 <input type="password" id="editUserContra" name="password" placeholder="Nueva contraseña (opcional)">
+
+                <label for="editUserRol">Rol: </label>
+                <select id="editUserRol" name="rol" required>
+                    <option value="1"></option>
+                    <option value="cliente">Cliente</option>
+                    <option value="admin">Admin</option>
+                </select>
 
                 <button type="submit">Actualizar</button>
             </form>

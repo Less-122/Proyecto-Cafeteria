@@ -11,15 +11,6 @@ document.addEventListener("DOMContentLoaded", () => {
             ".producto-check:checked"
         );
 
-        if (seleccionados.length === 0) {
-            alert("Selecciona un producto para modificar.");
-            return;
-        }
-
-        if (seleccionados.length > 1) {
-            alert("Selecciona solamente un producto.");
-            return;
-        }
 
         const producto = seleccionados[0];
 

@@ -82,7 +82,7 @@ document.addEventListener('click', function(e) {
         if (modal) modal.style.display = 'block';
     }
 
-    // Abrir Modal Eliminar y pasar ID
+    // Abrir Modal Eliminar y pasar ID USUARIOS
     if (btnDelete) {
         const checkbox = document.querySelector('input[name="seleccion"]:checked');
         if (!checkbox) {
@@ -115,7 +115,7 @@ document.addEventListener('click', function(e) {
         const formData = new FormData();
         formData.append('id_usuario', deleteUserId);
 
-        fetch('/Proyecto-Cafeteria/controlador/categorias_controlador.php', {
+        fetch('/Proyecto-Cafeteria/usuario_panel/eliminar_usuario.php', {
             method: 'POST',
             body: formData
         })
@@ -146,6 +146,9 @@ document.addEventListener('click', function(e) {
             alert(err.message);
         });
     }
+
+
+
 
     // Cerrar Modales
     if (closeBtn) {
