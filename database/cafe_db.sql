@@ -1,105 +1,219 @@
-CREATE DATABASE cafe_db;
-USE cafe_db;
+-- phpMyAdmin SQL Dump
+-- version 5.2.1
+-- https://www.phpmyadmin.net/
+--
+-- Servidor: 127.0.0.1
+-- Tiempo de generación: 30-07-2026 a las 02:50:04
+-- Versión del servidor: 10.4.32-MariaDB
+-- Versión de PHP: 8.2.12
 
-CREATE TABLE categorias (
-  id_categoria INT AUTO_INCREMENT PRIMARY KEY,
-  nombre VARCHAR(30) NOT NULL,
-  descripcion VARCHAR(100) DEFAULT NULL
-);
-
-CREATE TABLE usuarios (
-  id_usuario INT AUTO_INCREMENT PRIMARY KEY,
-  nombre VARCHAR(30) NOT NULL,
-  apellido VARCHAR(30) NOT NULL,
-  correo VARCHAR(100) NOT NULL UNIQUE,
-  password VARCHAR(255) NOT NULL,
-  rol ENUM('admin','cliente') NOT NULL DEFAULT 'cliente',
-  fecha_registro TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP()
-);
-
-CREATE TABLE productos (
-  id_producto INT AUTO_INCREMENT PRIMARY KEY,
-  nombre VARCHAR(30) NOT NULL,
-  descripcion TEXT DEFAULT NULL,
-  id_categoria INT(11) DEFAULT NULL,
-  precio DECIMAL(10,2) NOT NULL,
-  imagen_url VARCHAR(255) DEFAULT NULL,
-  tiene_promocion TINYINT(1) DEFAULT 0,
-  etiqueta_promo VARCHAR(30) DEFAULT NULL,
-  precio_descuento DECIMAL(10,2) DEFAULT NULL,
-  CONSTRAINT fk_producto_categoria FOREIGN KEY (id_categoria) REFERENCES categorias (id_categoria)
-);
-
-CREATE TABLE pedidos (
-  id_pedido INT AUTO_INCREMENT PRIMARY KEY,
-  id_usuario INT(11) NOT NULL,
-  fecha_vencimiento DATE DEFAULT NULL,
-  clave_retiro VARCHAR(10) DEFAULT NULL,
-  total DECIMAL(10,2) NOT NULL,
-  estado ENUM('pendiente','entregado','vencido') NOT NULL DEFAULT 'pendiente',
-  fecha_creacion TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-  CONSTRAINT fk_pedido_usuario FOREIGN KEY (id_usuario) REFERENCES usuarios (id_usuario)
-);
-
-CREATE TABLE detalle_pedido (
-  id_detalle_p INT AUTO_INCREMENT PRIMARY KEY,
-  id_pedido INT(11) DEFAULT NULL,
-  id_producto INT(11) DEFAULT NULL,
-  cantidad INT(11) NOT NULL,
-  precio_unitario DECIMAL(10,2) NOT NULL,
-  CONSTRAINT fk_detalle_pedido FOREIGN KEY (id_pedido) REFERENCES pedidos (id_pedido),
-  CONSTRAINT fk_detalle_producto FOREIGN KEY (id_producto) REFERENCES productos (id_producto)
-);
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
 
 INSERT INTO `usuarios` (`id_usuario`, `nombre`, `apellido`, `correo`, `password`, `rol`, `fecha_registro`) VALUES
 (1, 'Leslie', 'Contreras', 'leslie@gmail.com', '$2y$10$MmOL.QLwajjHpF/lMafbzOP2DGDfvVmcbYSvDRmAaQRrq3cYAGX8u', 'cliente', '2026-07-29 05:06:43'),
 (3, 'administrador', 'admin', 'admin@gmail.com', '$2y$10$BPUAEJQK7LbocXGOxHmGzOYmZXYl925/bZeG9pG4yxOA.wJOictwu', 'admin', '2026-07-30 00:40:49'),
 (4, 'prueba', 'prueba', 'prueba@gmail.com', '$2y$10$u8I2F0NWqf9nPyv2a6M8OOI4MkK3K4CPCVMEmeCDr7UBfgAa/LF72', 'cliente', '2026-07-30 00:42:19');
 
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
 
--- 1. Restricciones para Usuarios
-ALTER TABLE usuarios
-ADD CONSTRAINT ck_usuario_nombre 
-    CHECK (nombre REGEXP '^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$'),
-ADD CONSTRAINT ck_usuario_apellido 
-    CHECK (apellido REGEXP '^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$'),
-ADD CONSTRAINT ck_usuario_correo 
-    CHECK (correo REGEXP '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$');
+--
+-- Base de datos: `cafe_db`
+--
 
--- 2. Restricciones para Categorías
-ALTER TABLE categorias
-ADD CONSTRAINT ck_categoria_nombre 
-    CHECK (nombre REGEXP '^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$');
+-- --------------------------------------------------------
 
--- 3. Restricciones para Productos
--- Permite letras, números, espacios y guiones para los nombres de los productos.
-ALTER TABLE productos
-ADD CONSTRAINT ck_producto_nombre 
-    CHECK (nombre REGEXP '^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ -]+$'),
--- Valida que la URL o ruta de la imagen termine en extensiones web comunes.
-ADD CONSTRAINT ck_producto_imagen 
-    CHECK (imagen_url REGEXP '\\.(jpg|jpeg|png|gif|webp)$');
+--
+-- Estructura de tabla para la tabla `categorias`
+--
 
--- 4. Restricciones para Pedidos
--- Valida que la clave de retiro sea estrictamente alfanumérica y en mayúsculas (ej. 4 a 10 caracteres).
-ALTER TABLE pedidos
-ADD CONSTRAINT ck_pedido_clave 
-    CHECK (clave_retiro REGEXP '^[A-Z0-9]{4,10}$');
-    
+CREATE TABLE `categorias` (
+  `id_categoria` int(11) NOT NULL,
+  `nombre` varchar(30) NOT NULL,
+  `descripcion` varchar(100) DEFAULT NULL
+) ;
 
--- 1. Restricciones para Productos
--- Asegura que ningún producto en el catálogo pueda tener un precio negativo.
-ALTER TABLE productos
-ADD CONSTRAINT chk_precio_positivo CHECK (precio >= 0);
+-- --------------------------------------------------------
 
--- 3. Restricciones para Pedidos
--- El total a pagar no puede ser negativo y el vencimiento debe ser posterior o igual a la fecha de creación.
-ALTER TABLE pedidos
-ADD CONSTRAINT chk_total_pedido_positivo CHECK (total >= 0),
-ADD CONSTRAINT chk_fecha_creacion CHECK (fecha_vencimiento >= fecha_creacion);
+--
+-- Estructura de tabla para la tabla `detalle_pedido`
+--
 
--- 4. Restricciones para Detalles del Pedido
--- Un cliente no puede pedir "0" o cantidades negativas de un producto, y el precio guardado no puede ser negativo.
-ALTER TABLE detalle_pedido
-ADD CONSTRAINT chk_cantidad_valida CHECK (cantidad > 0),
-ADD CONSTRAINT chk_precio_unitario_positivo CHECK (precio_unitario >= 0);
+CREATE TABLE `detalle_pedido` (
+  `id_detalle_p` int(11) NOT NULL,
+  `id_pedido` int(11) DEFAULT NULL,
+  `id_producto` int(11) DEFAULT NULL,
+  `cantidad` int(11) NOT NULL,
+  `precio_unitario` decimal(10,2) NOT NULL
+) ;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `pedidos`
+--
+
+CREATE TABLE `pedidos` (
+  `id_pedido` int(11) NOT NULL,
+  `id_usuario` int(11) NOT NULL,
+  `fecha_vencimiento` date DEFAULT NULL,
+  `clave_retiro` varchar(10) DEFAULT NULL,
+  `total` decimal(10,2) NOT NULL,
+  `estado` enum('pendiente','entregado','vencido') NOT NULL DEFAULT 'pendiente',
+  `fecha_creacion` timestamp NOT NULL DEFAULT current_timestamp()
+) ;
+
+--
+-- Volcado de datos para la tabla `pedidos`
+--
+
+INSERT INTO `pedidos` (`id_pedido`, `id_usuario`, `fecha_vencimiento`, `clave_retiro`, `total`, `estado`, `fecha_creacion`) VALUES
+(1, 1, NULL, '379345', 308.60, 'pendiente', '2026-07-29 05:29:40');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `productos`
+--
+
+CREATE TABLE `productos` (
+  `id_producto` int(11) NOT NULL,
+  `nombre` varchar(30) NOT NULL,
+  `descripcion` text DEFAULT NULL,
+  `id_categoria` int(11) DEFAULT NULL,
+  `precio` decimal(10,2) NOT NULL,
+  `imagen_url` varchar(255) DEFAULT NULL,
+  `tiene_promocion` tinyint(1) DEFAULT 0,
+  `etiqueta_promo` varchar(30) DEFAULT NULL,
+  `precio_descuento` decimal(10,2) DEFAULT NULL
+) ;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `usuarios`
+--
+
+CREATE TABLE `usuarios` (
+  `id_usuario` int(11) NOT NULL,
+  `nombre` varchar(30) NOT NULL,
+  `apellido` varchar(30) NOT NULL,
+  `correo` varchar(100) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `rol` enum('admin','cliente') NOT NULL DEFAULT 'cliente',
+  `fecha_registro` timestamp NOT NULL DEFAULT current_timestamp()
+) ;
+
+--
+-- Volcado de datos para la tabla `usuarios`
+--
+
+INSERT INTO `usuarios` (`id_usuario`, `nombre`, `apellido`, `correo`, `password`, `rol`, `fecha_registro`) VALUES
+(1, 'Leslie', 'Contreras', 'leslie@gmail.com', '$2y$10$MmOL.QLwajjHpF/lMafbzOP2DGDfvVmcbYSvDRmAaQRrq3cYAGX8u', 'cliente', '2026-07-29 05:06:43'),
+(3, 'administrador', 'admin', 'admin@gmail.com', '$2y$10$BPUAEJQK7LbocXGOxHmGzOYmZXYl925/bZeG9pG4yxOA.wJOictwu', 'cliente', '2026-07-30 00:40:49'),
+(4, 'prueba', 'prueba', 'prueba@gmail.com', '$2y$10$u8I2F0NWqf9nPyv2a6M8OOI4MkK3K4CPCVMEmeCDr7UBfgAa/LF72', 'cliente', '2026-07-30 00:42:19');
+
+--
+-- Índices para tablas volcadas
+--
+
+--
+-- Indices de la tabla `categorias`
+--
+ALTER TABLE `categorias`
+  ADD PRIMARY KEY (`id_categoria`);
+
+--
+-- Indices de la tabla `detalle_pedido`
+--
+ALTER TABLE `detalle_pedido`
+  ADD PRIMARY KEY (`id_detalle_p`),
+  ADD KEY `fk_detalle_pedido` (`id_pedido`),
+  ADD KEY `fk_detalle_producto` (`id_producto`);
+
+--
+-- Indices de la tabla `pedidos`
+--
+ALTER TABLE `pedidos`
+  ADD PRIMARY KEY (`id_pedido`),
+  ADD KEY `fk_pedido_usuario` (`id_usuario`);
+
+--
+-- Indices de la tabla `productos`
+--
+ALTER TABLE `productos`
+  ADD PRIMARY KEY (`id_producto`),
+  ADD KEY `fk_producto_categoria` (`id_categoria`);
+
+--
+-- Indices de la tabla `usuarios`
+--
+ALTER TABLE `usuarios`
+  ADD PRIMARY KEY (`id_usuario`),
+  ADD UNIQUE KEY `correo` (`correo`);
+
+--
+-- AUTO_INCREMENT de las tablas volcadas
+--
+
+--
+-- AUTO_INCREMENT de la tabla `categorias`
+--
+ALTER TABLE `categorias`
+  MODIFY `id_categoria` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `detalle_pedido`
+--
+ALTER TABLE `detalle_pedido`
+  MODIFY `id_detalle_p` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `pedidos`
+--
+ALTER TABLE `pedidos`
+  MODIFY `id_pedido` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `productos`
+--
+ALTER TABLE `productos`
+  MODIFY `id_producto` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `usuarios`
+--
+ALTER TABLE `usuarios`
+  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- Restricciones para tablas volcadas
+--
+
+--
+-- Filtros para la tabla `detalle_pedido`
+--
+ALTER TABLE `detalle_pedido`
+  ADD CONSTRAINT `fk_detalle_pedido` FOREIGN KEY (`id_pedido`) REFERENCES `pedidos` (`id_pedido`),
+  ADD CONSTRAINT `fk_detalle_producto` FOREIGN KEY (`id_producto`) REFERENCES `productos` (`id_producto`);
+
+--
+-- Filtros para la tabla `pedidos`
+--
+ALTER TABLE `pedidos`
+  ADD CONSTRAINT `fk_pedido_usuario` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id_usuario`);
+
+--
+-- Filtros para la tabla `productos`
+--
+ALTER TABLE `productos`
+  ADD CONSTRAINT `fk_producto_categoria` FOREIGN KEY (`id_categoria`) REFERENCES `categorias` (`id_categoria`);
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

@@ -82,7 +82,7 @@ document.addEventListener('click', function(e) {
         if (modal) modal.style.display = 'block';
     }
 
-    // Abrir Modal Eliminar y pasar ID
+    // Abrir Modal Eliminar y pasar ID USUARIOS
     if (btnDelete) {
         const checkbox = document.querySelector('input[name="seleccion"]:checked');
         if (!checkbox) {
@@ -146,6 +146,9 @@ document.addEventListener('click', function(e) {
             alert(err.message);
         });
     }
+
+
+
 
     // Cerrar Modales
     if (closeBtn) {

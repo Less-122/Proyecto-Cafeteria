@@ -8,7 +8,7 @@ $sql = "SELECT
             c.descripcion,
             COUNT(p.id_producto) AS total_productos
         FROM categorias c
-        LEFT JOIN productos p ON c.id_categoria = p.id_categoria_fk
+        LEFT JOIN productos p ON c.id_categoria = p.id_categoria
         GROUP BY c.id_categoria
         ORDER BY c.id_categoria ASC";
 
