@@ -41,34 +41,38 @@ switch ($operacion) {
         break;
 
     case 'login':
-        $correo = $_POST['correo'] ?? '';
-        $password = $_POST['password'] ?? '';
+    $correo = $_POST['correo'] ?? '';
+    $password = $_POST['password'] ?? '';
 
-        // Buscamos al usuario por su teléfono usando PDO
-        $sql = "SELECT id_usuario, nombre, password FROM usuarios WHERE correo = ?";
-        $stmt = $conexion->prepare($sql);
-        $stmt->execute([$correo]);
-        
-        // En PDO usamos fetch() en lugar de fetch_assoc()
-        $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
+    // Incluimos 'rol' en la consulta
+    $sql = "SELECT id_usuario, nombre, password, rol FROM usuarios WHERE correo = ?";
+    $stmt = $conexion->prepare($sql);
+    $stmt->execute([$correo]);
+    $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if ($usuario) {
-            if (password_verify($password, $usuario['password'])) {
-                // Variables de sesión
-                $_SESSION['id_usuario'] = $usuario['id_usuario'];
-                $_SESSION['nombre'] = $usuario['nombre'];
-            
-                header("Location: ../index.php");
+    if ($usuario) {
+        if (password_verify($password, $usuario['password'])) {
+            $_SESSION['id_usuario'] = $usuario['id_usuario'];
+            $_SESSION['nombre'] = $usuario['nombre'];
+            $_SESSION['rol'] = $usuario['rol'];
+
+            // Redirección según rol
+            if ($usuario['rol'] === 'admin') {
+                header("Location: /Proyecto-Cafeteria/admin_panel/usuarios.php");
                 exit();
             } else {
-                header("Location: ../login.php?error=credenciales");
+                header("Location: ../index.php");
                 exit();
             }
         } else {
             header("Location: ../login.php?error=credenciales");
             exit();
         }
-        break;
+    } else {
+        header("Location: ../login.php?error=credenciales");
+        exit();
+    }
+    break;
         
     default:
         header("Location: ../login.php");

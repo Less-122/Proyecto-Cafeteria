@@ -51,6 +51,10 @@ CREATE TABLE detalle_pedido (
   CONSTRAINT fk_detalle_producto FOREIGN KEY (id_producto) REFERENCES productos (id_producto)
 );
 
+INSERT INTO `usuarios` (`id_usuario`, `nombre`, `apellido`, `correo`, `password`, `rol`, `fecha_registro`) VALUES
+(1, 'Leslie', 'Contreras', 'leslie@gmail.com', '$2y$10$MmOL.QLwajjHpF/lMafbzOP2DGDfvVmcbYSvDRmAaQRrq3cYAGX8u', 'cliente', '2026-07-29 05:06:43'),
+(3, 'administrador', 'admin', 'admin@gmail.com', '$2y$10$BPUAEJQK7LbocXGOxHmGzOYmZXYl925/bZeG9pG4yxOA.wJOictwu', 'admin', '2026-07-30 00:40:49'),
+(4, 'prueba', 'prueba', 'prueba@gmail.com', '$2y$10$u8I2F0NWqf9nPyv2a6M8OOI4MkK3K4CPCVMEmeCDr7UBfgAa/LF72', 'cliente', '2026-07-30 00:42:19');
 
 
 -- 1. Restricciones para Usuarios
