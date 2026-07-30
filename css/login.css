@@ -39,24 +39,31 @@ body {
 }
 /*Container*/
 .container-login{
-    width: 64rem;
+    width: min(64rem, 95%);
     height: 40rem;
     border-radius: 0.3rem;
+    align-items: center;
     background-color: var(--bg-form-color);
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     overflow: hidden;
+    margin: 0 auto;
 }
 /*Form*/
 .form-container{
-    width: 85%;
+    width: 100%;
+    height: 100%;
     display: flex;
     flex-direction: column;
     padding: 1rem 1.2rem;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
 
 }
 .form{
-    height: 100vh;
+    height: 100%;
+    width: 100%;
     display: flex;
     justify-content: center; 
     align-items: center;

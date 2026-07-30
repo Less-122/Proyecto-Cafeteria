@@ -181,8 +181,10 @@ body {
 
 .carrusel-container .box {
     scroll-snap-align: start;
-    min-width: 280px; 
-    flex: 0 0 auto;
+    min-width: 280px;
+    width: 280px;
+    height: 430px;
+    flex: 0 0 280px;
 }
 
 /* --- 5. Grid de Tarjetas (4 Columnas) --- */
