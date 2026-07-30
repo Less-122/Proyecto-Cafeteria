@@ -18,6 +18,20 @@ $stmt->execute();
 
 $productos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+/* Obtener categorías para los formularios */
+$sqlCategorias = "
+    SELECT
+        id_categoria,
+        nombre
+    FROM categorias
+    ORDER BY nombre ASC
+";
+
+$stmtCategorias = $conexion->prepare($sqlCategorias);
+$stmtCategorias->execute();
+
+$categorias = $stmtCategorias->fetchAll(PDO::FETCH_ASSOC);
+
 ?>
 
 <!DOCTYPE html>
@@ -79,7 +93,6 @@ $productos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <th>Nombre</th>
                     <th>Descripción</th>
                     <th>Categoría</th>
-                    <th>Stock</th>
                     <th>Precio</th>
                     <th>Imagen</th>
                     <th>Promoción</th>
@@ -104,7 +117,6 @@ $productos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     data-nombre="<?= htmlspecialchars($p['nombre'], ENT_QUOTES, 'UTF-8') ?>"
                                     data-descripcion="<?= htmlspecialchars($p['descripcion'] ?? '', ENT_QUOTES, 'UTF-8') ?>"
                                     data-categoria="<?= (int) $p['id_categoria'] ?>"
-                                    data-stock="<?= (int) $p['stock'] ?>"
                                     data-precio="<?= htmlspecialchars($p['precio'], ENT_QUOTES, 'UTF-8') ?>"
                                     data-promocion="<?= (int) ($p['tiene_promocion'] ?? 0) ?>"
                                 >
@@ -113,7 +125,6 @@ $productos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <td><?= htmlspecialchars($p['nombre'], ENT_QUOTES, 'UTF-8') ?></td>
                             <td><?= htmlspecialchars($p['descripcion'] ?? '', ENT_QUOTES, 'UTF-8') ?></td>
                             <td><?= htmlspecialchars($p['categoria'], ENT_QUOTES, 'UTF-8') ?></td>
-                            <td><?= (int) $p['stock'] ?></td>
                             <td>$<?= number_format((float) $p['precio'], 2) ?></td>
                             <td>
                                 <?php if (!empty($p['imagen_url'])): ?>
@@ -159,16 +170,16 @@ $productos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                 <label for="categoria">Categoría:</label>
                 <select id="categoria" name="categoria" required>
-                    <option value="">Selecciona una categoría</option>
-                    <option value="1">Bebidas calientes</option>
-                    <option value="2">Bebidas frías</option>
-                    <option value="3">Postres</option>
+                    <option value="" selected disabled> selecciona una categoria</option>
+                    <?php foreach ($categorias as $categoria): ?>
+                        <option value="<?= (int) $categoria['id_categoria'] ?>">
+                            <?= htmlspecialchars($categoria['nombre'], ENT_QUOTES, 'UTF-8') ?>
+                        </option>
+                    <?php endforeach; ?>
                 </select>
 
-                <label for="stock">Stock:</label>
-                <input type="number" id="stock" name="stock" min="0" step="1" required>
 
-                <label for="precio">Precio:</label>
+                <label for="precio">Precio:</label> 
                 <input type="number" id="precio" name="precio" min="0" step="0.01" required>
 
                 <label for="imagen">Imagen del producto:</label>
@@ -200,13 +211,14 @@ $productos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                 <label for="editCategoria">Categoría:</label>
                 <select id="editCategoria" name="categoria" required>
-                    <option value="1">Bebidas calientes</option>
-                    <option value="2">Bebidas frías</option>
-                    <option value="3">Postres</option>
+                    <option value="" selected disabled>Selecciona una categoría</option>
+                    <?php foreach ($categorias as $categoria): ?>
+                        <option value="<?= (int) $categoria['id_categoria'] ?>">
+                            <?= htmlspecialchars($categoria['nombre'], ENT_QUOTES, 'UTF-8') ?>
+                        </option>
+                    <?php endforeach; ?>
                 </select>
 
-                <label for="editStock">Stock:</label>
-                <input type="number" id="editStock" name="stock" min="0" step="1" required>
 
                 <label for="editPrecio">Precio:</label>
                 <input type="number" id="editPrecio" name="precio" min="0" step="0.01" required>

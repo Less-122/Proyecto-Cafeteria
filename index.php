@@ -141,9 +141,9 @@ Nos apasiona recibirte con el olor a grano recién molido y pan calientito salie
         <h2>Bebidas Calientes</h2>
         <p class="subtitulo">Tazas elaboradas con técnica experta</p>
         <div class="box-container limit-grid">
-            <?php if (!empty($productosPorCategoria[1])): ?>
+            <?php if (!empty($productosPorCategoria[2])): ?>
             <?php $contador = 0;
-            foreach ($productosPorCategoria[1] as $producto):
+            foreach ($productosPorCategoria[2] as $producto):
                 $contador++;
                 $claseProducto =
                 $contador <= 4
@@ -251,8 +251,8 @@ Nos apasiona recibirte con el olor a grano recién molido y pan calientito salie
 
 
     <?php if (
-        !empty($productosPorCategoria[1])
-        && count($productosPorCategoria[1]) > 4
+        !empty($productosPorCategoria[2])
+        && count($productosPorCategoria[2]) > 4
     ): ?>
 
         <div class="btn-container-center">
@@ -274,9 +274,9 @@ Nos apasiona recibirte con el olor a grano recién molido y pan calientito salie
         <h2>Bebidas Frias</h2>
         <p class="subtitulo">Refrescantes y deliciosas</p>
         <div class="box-container limit-grid">
-            <?php if (!empty($productosPorCategoria[2])): ?>
+            <?php if (!empty($productosPorCategoria[1])): ?>
             <?php $contador = 0;
-            foreach ($productosPorCategoria[2] as $producto):
+            foreach ($productosPorCategoria[1] as $producto):
                 $contador++;
                 $claseProducto =
                 $contador <= 4
@@ -384,8 +384,8 @@ Nos apasiona recibirte con el olor a grano recién molido y pan calientito salie
 
 
     <?php if (
-        !empty($productosPorCategoria[2])
-        && count($productosPorCategoria[2]) > 4
+        !empty($productosPorCategoria[1])
+        && count($productosPorCategoria[1]) > 4
     ): ?>
 
         <div class="btn-container-center">
