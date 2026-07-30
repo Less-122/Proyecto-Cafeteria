@@ -44,7 +44,6 @@ $listos      = obtenerPedidos($conexion, 'listo');
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Barista - Aroma a Café</title>
-    <!-- Ruta absoluta para evitar errores 404 -->
     <link rel="stylesheet" href="/Proyecto-Cafeteria/css/barista.css">
 </head>
 <body class="admin-body">
