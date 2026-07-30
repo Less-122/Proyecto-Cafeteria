@@ -60,12 +60,6 @@
     <p class="cuenta">¿Ya tiene una cuenta? <a href="#" id="sign-in">Iniciar sesión</a></p>
 </form>
             </div>
-
-            <div class="banner">
-                <div class="logo_container">
-                    <img src="img/Logo/Imagotipo.png" alt="Aroma a Café Logo">
-                </div>
-            </div>
             
         </div>
     </main>

@@ -164,34 +164,7 @@ body {
 }
 
 
-.banner{
-    background-color: var(--bg-banner-color);
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    overflow: hidden;
-    background-color: #FFFFFF;
-}
-.banner img {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    clip-path: polygon(
-        20% 0%,
-        100% 0%,
-        100% 100%,
-        20% 100%,
-        8% 80%,
-        18% 60%,
-        10% 40%,
-        18% 20%
-    );
-}
+
 
 .login-contenido {
     min-height: 100vh;
