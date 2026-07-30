@@ -1,10 +1,9 @@
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
-<?php /*
-session_start();
-
-// Si el usuario no ha iniciado sesión, O su nombre NO es exactamente 'administrador'
-if (!isset($_SESSION['id_usuario']) || $_SESSION['nombre'] !== 'administrador') {
-    header("Location: ../index.php"); 
+if (!isset($_SESSION['id_usuario']) || $_SESSION['rol'] !== 'admin') {
+    header("Location: ../index.php");
     exit();
-}*/
-?>
+}
