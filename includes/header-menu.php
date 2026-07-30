@@ -12,6 +12,12 @@
 
 
         </a>
+        <button type="button" class="header-menu-toggle" 
+        id="header-menu-toggle"
+        aria-expanded="false" 
+        aria-controls="header-menu"
+        src="img/iconos/icon-menu.png">
+        </button>
 
         <nav class="header-navbar" aria-label="Menú principal">
             <ul class="header-menu">
