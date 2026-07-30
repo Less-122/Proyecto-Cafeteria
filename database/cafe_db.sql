@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 30-07-2026 a las 02:50:04
+-- Tiempo de generación: 30-07-2026 a las 20:33:26
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -11,10 +11,6 @@ SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
 
-INSERT INTO `usuarios` (`id_usuario`, `nombre`, `apellido`, `correo`, `password`, `rol`, `fecha_registro`) VALUES
-(1, 'Leslie', 'Contreras', 'leslie@gmail.com', '$2y$10$MmOL.QLwajjHpF/lMafbzOP2DGDfvVmcbYSvDRmAaQRrq3cYAGX8u', 'cliente', '2026-07-29 05:06:43'),
-(3, 'administrador', 'admin', 'admin@gmail.com', '$2y$10$BPUAEJQK7LbocXGOxHmGzOYmZXYl925/bZeG9pG4yxOA.wJOictwu', 'admin', '2026-07-30 00:40:49'),
-(4, 'prueba', 'prueba', 'prueba@gmail.com', '$2y$10$u8I2F0NWqf9nPyv2a6M8OOI4MkK3K4CPCVMEmeCDr7UBfgAa/LF72', 'cliente', '2026-07-30 00:42:19');
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -35,7 +31,7 @@ CREATE TABLE `categorias` (
   `id_categoria` int(11) NOT NULL,
   `nombre` varchar(30) NOT NULL,
   `descripcion` varchar(100) DEFAULT NULL
-) ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -49,7 +45,7 @@ CREATE TABLE `detalle_pedido` (
   `id_producto` int(11) DEFAULT NULL,
   `cantidad` int(11) NOT NULL,
   `precio_unitario` decimal(10,2) NOT NULL
-) ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -63,16 +59,16 @@ CREATE TABLE `pedidos` (
   `fecha_vencimiento` date DEFAULT NULL,
   `clave_retiro` varchar(10) DEFAULT NULL,
   `total` decimal(10,2) NOT NULL,
-  `estado` enum('pendiente','entregado','vencido') NOT NULL DEFAULT 'pendiente',
+  `estado` enum('pendiente','preparacion','listo','entregado','vencido') NOT NULL DEFAULT 'pendiente',
   `fecha_creacion` timestamp NOT NULL DEFAULT current_timestamp()
-) ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `pedidos`
 --
 
 INSERT INTO `pedidos` (`id_pedido`, `id_usuario`, `fecha_vencimiento`, `clave_retiro`, `total`, `estado`, `fecha_creacion`) VALUES
-(1, 1, NULL, '379345', 308.60, 'pendiente', '2026-07-29 05:29:40');
+(1, 1, NULL, '379345', 308.60, 'listo', '2026-07-29 05:29:40');
 
 -- --------------------------------------------------------
 
@@ -90,7 +86,7 @@ CREATE TABLE `productos` (
   `tiene_promocion` tinyint(1) DEFAULT 0,
   `etiqueta_promo` varchar(30) DEFAULT NULL,
   `precio_descuento` decimal(10,2) DEFAULT NULL
-) ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -104,9 +100,9 @@ CREATE TABLE `usuarios` (
   `apellido` varchar(30) NOT NULL,
   `correo` varchar(100) NOT NULL,
   `password` varchar(255) NOT NULL,
-  `rol` enum('admin','cliente') NOT NULL DEFAULT 'cliente',
+  `rol` enum('admin','cliente','barista') NOT NULL DEFAULT 'cliente',
   `fecha_registro` timestamp NOT NULL DEFAULT current_timestamp()
-) ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `usuarios`
@@ -114,8 +110,9 @@ CREATE TABLE `usuarios` (
 
 INSERT INTO `usuarios` (`id_usuario`, `nombre`, `apellido`, `correo`, `password`, `rol`, `fecha_registro`) VALUES
 (1, 'Leslie', 'Contreras', 'leslie@gmail.com', '$2y$10$MmOL.QLwajjHpF/lMafbzOP2DGDfvVmcbYSvDRmAaQRrq3cYAGX8u', 'cliente', '2026-07-29 05:06:43'),
-(3, 'administrador', 'admin', 'admin@gmail.com', '$2y$10$BPUAEJQK7LbocXGOxHmGzOYmZXYl925/bZeG9pG4yxOA.wJOictwu', 'cliente', '2026-07-30 00:40:49'),
-(4, 'prueba', 'prueba', 'prueba@gmail.com', '$2y$10$u8I2F0NWqf9nPyv2a6M8OOI4MkK3K4CPCVMEmeCDr7UBfgAa/LF72', 'cliente', '2026-07-30 00:42:19');
+(3, 'administrador', 'admin', 'admin@gmail.com', '$2y$10$BPUAEJQK7LbocXGOxHmGzOYmZXYl925/bZeG9pG4yxOA.wJOictwu', 'admin', '2026-07-30 00:40:49'),
+(4, 'prueba', 'prueba', 'prueba@gmail.com', '$2y$10$u8I2F0NWqf9nPyv2a6M8OOI4MkK3K4CPCVMEmeCDr7UBfgAa/LF72', 'cliente', '2026-07-30 00:42:19'),
+(5, 'Regina', 'Leon', 'reginaleon@gmail.com', '$2y$10$2G54qylgyTFExXdaKCWWi.nYjbnmVDnBsqaCR40GPWINdy7A6VoQq', 'cliente', '2026-07-30 17:30:55');
 
 --
 -- Índices para tablas volcadas
@@ -176,7 +173,7 @@ ALTER TABLE `detalle_pedido`
 -- AUTO_INCREMENT de la tabla `pedidos`
 --
 ALTER TABLE `pedidos`
-  MODIFY `id_pedido` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_pedido` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `productos`
@@ -188,7 +185,7 @@ ALTER TABLE `productos`
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- Restricciones para tablas volcadas
