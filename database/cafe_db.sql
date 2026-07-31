@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 31-07-2026 a las 00:22:07
+-- Tiempo de generación: 31-07-2026 a las 02:00:58
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.0.30
 
@@ -38,9 +38,9 @@ CREATE TABLE `categorias` (
 --
 
 INSERT INTO `categorias` (`id_categoria`, `nombre`, `descripcion`) VALUES
-(1, 'BEBIDAS FRIAS', 'todas las bebidas que se sirven frias'),
-(2, 'BEBIDAS CALIENTES', 'todas las bebidas calienes'),
-(3, 'POSTRES', 'Todos los postres');
+(1, 'Bebidas frias', 'todas las bebidas que se sirven frias'),
+(2, 'Bebidas calientes', 'Tazas elaboradas con una tecnica experta'),
+(3, 'Postres', 'Date un gusto de la vida');
 
 -- --------------------------------------------------------
 
@@ -201,7 +201,7 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT de la tabla `categorias`
 --
 ALTER TABLE `categorias`
-  MODIFY `id_categoria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_categoria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `detalle_pedido`
@@ -219,7 +219,7 @@ ALTER TABLE `pedidos`
 -- AUTO_INCREMENT de la tabla `productos`
 --
 ALTER TABLE `productos`
-  MODIFY `id_producto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+  MODIFY `id_producto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios`

@@ -34,13 +34,22 @@ if (heroImage) {
     }, 1000);
 }
 // Mostrar y ocultar productos adicionales (Ver más)
-function configurarBotonVerMas(idBoton, idSeccion) {
-    const boton = document.getElementById(idBoton);
-    const productosExtra = document.querySelectorAll(
-        `${idSeccion} .product-item-extra`
-    );
+function configurarBotonVerMas(boton) {
+    if (!boton) {
+        return;
+    }
 
-    if (!boton || productosExtra.length === 0) {
+    const idSeccion = boton.dataset.target;
+    const seccion = document.getElementById(idSeccion);
+
+    if (!seccion) {
+        return;
+    }
+
+    const productosExtra = seccion.querySelectorAll(".product-item-extra");
+
+    if (productosExtra.length === 0) {
+        boton.style.display = "none";
         return;
     }
 
@@ -59,9 +68,7 @@ function configurarBotonVerMas(idBoton, idSeccion) {
     });
 }
 
-configurarBotonVerMas("btn-masBcalientes", "#calientes");
-configurarBotonVerMas("btn-masBFrias", "#frias");
-configurarBotonVerMas("btn-masPostres", "#postres");
+document.querySelectorAll(".btn-ver-mas").forEach(configurarBotonVerMas);
 
 // Scroll suave en la página
 function animarHaciaSeccion(seccion) {

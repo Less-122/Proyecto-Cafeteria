@@ -1,3 +1,15 @@
+<?php
+require_once __DIR__ . '/../config/conexion.php';
+
+try {
+    $stmtCategoriasMenu = $conexion->query(
+        "SELECT id_categoria, nombre FROM categorias ORDER BY id_categoria ASC"
+    );
+    $categoriasMenu = $stmtCategoriasMenu ? $stmtCategoriasMenu->fetchAll(PDO::FETCH_ASSOC) : [];
+} catch (PDOException $e) {
+    $categoriasMenu = [];
+}
+?>
 <header id="main-header" class="site-header">
 
     <div class="header-container">
@@ -17,9 +29,13 @@
             <ul class="header-menu" id="header-menu">
                 <li><a href="index.php#inicio">Inicio</a></li>
                 <li><a href="index.php#promociones">Promociones</a></li>
-                <li><a href="index.php#calientes">Bebidas calientes</a></li>
-                <li><a href="index.php#frias">Bebidas frías</a></li>
-                <li><a href="index.php#postres">Postres</a></li>
+                <?php foreach ($categoriasMenu as $categoriaMenu): ?>
+                    <li>
+                        <a href="index.php#categoria-<?= (int) $categoriaMenu['id_categoria'] ?>">
+                            <?= htmlspecialchars($categoriaMenu['nombre'], ENT_QUOTES, 'UTF-8') ?>
+                        </a>
+                    </li>
+                <?php endforeach; ?>
                 <li><a href="index.php#nosotros">Ubicacion</a></li>
             </ul>
         </nav>

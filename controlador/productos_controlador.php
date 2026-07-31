@@ -548,23 +548,20 @@ if (!$nombreCategoria) {
 $nombreNormalizado =
     limpiarNombreArchivo($nombreCategoria);
 
-switch ($nombreNormalizado) {
-    case 'bebidas-calientes':
-        $carpetaCategoria = 'Bebidas-calientes';
-        break;
+if ($nombreNormalizado === '') {
+    throw new Exception(
+        'No fue posible identificar el nombre de la categoría.'
+    );
+}
 
-    case 'bebidas-frias':
-        $carpetaCategoria = 'Bebidas-frias';
-        break;
+$carpetaCategoria = ucfirst($nombreNormalizado);
+$carpetaCategoria = str_replace(['-', '_'], ' ', $carpetaCategoria);
+$carpetaCategoria = str_replace(' ', '-', trim($carpetaCategoria));
 
-    case 'postres':
-        $carpetaCategoria = 'Postres';
-        break;
-
-    default:
-        throw new Exception(
-            'La categoría no tiene una carpeta configurada.'
-        );
+if ($carpetaCategoria === '') {
+    throw new Exception(
+        'No fue posible crear la carpeta de la categoría.'
+    );
 }
 
     if (
