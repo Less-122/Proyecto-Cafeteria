@@ -8,13 +8,11 @@ $sql = "SELECT
             c.descripcion,
             COUNT(p.id_producto) AS total_productos
         FROM categorias c
-        LEFT JOIN productos p ON c.id_categoria = p.id_categoria_fk
+        LEFT JOIN productos p ON c.id_categoria = p.id_categoria
         GROUP BY c.id_categoria
         ORDER BY c.id_categoria ASC";
 
 $resultado = $conexion->query($sql);
-
-// Corrección para PDO: obtener todas las categorías en un array
 $categorias = $resultado ? $resultado->fetchAll(PDO::FETCH_ASSOC) : [];
 ?>
 <!DOCTYPE html>
@@ -24,13 +22,14 @@ $categorias = $resultado ? $resultado->fetchAll(PDO::FETCH_ASSOC) : [];
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Categorías</title>
-    <link rel="stylesheet" href="../css/admin.css">
+    <link rel="stylesheet" href="/Proyecto-Cafeteria/css/admin.css">
+    <link rel="icon" type="image/jpeg" href="/Proyecto-Cafeteria/img/Logo/isotipoAzul.jpeg">
 </head>
 
 <body>
 
-    <div id="header-placeholder" class="header-placeholder"></div>
-    <div id="menu-placeholder" class="menu-placeholder"></div>
+    <?php include 'admin_header.php'; ?>
+    <?php include 'admin_menu.php'; ?>
 
     <main class="main_container">
         <h1 class="titulo">Gestión de Categorías</h1>
@@ -79,13 +78,13 @@ $categorias = $resultado ? $resultado->fetchAll(PDO::FETCH_ASSOC) : [];
             </tbody>
         </table>
 
-        <!-- Modal para añadir categoría -->
         <div id="modalAddCategoria" class="modal">
             <div class="modal-content">
                 <span class="close" data-modal="modalAddCategoria">&times;</span>
                 <h2>Añadir Nueva Categoría</h2>
                 
                 <form id="formAddCategoria" action="../controlador/categorias_controlador.php" method="POST">
+                    <input type="hidden" name="operacion" value="agregar">
                     <label for="catNombre">Nombre:</label>
                     <input type="text" id="catNombre" name="nombre" required>
                     <label for="catDescripcion">Descripción:</label>
@@ -95,85 +94,6 @@ $categorias = $resultado ? $resultado->fetchAll(PDO::FETCH_ASSOC) : [];
             </div>
         </div>
 
-        <!-- Modal para eliminar categoría -->
-        <div id="modalDeleteCategoria" class="modal">
-            <div class="modal-content text-center">
-                <span class="close" data-modal="modalDeleteCategoria">&times;</span>
-                <h2>¿Eliminar Categoría?</h2>
-                <br>
-                <p>Esta acción no se puede deshacer. 
-                    <br><br>¿Estás seguro de que deseas eliminar la categoría seleccionada?<br>
-                </p>
-                <br>
-                <input type="hidden" id="deleteCatId">
-                
-                <div class="modal-buttons">
-                    <button type="button" class="btn-cancelar" onclick="document.getElementById('modalDeleteCategoria').style.display='none'">Cancelar</button>
-                    <button type="button" id="btn-confirmar-eliminar" class="btn-danger">Confirmar Eliminar</button>
-                </div>
-            </div>
-        </div>
-
-    <table>
-        <thead>
-            <tr>
-                <th></th>
-                <th>ID</th>
-                <th>Nombre</th>
-                <th>Descripción</th>
-                <th>Cantidad de productos</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php if ($resultado && $resultado->num_rows > 0): ?>
-                <?php while ($fila = $resultado->fetch_assoc()): ?>
-                    <tr>
-                        <td><input type="radio" name="seleccion" value="<?php echo $fila['id_categoria']; ?>"></td>
-                        <td><?php echo str_pad($fila['id_categoria'], STR_PAD_LEFT); ?></td>
-                        <td><?php echo htmlspecialchars($fila['nombre']); ?></td>
-                        <td><?php echo htmlspecialchars($fila['descripcion']); ?></td>
-                        <td><?php echo $fila['total_productos']; ?></td>
-                    </tr>
-                <?php endwhile; ?>
-            <?php else: ?>
-                <tr>
-                    <td colspan="5" style="text-align:center; padding:20px;">No hay categorías registradas.</td>
-                </tr>
-            <?php endif; ?>
-        </tbody>
-    </table>
-
-    <!-- Modal para añadir categoría -->
-    <div id="modalAddCategoria" class="modal">
-    <div class="modal-content">
-        <span class="close" data-modal="modalAddCategoria">&times;</span>
-        <h2>Añadir Nueva Categoría</h2>
-        
-        <form id="formAddCategoria" action="../controlador/categorias_controlador.php" method="POST">
-        <label for="catNombre">Nombre:</label>
-        <input type="text" id="catNombre" name="nombre" required>
-        <label for="catDescripcion">Descripción:</label>
-        <textarea id="catDescripcion" name="descripcion"></textarea>
-        <button type="submit">Guardar</button>
-        </form>
-    </div>
-    </div>
-
-<div id="modalDeleteCategoria" class="modal">
-    <div class="modal-content text-center">
-        <span class="close" data-modal="modalDeleteCategoria">&times;</span>
-        <h2>¿Eliminar Categoría?</h2>
-        <br>
-        <p>Esta acción no se puede deshacer. 
-            <br><br>¿Estás seguro de que deseas eliminar la categoría seleccionada?<br>
-        </p>
-    </br>
-        <input type="hidden" id="deleteCatId">
-        
-        <div class="modal-buttons">
-            <button type="button" class="btn-cancelar" onclick="document.getElementById('modalDeleteCategoria').style.display='none'">Cancelar</button>
-            <button type="button" id="btn-confirmar-eliminar-categoria" class="btn-danger">Confirmar Eliminar</button>
-        <!-- Modal para modificar categoría -->
         <div id="modalEditCategoria" class="modal">
             <div class="modal-content">
                 <span class="close" data-modal="modalEditCategoria">&times;</span>
@@ -192,6 +112,24 @@ $categorias = $resultado ? $resultado->fetchAll(PDO::FETCH_ASSOC) : [];
             </div>
         </div>
 
+        <div id="modalDeleteCategoria" class="modal">
+            <div class="modal-content text-center">
+                <span class="close" data-modal="modalDeleteCategoria">&times;</span>
+                <h2>¿Eliminar Categoría?</h2>
+                <br>
+                <p>Esta acción no se puede deshacer. 
+                    <br><br>¿Estás seguro de que deseas eliminar la categoría seleccionada?<br>
+                </p>
+                <br>
+                <input type="hidden" id="deleteCatId">
+                
+                <div class="modal-buttons">
+                    <button type="button" class="btn-cancelar" onclick="document.getElementById('modalDeleteCategoria').style.display='none'">Cancelar</button>
+                    <button type="button" id="btn-confirmar-eliminar-categoria" class="btn-danger">Confirmar Eliminar</button>
+                </div>
+            </div>
+        </div>
+
         <div id="confirmation-overlay" class="overlay" style="display:none;">
             <div class="modal-confirm">
                 <h3>LISTO</h3>
@@ -201,8 +139,8 @@ $categorias = $resultado ? $resultado->fetchAll(PDO::FETCH_ASSOC) : [];
 
     </main>
 
-    <script src="../js/admin.js"></script>
-    <script src="../js/categorias.js"></script>
+    <script src="/Proyecto-Cafeteria/js/admin.js"></script>
+    <script src="/Proyecto-Cafeteria/js/categorias.js"></script>
     <script type="module" src="https://unpkg.com/ionicons@8.0.13/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@8.0.13/dist/ionicons/ionicons.js"></script>
 </body>

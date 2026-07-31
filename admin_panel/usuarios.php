@@ -3,7 +3,7 @@ include '../config/conexion.php';
 include 'seguridad_admin.php';
 
 // Consulta para obtener todos los usuarios registrados (incluyendo la fecha de registro)
-$stmt = $conexion->prepare("SELECT id_usuario, nombre, apellido, telefono, password, fecha_registro FROM usuarios");
+$stmt = $conexion->prepare("SELECT id_usuario, nombre, apellido, correo, password, fecha_registro, rol FROM usuarios");
 $stmt->execute();
 $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -14,12 +14,15 @@ $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Usuarios | Admin</title>
-    <link rel="stylesheet" href="../css/admin.css">
+    <link rel="icon" type="image/jpeg" href="/Proyecto-Cafeteria/img/Logo/isotipoAzul.jpeg">
+    <!-- Ruta absoluta corregida -->
+    <link rel="stylesheet" href="/Proyecto-Cafeteria/css/admin.css">
 </head>
 <body>
     
-    <div id="header-placeholder" class="header-placeholder"></div>
-    <div id="menu-placeholder" class="menu-placeholder"></div>
+    <!-- Inserción directa con PHP, eliminando los placeholders de JS -->
+    <?php include 'admin_header.php'; ?>
+    <?php include 'admin_menu.php'; ?>
 
     <main class="main_container">
         <h1 class="titulo" id="titulo-seccion">Gestión de Usuarios</h1>
@@ -44,9 +47,10 @@ $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <th>ID</th>
                     <th>Nombre</th>
                     <th>Apellido</th>
-                    <th>Teléfono</th>
+                    <th>Correo</th>
                     <th>Contraseña</th>
                     <th>Fecha de Registro</th>
+                    <th>Rol</th>
                 </tr>
             </thead>
             <tbody>
@@ -57,15 +61,16 @@ $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <?php else: ?>
                     <?php foreach($usuarios as $u): ?>
                     <tr>
-                        <td><input type="checkbox" name="seleccion" value="<?= htmlspecialchars($u['id_usuario']) ?>"></td>
+                        <td><input type="radio" name="seleccion" value="<?= htmlspecialchars($u['id_usuario']) ?>"></td>
                         <td><?= htmlspecialchars($u['id_usuario']) ?></td>
                         <td><?= htmlspecialchars($u['nombre']) ?></td>
                         <td><?= htmlspecialchars($u['apellido']) ?></td>
-                        <td><?= htmlspecialchars($u['telefono']) ?></td>
+                        <td><?= htmlspecialchars($u['correo']) ?></td>
                         <td>••••••••</td>
                         <td>
                             <?= !empty($u['fecha_registro']) ? date('d/m/Y H:i', strtotime($u['fecha_registro'])) : 'N/A' ?>
                         </td>
+                        <td><?= htmlspecialchars($u['rol']) ?></td>
                     </tr>
                     <?php endforeach; ?>
                 <?php endif; ?>
@@ -87,11 +92,18 @@ $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <label for="editUserApellido">Apellido:</label>
                 <input type="text" id="editUserApellido" name="apellido" required>
 
-                <label for="editUserTelefono">Teléfono:</label>
-                <input type="text" id="editUserTelefono" name="telefono" required>
+                <label for="editUserCorreo">Correo:</label>
+                <input type="text" id="editUserCorreo" name="correo" required>
 
                 <label for="editUserContra">Contraseña:</label>
                 <input type="password" id="editUserContra" name="password" placeholder="Nueva contraseña (opcional)">
+
+                <label for="editUserRol">Rol: </label>
+                <select id="editUserRol" name="rol" required>
+                    <option value="1"></option>
+                    <option value="cliente">Cliente</option>
+                    <option value="admin">Admin</option>
+                </select>
 
                 <button type="submit">Actualizar</button>
             </form>
@@ -122,8 +134,9 @@ $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
         </div>
     </div>
 
-    <script src="../js/admin.js"></script>
-    <script src="../js/usuarios.js"></script>
+    <!-- Rutas absolutas para los scripts -->
+    <script src="/Proyecto-Cafeteria/js/admin.js"></script>
+    <script src="/Proyecto-Cafeteria/js/usuarios.js"></script>
     <script type="module" src="https://unpkg.com/ionicons@8.0.13/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@8.0.13/dist/ionicons/ionicons.js"></script>
 </body>

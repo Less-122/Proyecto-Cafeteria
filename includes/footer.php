@@ -38,6 +38,7 @@
         </div>
         <div class="footer-copy">
     <p>© 2026 Aroma a Café. Todos los derechos reservados. | Proyecto desarrollado por el equipo Aroma a Café.</p>
+   
 </div>
         
 </footer>

@@ -1,3 +1,15 @@
+<?php
+require_once __DIR__ . '/../config/conexion.php';
+
+try {
+    $stmtCategoriasMenu = $conexion->query(
+        "SELECT id_categoria, nombre FROM categorias ORDER BY id_categoria ASC"
+    );
+    $categoriasMenu = $stmtCategoriasMenu ? $stmtCategoriasMenu->fetchAll(PDO::FETCH_ASSOC) : [];
+} catch (PDOException $e) {
+    $categoriasMenu = [];
+}
+?>
 <header id="main-header" class="site-header">
 
     <div class="header-container">
@@ -13,13 +25,17 @@
 
         </a>
 
-        <nav class="header-navbar" aria-label="Menú principal">
-            <ul class="header-menu">
+        <nav class="header-navbar" id="header-navbar" aria-label="Menú principal">
+            <ul class="header-menu" id="header-menu">
                 <li><a href="index.php#inicio">Inicio</a></li>
                 <li><a href="index.php#promociones">Promociones</a></li>
-                <li><a href="index.php#calientes">Bebidas calientes</a></li>
-                <li><a href="index.php#frias">Bebidas frías</a></li>
-                <li><a href="index.php#postres">Postres</a></li>
+                <?php foreach ($categoriasMenu as $categoriaMenu): ?>
+                    <li>
+                        <a href="index.php#categoria-<?= (int) $categoriaMenu['id_categoria'] ?>">
+                            <?= htmlspecialchars($categoriaMenu['nombre'], ENT_QUOTES, 'UTF-8') ?>
+                        </a>
+                    </li>
+                <?php endforeach; ?>
                 <li><a href="index.php#nosotros">Ubicacion</a></li>
             </ul>
         </nav>
@@ -29,12 +45,12 @@
             <?php if (isset($_SESSION['id_usuario'])): ?>
                 
                 <!-- 1. VISTA PARA USUARIOS LOGUEADOS -->
-                <span class="nombre-usuario" style="margin-right: 15px; font-weight: 600;">
-                    Hola, <?php echo $_SESSION['nombre']; ?>
+                <span class="nombre-usuario" style="margin-right: 15px; font-weight: 600; color: white;">
+                    Hola, <?php echo htmlspecialchars($_SESSION['nombre'], ENT_QUOTES, 'UTF-8'); ?>
                 </span>
                 
-                <a href="logout.php" class="header-icon-btn" style="text-decoration: none; color: #cc0c39; font-weight: bold; margin-right: 15px;" aria-label="Cerrar sesión">
-                    Salir
+                <a href="logout.php" class="header-icon-btn" style="text-decoration: none; color: #f18aa2; font-weight: bold; margin-right: 15px;" aria-label="Cerrar sesión">
+                    Cerrar sesión
                 </a>
 
             <?php else: ?>
@@ -50,6 +66,22 @@
             <button type="button" class="header-icon-btn" id="boton-carrito" aria-label="Ver carrito">
                 <img src="img/iconos/icon-carrito.png" alt="Ver carrito">
             </button>
+
+             <!-- boton hamburguesa -->
+            <button
+    type="button"
+    class="header-menu-toggle"
+    id="header-menu-toggle"
+    aria-expanded="false"
+    aria-controls="header-menu"
+    aria-label="Abrir menú"
+>
+    <img
+        src="img/iconos/icon-menu.png"
+        alt=""
+        class="header-menu-icon"
+    >
+</button>
 
         </div>
 

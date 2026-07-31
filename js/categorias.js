@@ -76,7 +76,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const formData = new FormData(this);
             formData.append('operacion', 'agregar');
 
-            fetch('../controlador/categorias_controlador.php', {
+           fetch('/Proyecto-Cafeteria/controlador/categorias_controlador.php', {
                 method: 'POST',
                 body: formData
             })
@@ -118,7 +118,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const formData = new FormData(this);
             formData.append('operacion', 'editar');
 
-            fetch('../controlador/categorias_controlador.php', {
+           fetch('/Proyecto-Cafeteria/controlador/categorias_controlador.php', {
                 method: 'POST',
                 body: formData
             })
@@ -149,7 +149,7 @@ document.addEventListener("DOMContentLoaded", function () {
             formData.append('id', id);
             formData.append('operacion', 'eliminar');
 
-            fetch('../controlador/categorias_controlador.php', {
+            fetch('/Proyecto-Cafeteria/controlador/categorias_controlador.php', {
                 method: 'POST',
                 body: formData
             })

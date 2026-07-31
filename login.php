@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="css/footer.css">
     <link rel="stylesheet" href="css/login.css">
     <title>Registro | Aroma a Café</title>
-
     <link rel="icon" type="image/jpeg" href="img/Logo/isotipo.jpg">
 </head>
 
@@ -26,7 +25,7 @@
     <input type="hidden" name="operacion" value="login">
 
     <div class="input">
-        <input type="tel" name="telefono" id="login_telefono" placeholder="Ingrese su número" required>
+        <input type="correo" name="correo" id="login_correo" placeholder="Ingrese su correo" required>
     </div>
     <div class="input">
         <input type="password" name="password" id="login_password" placeholder="Ingrese su contraseña" required>
@@ -40,7 +39,7 @@
 <!-- FORMULARIO DE REGISTRO -->
 <form class="registro" action="controlador\Autenticacion.php" method="POST">
     <h2 class="txt-titulo">Crear cuenta</h2>
-    <p>Usa tu número de teléfono para registrarte</p>
+    <p>Usa tu correo para registrarte</p>
 
     <input type="hidden" name="operacion" value="registro">
 
@@ -49,7 +48,7 @@
         <input type="text" name="apellido" id="reg_apellido" placeholder="Ingrese su apellido" required>
     </div>
     <div class="input">
-        <input type="tel" name="telefono" id="reg_telefono" placeholder="Ingrese su número" required>
+        <input type="correo" name="correo" id="reg_correo" placeholder="Ingrese su correo" required>
     </div>
     <div class="input">
         <input type="password" name="password" id="reg_password" placeholder="Ingrese su contraseña" required>
@@ -60,17 +59,12 @@
     <p class="cuenta">¿Ya tiene una cuenta? <a href="#" id="sign-in">Iniciar sesión</a></p>
 </form>
             </div>
-
-            <div class="banner">
-                <div class="logo_container">
-                    <img src="img/Logo/Imagotipo.png" alt="Aroma a Café Logo">
-                </div>
-            </div>
             
         </div>
     </main>
   
     <script src="js/login.js"></script>
     <script src="js/menu.js"></script>
+    <script src="js/header-menu.js"></script>
 </body>
 </html>

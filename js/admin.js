@@ -18,34 +18,6 @@ function actualizarTitulo() {
     document.title = nuevoTitulo + ' | Panel Admin';
 }
 
-// Carga dinámica de componentes (Header y Menú)
-document.addEventListener("DOMContentLoaded", () => {
-    const rutaHeader = 'admin_header.php'; 
-    const rutaMenu = 'admin_menu.php'; 
-
-    fetch(rutaHeader)
-        .then(response => {
-            if (!response.ok) throw new Error(`Header 404: No se encontró en ${rutaHeader}`);
-            return response.text();
-        })
-        .then(headerData => {
-            document.getElementById('header-placeholder').innerHTML = headerData;
-            return fetch(rutaMenu);
-        })
-        .then(response => {
-            if (!response.ok) throw new Error(`Menú 404: No se encontró en ${rutaMenu}`);
-            return response.text();
-        })
-        .then(menuData => {
-            document.getElementById('menu-placeholder').innerHTML = menuData;
-            actualizarTitulo();
-        })
-        .catch(error => {
-            console.error('Fallo en la arquitectura de la interfaz:', error);
-            document.getElementById('header-placeholder').innerHTML = `<div style="background:red; color:white; padding:10px;">Error crítico de carga. Revisa consola.</div>`;
-        });
-});
-
 // Funciones de UI y Modales
 function mostrarAvisoExito() {
     const overlay = document.getElementById('confirmation-overlay');
@@ -74,6 +46,11 @@ document.addEventListener('click', function(e) {
 
     // Abrir Modal Modificar y cargar datos a los inputs
     if (btnEdit) {
+        const isProductsPage = !!document.getElementById('editIdProducto') && !!document.getElementById('modalEdit');
+        if (isProductsPage) {
+            return;
+        }
+
         const checkbox = document.querySelector('input[name="seleccion"]:checked');
         if (!checkbox) {
             alert("Por favor, selecciona un elemento para modificar.");
@@ -91,7 +68,7 @@ document.addEventListener('click', function(e) {
             document.getElementById('editUserId').value = fila.cells[1].innerText;
             document.getElementById('editUserNombre').value = fila.cells[2].innerText;
             document.getElementById('editUserApellido').value = fila.cells[3].innerText;
-            document.getElementById('editUserTelefono').value = fila.cells[4].innerText;
+            document.getElementById('editUserCorreo').value = fila.cells[4].innerText;
             const inputContra = document.getElementById('editUserContra') || document.getElementById('editUserPassword');
             if (inputContra) inputContra.value = ''; // Limpiar campo contraseña por seguridad
         }
@@ -110,8 +87,13 @@ document.addEventListener('click', function(e) {
         if (modal) modal.style.display = 'block';
     }
 
-    // Abrir Modal Eliminar y pasar ID
+    // Abrir Modal Eliminar y pasar ID USUARIOS
     if (btnDelete) {
+        const isProductsPage = !!document.getElementById('deleteProdId') && !!document.getElementById('modalDeleteProducto');
+        if (isProductsPage) {
+            return;
+        }
+
         const checkbox = document.querySelector('input[name="seleccion"]:checked');
         if (!checkbox) {
             alert("Por favor, selecciona el elemento que deseas eliminar.");
@@ -143,7 +125,7 @@ document.addEventListener('click', function(e) {
         const formData = new FormData();
         formData.append('id_usuario', deleteUserId);
 
-        fetch('../usuario_panel/eliminar_usuario.php', {
+        fetch('/Proyecto-Cafeteria/usuario_panel/eliminar_usuario.php', {
             method: 'POST',
             body: formData
         })
@@ -158,7 +140,6 @@ document.addEventListener('click', function(e) {
             try {
                 return JSON.parse(textoRespuesta);
             } catch (err) {
-                // Si la respuesta no es un JSON válido, mostramos en pantalla el contenido que respondió Apache/PHP
                 throw new Error("El servidor no devolvió JSON válido. Respuesta recibida:\n\n" + textoRespuesta);
             }
         })
@@ -175,6 +156,9 @@ document.addEventListener('click', function(e) {
             alert(err.message);
         });
     }
+
+
+
 
     // Cerrar Modales
     if (closeBtn) {
@@ -207,8 +191,7 @@ document.addEventListener('submit', function(e) {
         e.preventDefault();
         const formData = new FormData(formEditUser);
 
-        // Si tu editar_usuario.php está en la raíz, cambia esta ruta a 'editar_usuario.php'
-        fetch('../usuario_panel/editar_usuario.php', {
+        fetch('/Proyecto-Cafeteria/usuario_panel/editar_usuario.php', {
             method: 'POST',
             body: formData
         })
@@ -239,12 +222,12 @@ document.addEventListener('submit', function(e) {
         });
     }
 
-    // Formulario: Agregar Usuario (se mantiene)
+    // Formulario: Agregar Usuario
     if (e.target === formAddUser) {
         e.preventDefault();
         const formData = new FormData(formAddUser);
 
-        fetch('agregar_usuario.php', {
+        fetch('/Proyecto-Cafeteria/usuario_panel/agregar_usuario.php', {
             method: 'POST',
             body: formData
         })
@@ -261,74 +244,51 @@ document.addEventListener('submit', function(e) {
     }
 });
 
-// Motor de Búsqueda
-document.addEventListener('DOMContentLoaded', () => {
+// Filtro por búsqueda y categoría en la tabla de productos
+document.addEventListener('DOMContentLoaded', function() {
     const searchInput = document.getElementById('searchInput');
+    const selectorCategoria = document.querySelector('#selector');
+    const tabla = document.querySelector('main.main_container table tbody');
 
-    if (searchInput) {
-        searchInput.addEventListener('input', function() {
-            const textoBusqueda = this.value.toLowerCase();
-            const filas = document.querySelectorAll('main.main_container table tr');
+    if (!tabla) return;
 
-            filas.forEach((fila, indice) => {
-                if (indice === 0) return; 
+    const filas = Array.from(tabla.querySelectorAll('tr'));
 
-                const columnaID_Pedidos = fila.cells[0] ? fila.cells[0].innerText.toLowerCase() : '';
-                const columnaID_Productos = fila.cells[1] ? fila.cells[1].innerText.toLowerCase() : '';
-                const columnaNombre_Pedidos = fila.cells[1] ? fila.cells[1].innerText.toLowerCase() : '';
-                const columnaNombre_Productos = fila.cells[2] ? fila.cells[2].innerText.toLowerCase() : '';
+    function aplicarFiltros() {
+        const textoBusqueda = (searchInput?.value || '').toLowerCase().trim();
+        const categoriaSeleccionada = (selectorCategoria?.value || '').trim().toLowerCase();
 
-                if (
-                    columnaID_Pedidos.includes(textoBusqueda) || 
-                    columnaID_Productos.includes(textoBusqueda) || 
-                    columnaNombre_Pedidos.includes(textoBusqueda) || 
-                    columnaNombre_Productos.includes(textoBusqueda)
-                ) {
-                    fila.style.display = '';
-                } else {
-                    fila.style.display = 'none';
-                }
-            });
+        filas.forEach((fila) => {
+            const textoFila = (fila.textContent || '').toLowerCase();
+            const nombreFila = (fila.cells[2]?.textContent || '').toLowerCase();
+            const categoriaFila = (fila.dataset.categoriaNombre || '').toLowerCase();
+
+            const coincideBusqueda = textoBusqueda === '' ||
+                textoFila.includes(textoBusqueda) ||
+                nombreFila.includes(textoBusqueda);
+            const coincideCategoria = categoriaSeleccionada === '' ||
+                categoriaFila === categoriaSeleccionada;
+
+            fila.style.display = coincideBusqueda && coincideCategoria ? '' : 'none';
         });
     }
-});
 
-// Filtro por Categorías
-document.addEventListener('DOMContentLoaded', function() {
-    const selectorCategoria = document.querySelector('#selector');
-    const tabla = document.querySelector('table');
-
-    if (!selectorCategoria || !tabla) return; 
-
-    const mapaCategorias = {
-        'Bebidas calientes': 'Bebidas calientes',
-        'Bebidas frias': 'Bebidas frías',
-        'Postres': 'Postres'
-    };
-
-    function filtrarPorCategoria() {
-        const valorSeleccionado = selectorCategoria.value;
-        const categoriaSeleccionada = mapaCategorias[valorSeleccionado] || '';
-        const filas = tabla.querySelectorAll('tr');
-
-        for (let i = 1; i < filas.length; i++) {
-            const fila = filas[i];
-            const celdas = fila.querySelectorAll('td');
-            if (celdas.length === 0) continue;
-            const celdaCategoria = celdas[4];
-            if (!celdaCategoria) continue; 
-            const textoCategoria = celdaCategoria.textContent.trim();
-
-            if (categoriaSeleccionada === '' || textoCategoria === categoriaSeleccionada) {
-                fila.style.display = '';
-            } else {
-                fila.style.display = 'none';
-            }
-        }
-
-        
+    if (searchInput) {
+        searchInput.addEventListener('input', aplicarFiltros);
     }
 
-    selectorCategoria.addEventListener('change', filtrarPorCategoria);
-    filtrarPorCategoria();
+    if (selectorCategoria) {
+        selectorCategoria.addEventListener('change', aplicarFiltros);
+    }
+
+    aplicarFiltros();
+});
+
+
+// Ejecutar la actualización del título en cuanto cargue la página
+document.addEventListener("DOMContentLoaded", () => {
+    // Verificamos que el elemento exista antes de intentar cambiarlo
+    if (document.getElementById('titulo-seccion')) {
+        actualizarTitulo();
+    }
 });

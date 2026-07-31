@@ -3,38 +3,47 @@ session_start();
 
 require_once 'config/conexion.php';
 
-/* Obtener productos junto con su categoría */
-$sql = "
+/* Obtener categorías disponibles */
+$sqlCategorias = "
+    SELECT
+        id_categoria,
+        nombre,
+        descripcion
+    FROM categorias
+    ORDER BY id_categoria ASC
+";
+$categoriasResultado = $conexion->query($sqlCategorias);
+$categorias = $categoriasResultado ? $categoriasResultado->fetchAll(PDO::FETCH_ASSOC) : [];
+
+/* Obtener productos para agruparlos por categoría y promociones */
+$sqlProductos = "
     SELECT
         p.id_producto,
         p.nombre,
         p.descripcion,
-        p.id_categoria_fk,
+        p.id_categoria,
         p.precio,
-        p.stock,
         p.imagen_url,
         p.tiene_promocion,
         p.etiqueta_promo,
-        p.precio_descuento,
-        c.nombre AS categoria
+        p.precio_descuento
     FROM productos AS p
-    INNER JOIN categorias AS c
-        ON p.id_categoria_fk = c.id_categoria
-    ORDER BY p.id_producto ASC
+    ORDER BY p.id_categoria ASC, p.id_producto ASC
 ";
-
-$resultado = $conexion->query($sql);
+$productosResultado = $conexion->query($sqlProductos);
 
 /* Separar productos por categoría */
 $productosPorCategoria = [];
+$productosPromocion = [];
 
-if ($resultado) {
-
-    while ($producto = $resultado->fetch(PDO::FETCH_ASSOC)) {
-
-        $idCategoria = (int) $producto['id_categoria_fk'];
-
+if ($productosResultado) {
+    while ($producto = $productosResultado->fetch(PDO::FETCH_ASSOC)) {
+        $idCategoria = (int) $producto['id_categoria'];
         $productosPorCategoria[$idCategoria][] = $producto;
+
+        if (!empty($producto['tiene_promocion']) && !empty($producto['precio_descuento'])) {
+            $productosPromocion[] = $producto;
+        }
     }
 }
 ?>
@@ -73,470 +82,125 @@ Nos apasiona recibirte con el olor a grano recién molido y pan calientito salie
     <section id="promociones" class="categoria-seccion container">
         <h2>Promociones</h2>
         <p class="subtitulo">Ofertas por tiempo limitado</p>
-        
+
         <div class="carousel-wrapper">
             <button class="carousel-btn" id="btn-prev">❮</button>
             <div class="carrusel-container" id="promos-carousel">
-                <div class="box">
-                    <div class="tag-oferta">Ahorra un 20%</div>
-                    <img src="img/productos/Promociones/Desayuno-Amanecer.jpeg" alt="Promoción 1">
-                    <div class="product-txt">
-
-                        <h3>Desayuno al amanecer</h3>
-                        <p>Primer sorbo + Delicia de zanahoria</p>
-                    <div class="producto-footer">
-                        <span class="precio-anterior">$124.00</span>
-                        <span class="precio-promo">$99.20</span>
-                        <button class="btn-agCarrito">Agregar</button>
-                    </div>
-                        
-                    </div>
-                </div>
-                <div class="box">
-                    <div class="tag-oferta">2x1</div>
-                    <img src="img/productos/Promociones/Doble-felicidad.jpeg" alt="Promoción 2">
-                    <div class="product-txt">
-                        <h3>Doble felicidad</h3>
-                        <p>Dos frappes de caramelo para disfrutar enpareja.</p>
-                        <div class="producto-footer">
-                            <span class="precio-anterior">$176.00</span>
-                            <span class="precio-promo">$88.00</span>
-                            <button class="btn-agCarrito">Agregar</button>
+                <?php if (!empty($productosPromocion)): ?>
+                    <?php foreach ($productosPromocion as $producto): ?>
+                        <?php $precioFinalPromocion = !empty($producto['precio_descuento']) ? (float) $producto['precio_descuento'] : (float) $producto['precio']; ?>
+                        <div class="box">
+                            <div class="tag-oferta"><?= htmlspecialchars(!empty($producto['etiqueta_promo']) ? $producto['etiqueta_promo'] : 'Promoción', ENT_QUOTES, 'UTF-8') ?></div>
+                            <?php if (!empty($producto['imagen_url'])): ?>
+                                <img src="img/productos/<?= htmlspecialchars($producto['imagen_url'], ENT_QUOTES, 'UTF-8') ?>" alt="<?= htmlspecialchars($producto['nombre'], ENT_QUOTES, 'UTF-8') ?>">
+                            <?php endif; ?>
+                            <div class="product-txt">
+                                <h3><?= htmlspecialchars($producto['nombre'], ENT_QUOTES, 'UTF-8') ?></h3>
+                                <p><?= htmlspecialchars($producto['descripcion'], ENT_QUOTES, 'UTF-8') ?></p>
+                                <div class="producto-footer">
+                                    <span class="precio-anterior">$<?= number_format((float) $producto['precio'], 2) ?></span>
+                                    <span class="precio-promo">$<?= number_format($precioFinalPromocion, 2) ?></span>
+                                    <button
+                                        class="btn-agCarrito"
+                                        data-id="<?= (int) $producto['id_producto'] ?>"
+                                        data-nombre="<?= htmlspecialchars($producto['nombre'], ENT_QUOTES, 'UTF-8') ?>"
+                                        data-precio="<?= $precioFinalPromocion ?>"
+                                        data-imagen="<?= htmlspecialchars($producto['imagen_url'], ENT_QUOTES, 'UTF-8') ?>"
+                                    >Agregar</button>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                <div class="box">
-                    <div class="tag-oferta">-15%</div>
-                    <img src="img/productos/Promociones/Combo-dulce.jpeg" alt="Promoción 3">
-                    <div class="product-txt">
-                        <h3>Combo Dulce</h3>
-                        <p>Momento dulce + Cielo de chocolate</p>
-                        <div class="producto-footer">
-                            <span class="precio-anterior">$156.00</span>
-                            <span class="precio-promo">$132.60</span>
-                            <button class="btn-agCarrito">Agregar</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="box">
-                    <div class="tag-oferta">Nuevo</div>
-                    <img src="img/productos/Postres/producto_6a658017028190.67328164.jpeg" alt="Promoción 4">
-                    <div class="product-txt">
-                        <h3>Especial Sueño de chocolate</h3>
-                        <p>Cremoso helado de chocolate elaborado con cacao de alta calidad, de textura <br>
-                            suave y un sabor intenso que conquista desde la primera cucharada.</p>
-                        <div class="producto-footer">
-                            <span class="precio">$62.00</span>
-                            <button class="btn-agCarrito">Agregar</button>
-                        </div>
-                    </div>
-                </div>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <p>No hay productos en promoción disponibles.</p>
+                <?php endif; ?>
             </div>
             <button class="carousel-btn" id="btn-next">❯</button>
         </div>
     </section>
 
-    <!-- APARTADO DE bebidas calientes-->
+    <!-- SECCIONES DINÁMICAS POR CATEGORÍA -->
+    <?php foreach ($categorias as $categoria): ?>
+        <?php
+            $idCategoria = (int) $categoria['id_categoria'];
+            $productosCategoria = $productosPorCategoria[$idCategoria] ?? [];
+        ?>
 
-    <section id="calientes" class="categoria-seccion container">
-        <h2>Bebidas Calientes</h2>
-        <p class="subtitulo">Tazas elaboradas con técnica experta</p>
-        <div class="box-container limit-grid">
-            <?php if (!empty($productosPorCategoria[1])): ?>
-            <?php $contador = 0;
-            foreach ($productosPorCategoria[1] as $producto):
-                $contador++;
-                $claseProducto =
-                $contador <= 4
-                ? 'product-item'
-                : 'product-item-extra';
-            ?>
-            <div class="box <?= $claseProducto ?>">
-                <?php if (!empty($producto['imagen_url'])): ?>
-                    <img
-                    src="img/productos/<?= htmlspecialchars(
-                        $producto['imagen_url'],
-                        ENT_QUOTES,
-                        'UTF-8'
-                ) ?>"
-                alt="<?= htmlspecialchars(
-                    $producto['nombre'],
-                    ENT_QUOTES,
-                    'UTF-8'
-                ) ?>" >
-                <?php endif; ?>
-                <div class="product-txt">
-                    <h3>
-                        <?= htmlspecialchars(
-                            $producto['nombre'],
-                            ENT_QUOTES,
-                            'UTF-8'
-                        ) ?>
-                        </h3>
+        <section id="categoria-<?= $idCategoria ?>" class="categoria-seccion container">
+            <h2><?= htmlspecialchars($categoria['nombre'], ENT_QUOTES, 'UTF-8') ?></h2>
 
-                        <p>
-                            <?= htmlspecialchars(
-                                $producto['descripcion'],
-                                ENT_QUOTES,
-                                'UTF-8'
-                            ) ?>
-                        </p>
+            <?php if (!empty($categoria['descripcion'])): ?>
+                <p class="subtitulo">
+                    <?= htmlspecialchars($categoria['descripcion'], ENT_QUOTES, 'UTF-8') ?>
+                </p>
+            <?php endif; ?>
 
-                        <div class="producto-footer">
-
-                            <?php if (
-                                !empty($producto['tiene_promocion'])
-                                &&
-                                !empty($producto['precio_descuento'])
-                            ): ?>
-
-                                <span class="precio-anterior">
-                                    $<?= number_format(
-                                        (float) $producto['precio'],
-                                        2
-                                    ) ?>
-                                </span>
-
-                                <span class="precio-promo">
-                                    $<?= number_format(
-                                        (float) $producto['precio_descuento'],
-                                        2
-                                    ) ?>
-                                </span>
-
-                            <?php else: ?>
-
-                                <span class="precio">
-                                    $<?= number_format(
-                                        (float) $producto['precio'],
-                                        2
-                                    ) ?>
-                                </span>
-
-                            <?php endif; ?>
-
-
-                            <button
-                                class="btn-agCarrito"
-                                data-id="<?= (int) $producto['id_producto'] ?>"
-                                data-nombre="<?= htmlspecialchars(
-                                    $producto['nombre'],
-                                    ENT_QUOTES,
-                                    'UTF-8'
-                                ) ?>"
-                                data-precio="<?= (float) $producto['precio'] ?>"
-                                data-imagen="<?= htmlspecialchars(
-                                    $producto['imagen_url'],
-                                    ENT_QUOTES,
-                                    'UTF-8'
-                                ) ?>"
+            <div class="box-container limit-grid">
+                <?php if (!empty($productosCategoria)): ?>
+                    <?php $contador = 0;
+                    foreach ($productosCategoria as $producto):
+                        $contador++;
+                        $claseProducto = $contador <= 4 ? 'product-item' : 'product-item-extra';
+                    ?>
+                    <div class="box <?= $claseProducto ?>">
+                        <?php if (!empty($producto['imagen_url'])): ?>
+                            <img
+                                src="img/productos/<?= htmlspecialchars($producto['imagen_url'], ENT_QUOTES, 'UTF-8') ?>"
+                                alt="<?= htmlspecialchars($producto['nombre'], ENT_QUOTES, 'UTF-8') ?>"
                             >
-                                Agregar
-                            </button>
+                        <?php endif; ?>
 
+                        <div class="product-txt">
+                            <h3><?= htmlspecialchars($producto['nombre'], ENT_QUOTES, 'UTF-8') ?></h3>
+                            <p><?= htmlspecialchars($producto['descripcion'], ENT_QUOTES, 'UTF-8') ?></p>
+
+                            <div class="producto-footer">
+                                <?php if (!empty($producto['tiene_promocion']) && !empty($producto['precio_descuento'])): ?>
+                                    <span class="precio-anterior">
+                                        $<?= number_format((float) $producto['precio'], 2) ?>
+                                    </span>
+                                    <span class="precio-promo">
+                                        $<?= number_format((float) $producto['precio_descuento'], 2) ?>
+                                    </span>
+                                <?php else: ?>
+                                    <span class="precio">
+                                        $<?= number_format((float) $producto['precio'], 2) ?>
+                                    </span>
+                                <?php endif; ?>
+
+                                <?php $precioRealProducto = !empty($producto['tiene_promocion']) && !empty($producto['precio_descuento']) ? (float) $producto['precio_descuento'] : (float) $producto['precio']; ?>
+                                <button
+                                    class="btn-agCarrito"
+                                    data-id="<?= (int) $producto['id_producto'] ?>"
+                                    data-nombre="<?= htmlspecialchars($producto['nombre'], ENT_QUOTES, 'UTF-8') ?>"
+                                    data-precio="<?= $precioRealProducto ?>"
+                                    data-imagen="<?= htmlspecialchars($producto['imagen_url'], ENT_QUOTES, 'UTF-8') ?>"
+                                >
+                                    Agregar
+                                </button>
+                            </div>
                         </div>
-
                     </div>
-
-                </div>
-
-            <?php endforeach; ?>
-
-        <?php else: ?>
-            
-            <p>No hay bebidas calientes disponibles.</p>
-
-        <?php endif; ?>
-
-    </div>
-
-
-    <?php if (
-        !empty($productosPorCategoria[1])
-        && count($productosPorCategoria[1]) > 4
-    ): ?>
-
-        <div class="btn-container-center">
-
-            <button
-                id="btn-masBcalientes"
-                class="btn-secundario"
-            >
-                Ver más productos
-            </button>
-
-        </div>
-
-    <?php endif; ?>
-
-</section>
- <!-- CATEGORIA DE BEBIDAS FRIAS-->
-    <section id="frias" class="categoria-seccion container">
-        <h2>Bebidas Frias</h2>
-        <p class="subtitulo">Refrescantes y deliciosas</p>
-        <div class="box-container limit-grid">
-            <?php if (!empty($productosPorCategoria[2])): ?>
-            <?php $contador = 0;
-            foreach ($productosPorCategoria[2] as $producto):
-                $contador++;
-                $claseProducto =
-                $contador <= 4
-                ? 'product-item'
-                : 'product-item-extra';
-            ?>
-            <div class="box <?= $claseProducto ?>">
-                <?php if (!empty($producto['imagen_url'])): ?>
-                    <img
-                    src="img/productos/<?= htmlspecialchars(
-                        $producto['imagen_url'],
-                        ENT_QUOTES,
-                        'UTF-8'
-                ) ?>"
-                alt="<?= htmlspecialchars(
-                    $producto['nombre'],
-                    ENT_QUOTES,
-                    'UTF-8'
-                ) ?>" >
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <p>No hay productos disponibles en esta categoría.</p>
                 <?php endif; ?>
-                <div class="product-txt">
-                    <h3>
-                        <?= htmlspecialchars(
-                            $producto['nombre'],
-                            ENT_QUOTES,
-                            'UTF-8'
-                        ) ?>
-                        </h3>
+            </div>
 
-                        <p>
-                            <?= htmlspecialchars(
-                                $producto['descripcion'],
-                                ENT_QUOTES,
-                                'UTF-8'
-                            ) ?>
-                        </p>
-
-                        <div class="producto-footer">
-
-                            <?php if (
-                                !empty($producto['tiene_promocion'])
-                                &&
-                                !empty($producto['precio_descuento'])
-                            ): ?>
-
-                                <span class="precio-anterior">
-                                    $<?= number_format(
-                                        (float) $producto['precio'],
-                                        2
-                                    ) ?>
-                                </span>
-
-                                <span class="precio-promo">
-                                    $<?= number_format(
-                                        (float) $producto['precio_descuento'],
-                                        2
-                                    ) ?>
-                                </span>
-
-                            <?php else: ?>
-
-                                <span class="precio">
-                                    $<?= number_format(
-                                        (float) $producto['precio'],
-                                        2
-                                    ) ?>
-                                </span>
-
-                            <?php endif; ?>
-
-
-                            <button
-                                class="btn-agCarrito"
-                                data-id="<?= (int) $producto['id_producto'] ?>"
-                                data-nombre="<?= htmlspecialchars(
-                                    $producto['nombre'],
-                                    ENT_QUOTES,
-                                    'UTF-8'
-                                ) ?>"
-                                data-precio="<?= (float) $producto['precio'] ?>"
-                                data-imagen="<?= htmlspecialchars(
-                                    $producto['imagen_url'],
-                                    ENT_QUOTES,
-                                    'UTF-8'
-                                ) ?>"
-                            >
-                                Agregar
-                            </button>
-
-                        </div>
-
-                    </div>
-
+            <?php if (!empty($productosCategoria) && count($productosCategoria) > 4): ?>
+                <div class="btn-container-center">
+                    <button
+                        id="btn-mas-<?= $idCategoria ?>"
+                        class="btn-secundario btn-ver-mas"
+                        data-target="categoria-<?= $idCategoria ?>"
+                    >
+                        Ver más productos
+                    </button>
                 </div>
+            <?php endif; ?>
+        </section>
+    <?php endforeach; ?>
 
-            <?php endforeach; ?>
-
-        <?php else: ?>
-            
-            <p>No hay bebidas frias disponibles.</p>
-
-        <?php endif; ?>
-
-    </div>
-
-
-    <?php if (
-        !empty($productosPorCategoria[2])
-        && count($productosPorCategoria[2]) > 4
-    ): ?>
-
-        <div class="btn-container-center">
-
-            <button
-                id="btn-masBFrias"
-                class="btn-secundario"
-            >
-                Ver más productos
-            </button>
-
-        </div>
-
-    <?php endif; ?>
-
-</section>
-
-<!-- CATEGORIA DE POSTRES -->
-     <section id="postres" class="categoria-seccion container">
-        <h2>Postres</h2>
-        <p class="subtitulo">Deliciosos postres para endulzar tu día</p>
-        <div class="box-container limit-grid">
-            <?php if (!empty($productosPorCategoria[3])): ?>
-            <?php $contador = 0;
-            foreach ($productosPorCategoria[3] as $producto):
-                $contador++;
-                $claseProducto =
-                $contador <= 4
-                ? 'product-item'
-                : 'product-item-extra';
-            ?>
-            <div class="box <?= $claseProducto ?>">
-                <?php if (!empty($producto['imagen_url'])): ?>
-                    <img
-                    src="img/productos/<?= htmlspecialchars(
-                        $producto['imagen_url'],
-                        ENT_QUOTES,
-                        'UTF-8'
-                ) ?>"
-                alt="<?= htmlspecialchars(
-                    $producto['nombre'],
-                    ENT_QUOTES,
-                    'UTF-8'
-                ) ?>" >
-                <?php endif; ?>
-                <div class="product-txt">
-                    <h3>
-                        <?= htmlspecialchars(
-                            $producto['nombre'],
-                            ENT_QUOTES,
-                            'UTF-8'
-                        ) ?>
-                        </h3>
-
-                        <p>
-                            <?= htmlspecialchars(
-                                $producto['descripcion'],
-                                ENT_QUOTES,
-                                'UTF-8'
-                            ) ?>
-                        </p>
-
-                        <div class="producto-footer">
-
-                            <?php if (
-                                !empty($producto['tiene_promocion'])
-                                &&
-                                !empty($producto['precio_descuento'])
-                            ): ?>
-
-                                <span class="precio-anterior">
-                                    $<?= number_format(
-                                        (float) $producto['precio'],
-                                        2
-                                    ) ?>
-                                </span>
-
-                                <span class="precio-promo">
-                                    $<?= number_format(
-                                        (float) $producto['precio_descuento'],
-                                        2
-                                    ) ?>
-                                </span>
-
-                            <?php else: ?>
-
-                                <span class="precio">
-                                    $<?= number_format(
-                                        (float) $producto['precio'],
-                                        2
-                                    ) ?>
-                                </span>
-
-                            <?php endif; ?>
-
-
-                            <button
-                                class="btn-agCarrito"
-                                data-id="<?= (int) $producto['id_producto'] ?>"
-                                data-nombre="<?= htmlspecialchars(
-                                    $producto['nombre'],
-                                    ENT_QUOTES,
-                                    'UTF-8'
-                                ) ?>"
-                                data-precio="<?= (float) $producto['precio'] ?>"
-                                data-imagen="<?= htmlspecialchars(
-                                    $producto['imagen_url'],
-                                    ENT_QUOTES,
-                                    'UTF-8'
-                                ) ?>"
-                            >
-                                Agregar
-                            </button>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            <?php endforeach; ?>
-
-        <?php else: ?>
-            
-            <p>No hay postres disponibles.</p>
-
-        <?php endif; ?>
-
-    </div>
-
-
-    <?php if (
-        !empty($productosPorCategoria[3])
-        && count($productosPorCategoria[3]) > 4
-    ): ?>
-
-        <div class="btn-container-center">
-
-            <button
-                id="btn-masPostres"
-                class="btn-secundario"
-            >
-                Ver más productos
-            </button>
-
-        </div>
-
-    <?php endif; ?>
-
-</section>
     <?php include("includes/footer.php"); ?>
     <script>
     // Le preguntamos a PHP si existe la variable de sesión.
@@ -544,4 +208,6 @@ Nos apasiona recibirte con el olor a grano recién molido y pan calientito salie
     </script>
     <script src="js/carrito.js?v=2"></script>
     <script src="js/menu.js"></script> </body>
+    <script src="js/header-menu.js"></script>
+    
 </html>    

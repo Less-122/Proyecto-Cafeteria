@@ -1,18 +1,14 @@
 <?php include 'seguridad_admin.php'; ?>
 <header class="header">
         <div class="header_menu">
-            <img src="../img/Logo/logoAzul.jpeg" alt="" class="header_logo">
+            <img src="/Proyecto-Cafeteria/img/Logo/logoAzul.jpeg" alt="" class="header_logo">
         </div>
 
-    
-    
         <div class="header_content">
             <div class="header_main">
                 <h3 id="titulo-seccion">Cargando...</h3>
                 <p class="subtitulo">Administración de la cafetería</p>
             </div>
-            
-
             
             <div class="admin_profile">
                 <div class="admin_avatar">
@@ -20,7 +16,8 @@
                 </div>
                 <div class="admin_info">
                     <span class="admin_name">Administrador</span>
+                    <a href="../logout.php" class="btn-salir-admin">Salir</a>
                 </div>
             </div>
         </div>
-    </header>
+</header>

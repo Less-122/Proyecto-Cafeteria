@@ -1,5 +1,26 @@
 <?php
 include 'seguridad_admin.php';
+require_once '../config/conexion.php';
+
+/* Obtener pedidos junto con el nombre del cliente que lo hizo */
+$sql = "
+    SELECT
+        p.id_pedido,
+        p.id_usuario,
+        DATE_FORMAT(p.fecha_creacion, '%d-%m-%Y %H:%i') AS fecha_creacion,
+        DATE_FORMAT(p.fecha_vencimiento, '%d-%m-%Y') AS fecha_vencimiento,
+        p.clave_retiro,
+        p.total,
+        p.estado,
+        u.nombre,
+        u.apellido
+    FROM pedidos p
+    LEFT JOIN usuarios u ON p.id_usuario = u.id_usuario
+    ORDER BY p.fecha_creacion DESC, p.id_pedido DESC
+";
+
+$resultado = $conexion->query($sql);
+$pedidos = $resultado ? $resultado->fetchAll(PDO::FETCH_ASSOC) : [];
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -7,114 +28,75 @@ include 'seguridad_admin.php';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pedidos</title>
-    <link rel="stylesheet" href="../css/admin.css">
+    <link rel="icon" type="image/jpeg" href="/Proyecto-Cafeteria/img/Logo/isotipoAzul.jpeg">
+    <!-- Rutas absolutas -->
+    <link rel="stylesheet" href="/Proyecto-Cafeteria/css/admin.css">
 </head>
 <body>
 
-    <div id="header-placeholder" class="header-placeholder"></div>
-
-    <div id="menu-placeholder" class="menu-placeholder"></div>
+    <!-- Inserción directa con PHP -->
+    <?php include 'admin_header.php'; ?>
+    <?php include 'admin_menu.php'; ?>
 
     <main class="main_container">
         <h1 class="titulo">Historial de Pedidos</h1>
-    <section>
-
-    
-        <div class="filtros_container">
-            <div class="search_box">
-                <ion-icon name="search-outline" class="icono_filtro"></ion-icon>
-                <input type="text" id="searchInput" placeholder="Buscar pedidos">
-            
+        
+        <section>
+            <div class="filtros_container">
+                <div class="search_box">
+                    <ion-icon name="search-outline" class="icono_filtro"></ion-icon>
+                    <input type="text" id="searchInput" placeholder="Buscar pedidos">
+                </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <table>
-        <tr>
-            <th>ID</th>
-            <th>Nombre</th>
-            <th>Fecha de pedido</th>
-            <th>Fecha de vencimiento</th>
-            <th>Clave de retiro</th>
-            <th>Total</th>
-            <th>Estado</th>
-        </tr>
-        <tr>
-            <td>778</td>
-            <td>Martha</td>
-            <td>08-07-2026</td>
-            <td>09-07-2026</td>
-            <td>456789</td>
-            <td>450</td>
-            <td>Pendiente</td>
-        </tr>
-        <tr>
-            <td>779</td>
-            <td>Carlos</td>
-            <td>08-07-2026</td>
-            <td>09-07-2026</td>
-            <td>123456</td>
-            <td>120</td>
-            <td>Completado</td>
-        </tr>
-        <tr>
-            <td>780</td>
-            <td>Laura</td>
-            <td>09-07-2026</td>
-            <td>10-07-2026</td>
-            <td>987654</td>
-            <td>340</td>
-            <td>Pendiente</td>
-        </tr>
-        <tr>
-            <td>781</td>
-            <td>Diego</td>
-            <td>09-07-2026</td>
-            <td>10-07-2026</td>
-            <td>112233</td>
-            <td>85</td>
-            <td>Vencido</td>
-        </tr>
-        <tr>
-            <td>782</td>
-            <td>Ana</td>
-            <td>09-07-2026</td>
-            <td>10-07-2026</td>
-            <td>445566</td>
-            <td>210</td>
-            <td>Completado</td>
-        </tr>
-        <tr>
-            <td>783</td>
-            <td>Pedro</td>
-            <td>10-07-2026</td>
-            <td>11-07-2026</td>
-            <td>778899</td>
-            <td>500</td>
-            <td>Pendiente</td>
-        </tr>
-        <tr>
-            <td>784</td>
-            <td>Sofía</td>
-            <td>10-07-2026</td>
-            <td>11-07-2026</td>
-            <td>334455</td>
-            <td>150</td>
-            <td>Pendiente</td>
-        </tr>
-        <tr>
-            <td>785</td>
-            <td>Miguel</td>
-            <td>10-07-2026</td>
-            <td>11-07-2026</td>
-            <td>667788</td>
-            <td>280</td>
-            <td>Completado</td>
-        </tr>
-    </table>
+        <table id="tablaPedidos">
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Fecha de pedido</th>
+                <th>Fecha de vencimiento</th>
+                <th>Clave de retiro</th>
+                <th>Total</th>
+                <th>Estado</th>
+            </tr>
+
+            <?php if (!empty($pedidos)): ?>
+
+                <?php foreach ($pedidos as $pedido): ?>
+                    <tr>
+                        <td><?= (int) $pedido['id_pedido'] ?></td>
+                        <td><?= htmlspecialchars(
+                            $pedido['nombre'] . ' ' . $pedido['apellido'],
+                            ENT_QUOTES,
+                            'UTF-8'
+                        ) ?></td>
+                        <td><?= htmlspecialchars($pedido['fecha_creacion'], ENT_QUOTES, 'UTF-8') ?></td>
+                        <td><?= htmlspecialchars($pedido['fecha_vencimiento'], ENT_QUOTES, 'UTF-8') ?></td>
+                        <td><?= htmlspecialchars($pedido['clave_retiro'], ENT_QUOTES, 'UTF-8') ?></td>
+                        <td>$<?= number_format((float) $pedido['total'], 2) ?></td>
+                        <td>
+                            <span class="estado-badge estado-<?= htmlspecialchars($pedido['estado'], ENT_QUOTES, 'UTF-8') ?>">
+                                <?= htmlspecialchars(ucfirst($pedido['estado']), ENT_QUOTES, 'UTF-8') ?>
+                            </span>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+
+            <?php else: ?>
+
+                <tr>
+                    <td colspan="7" style="text-align:center;">No hay pedidos registrados.</td>
+                </tr>
+
+            <?php endif; ?>
+
+        </table>
 
     </main>
-    <script src="../js/admin.js"></script>
+    
+    <!-- Rutas absolutas para scripts -->
+    <script src="/Proyecto-Cafeteria/js/admin.js"></script>
     <script type="module" src="https://unpkg.com/ionicons@8.0.13/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@8.0.13/dist/ionicons/ionicons.js"></script>
 </body>

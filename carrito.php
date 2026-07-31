@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aroma a Café - Tu Carrito</title>
     <script src="js/carrito.js"></script>
+    <link rel="icon" type="image/jpeg" href="img/Logo/isotipo.jpg">
     
     <link rel="stylesheet" href="css/header-menu.css">
     <link rel="stylesheet" href="css/footer.css">
@@ -48,7 +49,7 @@
                     </div>
                     <p class="summary-note">* Recuerda que tu pedido se pagará directamente en la sucursal física.</p>
                     <button class="btn-confirm-order">Confirmar Pedido</button>
-                    <a href="#" class="keep-shopping">← Ver menú</a>
+                    <a href="index.php" class="keep-shopping">← Ver menú</a>
                 </div>
             </aside>
         </div>
@@ -59,4 +60,5 @@
 
     <script src="js/carrito.js"></script>
     <script src="js/menu.js"></script> </body>
+    <script src="js/header-menu.js"></script>
 </html>

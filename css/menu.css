@@ -18,7 +18,7 @@ ul {
 body {
     font-family: "Roboto Slab", serif;
     background-color: #F5EDD6; /* Fondo Crema */
-    color: #2C1A0E;
+    color: #ebe7e4;
 }
 
 .container {
@@ -167,11 +167,12 @@ body {
 .carrusel-container {
     display: flex;
     overflow-x: auto;
-    scroll-snap-type: x mandatory; 
+    scroll-snap-type: x proximity; /* menos agresivo */
     gap: 20px;
     padding: 10px 0;
     scroll-behavior: smooth;
     width: 100%;
+    overscroll-behavior-x: contain; /* evita que el scroll del carrusel "se filtre" o afecte al padre */
 }
 
 .carrusel-container::-webkit-scrollbar { 
@@ -180,8 +181,10 @@ body {
 
 .carrusel-container .box {
     scroll-snap-align: start;
-    min-width: 280px; 
-    flex: 0 0 auto;
+    min-width: 280px;
+    width: 280px;
+    height: 430px;
+    flex: 0 0 280px;
 }
 
 /* --- 5. Grid de Tarjetas (4 Columnas) --- */

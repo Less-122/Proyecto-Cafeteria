@@ -86,8 +86,6 @@ if (loadMoreBtn) {
     };
 }
 
-<<<<<<< HEAD
-}
 
 document.addEventListener('DOMContentLoaded', function() {
     const botonLogin = document.getElementById('botonLogin');
@@ -123,19 +121,3 @@ document.addEventListener('DOMContentLoaded', function() {
         window.location.href = 'carrito.html';
     });
 });
-=======
-
-document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById('botonLogin').addEventListener('click', function(evento) {
-        evento.preventDefault();
-        window.location.href = 'login.php';
-    });
-});
-
-document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById('botonCarrito').addEventListener('click', function(evento) {
-        evento.preventDefault();
-        window.location.href = 'carrito.php';
-    });
-});
->>>>>>> integracion

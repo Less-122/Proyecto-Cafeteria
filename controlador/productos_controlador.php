@@ -1,42 +1,44 @@
-<?php
-
-require_once '../config/conexion.php';
-
-
+<?php require_once '../config/conexion.php';
 /* =====================================================
    SOLO PERMITIR PETICIONES POST
 ===================================================== */
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Location: ../admin_panel/productos.php');
-    exit;
-}
-
-
+    exit; }
 /* =====================================================
    DETERMINAR ACCIÓN
 ===================================================== */
 
 $accion = $_POST['accion'] ?? '';
 
-switch ($accion) {
+try {
+    switch ($accion) {
+        case 'crear':
+            crearProducto($conexion);
+            break;
 
-    case 'crear':
-        crearProducto($conexion);
-        break;
+        case 'modificar':
+            modificarProducto($conexion);
+            break;
 
-    case 'modificar':
-        modificarProducto($conexion);
-        break;
+        case 'eliminar':
+            eliminarProducto($conexion);
+            break;
 
-    case 'eliminar':
-        eliminarProducto($conexion);
-        break;
-
-    default:
-        die('Acción no válida.');
+        default:
+            throw new Exception('La acción seleccionada no es válida.');
+    }
+} catch (Throwable $error) {
+    exit(
+        'Error al procesar el producto: ' .
+        htmlspecialchars(
+            $error->getMessage(),
+            ENT_QUOTES,
+            'UTF-8'
+        )
+    );
 }
-
 
 /* =====================================================
    CREAR PRODUCTO
@@ -46,86 +48,104 @@ function crearProducto(PDO $conexion): void
 {
     $nombre = trim($_POST['nombre'] ?? '');
     $descripcion = trim($_POST['descripcion'] ?? '');
-
     $idCategoria = (int) ($_POST['categoria'] ?? 0);
-
-    $stock = (int) ($_POST['stock'] ?? 0);
-
     $precio = (float) ($_POST['precio'] ?? 0);
 
     $tienePromocion =
         isset($_POST['promocion']) ? 1 : 0;
 
+    $etiquetaPromo =
+        trim($_POST['etiqueta_promo'] ?? '');
 
-    /* Validar datos */
+    $precioDescuento =
+        obtenerPrecioDescuento(
+            $_POST['precio_descuento'] ?? ''
+        );
+
     validarProducto(
+        $conexion,
         $nombre,
         $idCategoria,
-        $stock,
-        $precio
+        $precio,
+        $tienePromocion,
+        $etiquetaPromo,
+        $precioDescuento
     );
 
+    if (
+        !isset($_FILES['imagen']) ||
+        $_FILES['imagen']['error'] === UPLOAD_ERR_NO_FILE
+    ) {
+        throw new Exception(
+            'Debes seleccionar una imagen para el producto.'
+        );
+    }
 
-    /* Guardar imagen en su carpeta correspondiente */
-    $imagenUrl = procesarImagen($idCategoria);
-
-
-    /* Insertar producto */
-    $sql = "
-        INSERT INTO productos (
-            nombre,
-            descripcion,
-            id_categoria_fk,
-            precio,
-            stock,
-            imagen_url,
-            tiene_promocion
-        )
-        VALUES (
-            :nombre,
-            :descripcion,
-            :categoria,
-            :precio,
-            :stock,
-            :imagen,
-            :promocion
-        )
-    ";
-
-
+    $imagenUrl = guardarImagenProducto(
+        $conexion,
+        $_FILES['imagen'],
+        $nombre,
+        $idCategoria
+    );
     try {
+        $sql = "
+            INSERT INTO productos (
+                nombre,
+                descripcion,
+                id_categoria,
+                precio,
+                imagen_url,
+                tiene_promocion,
+                etiqueta_promo,
+                precio_descuento
+            )
+            VALUES (
+                :nombre,
+                :descripcion,
+                :id_categoria,
+                :precio,
+                :imagen_url,
+                :tiene_promocion,
+                :etiqueta_promo,
+                :precio_descuento
+            )
+        ";
 
         $stmt = $conexion->prepare($sql);
 
         $stmt->execute([
             ':nombre' => $nombre,
-            ':descripcion' => $descripcion,
-            ':categoria' => $idCategoria,
+            ':descripcion' =>
+                $descripcion !== '' ? $descripcion : null,
+            ':id_categoria' => $idCategoria,
             ':precio' => $precio,
-            ':stock' => $stock,
-            ':imagen' => $imagenUrl,
-            ':promocion' => $tienePromocion
+            ':imagen_url' => $imagenUrl,
+            ':tiene_promocion' => $tienePromocion,
+            ':etiqueta_promo' =>
+                $tienePromocion === 1
+                    ? $etiquetaPromo
+                    : null,
+            ':precio_descuento' =>
+                $tienePromocion === 1
+                    ? $precioDescuento
+                    : null
         ]);
+    } catch (PDOException $error) {
+        /*
+         * Si la imagen se guardó, pero el INSERT falló,
+         * se elimina para no dejar archivos sobrantes.
+         */
+        eliminarImagen($imagenUrl);
 
-    } catch (PDOException $e) {
-
-        /* Si falla el INSERT, borrar la imagen subida */
-        eliminarImagenAnterior($imagenUrl);
-
-        die(
-            'Error al guardar el producto: '
-            . $e->getMessage()
-        );
-    }
-
+        throw new Exception(
+            'No se pudo guardar el producto: ' .
+            $error->getMessage()
+        );}
 
     header(
         'Location: ../admin_panel/productos.php?creado=1'
     );
-
-    exit;
-}
-
+    exit;}
 
 /* =====================================================
    MODIFICAR PRODUCTO
@@ -136,163 +156,150 @@ function modificarProducto(PDO $conexion): void
     $idProducto =
         (int) ($_POST['id_producto'] ?? 0);
 
-    $nombre =
-        trim($_POST['nombre'] ?? '');
-
-    $descripcion =
-        trim($_POST['descripcion'] ?? '');
-
-    $idCategoria =
-        (int) ($_POST['categoria'] ?? 0);
-
-    $stock =
-        (int) ($_POST['stock'] ?? 0);
-
-    $precio =
-        (float) ($_POST['precio'] ?? 0);
+    $nombre = trim($_POST['nombre'] ?? '');
+    $descripcion = trim($_POST['descripcion'] ?? '');
+    $idCategoria = (int) ($_POST['categoria'] ?? 0);
+    $precio = (float) ($_POST['precio'] ?? 0);
 
     $tienePromocion =
         isset($_POST['promocion']) ? 1 : 0;
 
+    $etiquetaPromo =
+        trim($_POST['etiqueta_promo'] ?? '');
+
+    $precioDescuento =
+        obtenerPrecioDescuento(
+            $_POST['precio_descuento'] ?? ''
+        );
 
     if ($idProducto <= 0) {
-        die('Producto no válido.');
-    }
-
-
+        throw new Exception('El producto seleccionado no es válido.');}
     validarProducto(
+        $conexion,
         $nombre,
         $idCategoria,
-        $stock,
-        $precio
+        $precio,
+        $tienePromocion,
+        $etiquetaPromo,
+        $precioDescuento
     );
 
-
-    /* =================================================
-       BUSCAR PRODUCTO ACTUAL
-    ================================================= */
+    /* Buscar la información actual del producto */
 
     $sqlActual = "
-        SELECT imagen_url
+        SELECT
+            id_producto,
+            imagen_url
         FROM productos
-        WHERE id_producto = :id
+        WHERE id_producto = :id_producto
     ";
 
-    $stmtActual =
-        $conexion->prepare($sqlActual);
+    $stmtActual = $conexion->prepare($sqlActual);
 
     $stmtActual->execute([
-        ':id' => $idProducto
+        ':id_producto' => $idProducto
     ]);
 
     $productoActual =
         $stmtActual->fetch(PDO::FETCH_ASSOC);
-
-
     if (!$productoActual) {
-        die('El producto no existe.');
+        throw new Exception(
+            'El producto que intentas modificar no existe.'
+        );
     }
-
-
-    /* Conservar imagen actual */
-    $imagenUrl =
-        $productoActual['imagen_url'];
-
     $imagenAnterior =
-        $productoActual['imagen_url'];
+    $productoActual['imagen_url'];
 
+    $imagenUrl = $imagenAnterior;
     $hayNuevaImagen = false;
 
-
-    /* =================================================
-       SI SE SUBIÓ UNA NUEVA IMAGEN
-    ================================================= */
+    /*
+     * La imagen no es obligatoria al modificar.
+     * Si no se selecciona una nueva, se conserva la anterior.
+     */
 
     if (
         isset($_FILES['imagen']) &&
-        $_FILES['imagen']['error'] === UPLOAD_ERR_OK
+        $_FILES['imagen']['error'] !== UPLOAD_ERR_NO_FILE
     ) {
-
-        $imagenUrl =
-            procesarImagen($idCategoria);
+        $imagenUrl = guardarImagenProducto(
+            $conexion,
+            $_FILES['imagen'],
+            $nombre,
+            $idCategoria
+        );
 
         $hayNuevaImagen = true;
     }
 
-
-    /* =================================================
-       ACTUALIZAR PRODUCTO
-    ================================================= */
-
-    $sql = "
-        UPDATE productos
-        SET
-            nombre = :nombre,
-            descripcion = :descripcion,
-            id_categoria_fk = :categoria,
-            precio = :precio,
-            stock = :stock,
-            imagen_url = :imagen,
-            tiene_promocion = :promocion
-        WHERE id_producto = :id
-    ";
-
-
     try {
+        $sql = "
+            UPDATE productos
+            SET
+                nombre = :nombre,
+                descripcion = :descripcion,
+                id_categoria = :id_categoria,
+                precio = :precio,
+                imagen_url = :imagen_url,
+                tiene_promocion = :tiene_promocion,
+                etiqueta_promo = :etiqueta_promo,
+                precio_descuento = :precio_descuento
+            WHERE id_producto = :id_producto
+        ";
 
-        $stmt =
-            $conexion->prepare($sql);
+        $stmt = $conexion->prepare($sql);
 
         $stmt->execute([
             ':nombre' => $nombre,
-            ':descripcion' => $descripcion,
-            ':categoria' => $idCategoria,
+            ':descripcion' =>
+                $descripcion !== '' ? $descripcion : null,
+            ':id_categoria' => $idCategoria,
             ':precio' => $precio,
-            ':stock' => $stock,
-            ':imagen' => $imagenUrl,
-            ':promocion' => $tienePromocion,
-            ':id' => $idProducto
+            ':imagen_url' => $imagenUrl,
+            ':tiene_promocion' => $tienePromocion,
+            ':etiqueta_promo' =>
+                $tienePromocion === 1
+                    ? $etiquetaPromo
+                    : null,
+            ':precio_descuento' =>
+                $tienePromocion === 1
+                    ? $precioDescuento
+                    : null,
+            ':id_producto' => $idProducto
         ]);
-
-    } catch (PDOException $e) {
-
+    } catch (PDOException $error) {
         /*
-         * Si se había subido una imagen nueva
-         * pero falló el UPDATE, eliminarla.
+         * Si se subió una imagen nueva, pero falló
+         * el UPDATE, se elimina la imagen nueva.
          */
         if ($hayNuevaImagen) {
-            eliminarImagenAnterior($imagenUrl);
+            eliminarImagen($imagenUrl);
         }
 
-        die(
-            'Error al modificar el producto: '
-            . $e->getMessage()
+        throw new Exception(
+            'No se pudo modificar el producto: ' .
+            $error->getMessage()
         );
     }
-
 
     /*
-     * Si se actualizó correctamente y había
-     * una imagen nueva, borrar la anterior.
+     * Si la modificación fue correcta y se subió
+     * una nueva imagen, se borra la imagen anterior.
      */
+
     if (
         $hayNuevaImagen &&
+        !empty($imagenAnterior) &&
         $imagenAnterior !== $imagenUrl
     ) {
-
-        eliminarImagenAnterior(
-            $imagenAnterior
-        );
+        eliminarImagen($imagenAnterior);
     }
-
 
     header(
         'Location: ../admin_panel/productos.php?modificado=1'
     );
-
     exit;
 }
-
 
 /* =====================================================
    ELIMINAR PRODUCTO
@@ -303,292 +310,408 @@ function eliminarProducto(PDO $conexion): void
     $idProducto =
         (int) ($_POST['id_producto'] ?? 0);
 
-
     if ($idProducto <= 0) {
-        die('Producto no válido.');
+        throw new Exception(
+            'El producto seleccionado no es válido.'
+        );
     }
 
-
-    /* =================================================
-       BUSCAR PRODUCTO
-    ================================================= */
+    /* Buscar el producto antes de eliminarlo */
 
     $sqlBuscar = "
-        SELECT imagen_url
+        SELECT
+            id_producto,
+            imagen_url
         FROM productos
-        WHERE id_producto = :id
+        WHERE id_producto = :id_producto
     ";
 
-
-    $stmtBuscar =
-        $conexion->prepare($sqlBuscar);
+    $stmtBuscar = $conexion->prepare($sqlBuscar);
 
     $stmtBuscar->execute([
-        ':id' => $idProducto
+        ':id_producto' => $idProducto
     ]);
 
     $producto =
         $stmtBuscar->fetch(PDO::FETCH_ASSOC);
 
-
     if (!$producto) {
-        die('El producto no existe.');
+        throw new Exception(
+            'El producto que intentas eliminar no existe.'
+        );
     }
 
-
-    /* =================================================
-       ELIMINAR DE LA BASE DE DATOS
-    ================================================= */
-
-    $sqlEliminar = "
-        DELETE FROM productos
-        WHERE id_producto = :id
-    ";
-
-
     try {
+        $sqlEliminar = "
+            DELETE FROM productos
+            WHERE id_producto = :id_producto
+        ";
 
         $stmtEliminar =
             $conexion->prepare($sqlEliminar);
 
         $stmtEliminar->execute([
-            ':id' => $idProducto
+            ':id_producto' => $idProducto
         ]);
-
-    } catch (PDOException $e) {
-
-        die(
-            'No se pudo eliminar el producto. '
-            . 'Es posible que esté relacionado '
-            . 'con algún pedido.'
+    } catch (PDOException $error) {
+        throw new Exception(
+            'No se pudo eliminar el producto. ' .
+            'Es posible que esté relacionado con un pedido.'
         );
     }
 
-
-    /* =================================================
-       ELIMINAR IMAGEN DEL PRODUCTO
-    ================================================= */
+    /*
+     * La imagen se elimina únicamente después
+     * de borrar correctamente el producto.
+     */
 
     if (!empty($producto['imagen_url'])) {
-
-        eliminarImagenAnterior(
+        eliminarImagen(
             $producto['imagen_url']
         );
     }
 
-
     header(
         'Location: ../admin_panel/productos.php?eliminado=1'
     );
-
     exit;
 }
-
 
 /* =====================================================
    VALIDAR PRODUCTO
 ===================================================== */
 
 function validarProducto(
+    PDO $conexion,
     string $nombre,
     int $idCategoria,
-    int $stock,
-    float $precio
+    float $precio,
+    int $tienePromocion,
+    string $etiquetaPromo,
+    ?float $precioDescuento
 ): void {
-
     if ($nombre === '') {
-        die('El nombre es obligatorio.');
+        throw new Exception(
+            'El nombre del producto es obligatorio.'
+        );
     }
 
-
     if ($idCategoria <= 0) {
-        die(
+        throw new Exception(
             'Selecciona una categoría válida.'
         );
     }
 
+    $sqlCategoria = "
+        SELECT COUNT(*)
+        FROM categorias
+        WHERE id_categoria = :id_categoria
+    ";
 
-    if ($stock < 0) {
-        die(
-            'El stock no puede ser negativo.'
+    $stmtCategoria =
+        $conexion->prepare($sqlCategoria);
+
+    $stmtCategoria->execute([
+        ':id_categoria' => $idCategoria
+    ]);
+
+    $categoriaExiste =
+        (int) $stmtCategoria->fetchColumn();
+
+    if ($categoriaExiste === 0) {
+        throw new Exception(
+            'La categoría seleccionada no existe en la base de datos.'
         );
     }
 
-
     if ($precio < 0) {
-        die(
+        throw new Exception(
             'El precio no puede ser negativo.'
         );
     }
+
+    if ($tienePromocion === 1) {
+        if ($etiquetaPromo === '') {
+            throw new Exception(
+                'Escribe una etiqueta para la promoción.'
+            );
+        }
+
+        if ($precioDescuento === null) {
+            throw new Exception(
+                'Escribe el precio con descuento.'
+            );
+        }
+
+        if ($precioDescuento < 0) {
+            throw new Exception(
+                'El precio con descuento no puede ser negativo.'
+            );
+        }
+
+        if ($precioDescuento >= $precio) {
+            throw new Exception(
+                'El precio con descuento debe ser menor al precio normal.'
+            );
+        }
+    }
 }
 
-
 /* =====================================================
-   PROCESAR IMAGEN
+   CONVERTIR PRECIO DE DESCUENTO
 ===================================================== */
 
-function procesarImagen(int $idCategoria): string
-{
+function obtenerPrecioDescuento(
+    mixed $valor
+): ?float {
     if (
-        !isset($_FILES['imagen']) ||
-        $_FILES['imagen']['error']
-            !== UPLOAD_ERR_OK
+        $valor === '' ||
+        $valor === null
     ) {
+        return null;
+    }
 
-        die(
-            'Debes seleccionar una imagen válida.'
+    return (float) $valor;
+}
+
+/* =====================================================
+   GUARDAR IMAGEN DEL PRODUCTO
+===================================================== */
+
+function guardarImagenProducto(
+    PDO $conexion,
+    array $archivo,
+    string $nombreProducto,
+    int $idCategoria
+): string {
+    $sqlCategoria = "
+    SELECT nombre
+    FROM categorias
+    WHERE id_categoria = :id_categoria
+";
+
+$stmtCategoria = $conexion->prepare($sqlCategoria);
+
+$stmtCategoria->execute([
+    ':id_categoria' => $idCategoria
+]);
+
+$nombreCategoria = $stmtCategoria->fetchColumn();
+
+if (!$nombreCategoria) {
+    throw new Exception(
+        'La categoría seleccionada no existe.'
+    );
+}
+
+$nombreNormalizado =
+    limpiarNombreArchivo($nombreCategoria);
+
+if ($nombreNormalizado === '') {
+    throw new Exception(
+        'No fue posible identificar el nombre de la categoría.'
+    );
+}
+
+$carpetaCategoria = ucfirst($nombreNormalizado);
+$carpetaCategoria = str_replace(['-', '_'], ' ', $carpetaCategoria);
+$carpetaCategoria = str_replace(' ', '-', trim($carpetaCategoria));
+
+if ($carpetaCategoria === '') {
+    throw new Exception(
+        'No fue posible crear la carpeta de la categoría.'
+    );
+}
+
+    if (
+        !isset($archivo['error']) ||
+        $archivo['error'] !== UPLOAD_ERR_OK
+    ) {
+        throw new Exception(
+            'No se recibió correctamente la imagen.'
         );
     }
 
+    /*
+     * Tamaño máximo permitido: 5 MB.
+     */
 
-    $archivoTemporal =
-        $_FILES['imagen']['tmp_name'];
+    $tamanoMaximo =
+        5 * 1024 * 1024;
 
-    $nombreOriginal =
-        $_FILES['imagen']['name'];
+    if ($archivo['size'] > $tamanoMaximo) {
+        throw new Exception(
+            'La imagen no debe superar los 5 MB.'
+        );
+    }
 
+    /*
+     * Comprobar el tipo real del archivo.
+     */
 
-    $extension = strtolower(
-        pathinfo(
-            $nombreOriginal,
-            PATHINFO_EXTENSION
-        )
-    );
+    $finfo =
+        new finfo(FILEINFO_MIME_TYPE);
 
+    $tipoMime =
+        $finfo->file($archivo['tmp_name']);
 
     $extensionesPermitidas = [
-        'jpg',
-        'jpeg',
-        'png',
-        'webp'
+        'image/jpeg' => 'jpeg',
+        'image/png' => 'png',
+        'image/webp' => 'webp'
     ];
 
-
-    if (
-        !in_array(
-            $extension,
-            $extensionesPermitidas,
-            true
-        )
-    ) {
-
-        die(
-            'El formato de imagen no está permitido.'
+    if (!isset($extensionesPermitidas[$tipoMime])) {
+        throw new Exception(
+            'La imagen debe ser JPEG, PNG o WEBP.'
         );
     }
 
+    $extension =
+        $extensionesPermitidas[$tipoMime];
 
-    /* =================================================
-       CARPETA SEGÚN CATEGORÍA
-    ================================================= */
+    /*
+     * Ejemplo:
+     *
+     * Cappuccino Clásico
+     *       ↓
+     * cappuccino-clasico
+     */
 
-    switch ($idCategoria) {
+    $nombreLimpio =
+        limpiarNombreArchivo($nombreProducto);
 
-        case 1:
-            $carpetaCategoria =
-                'Bebidas-calientes';
-            break;
-
-        case 2:
-            $carpetaCategoria =
-                'Bebidas-frias';
-            break;
-
-        case 3:
-            $carpetaCategoria =
-                'Postres';
-            break;
-
-        default:
-            die('Categoría no válida.');
-    }
-
-
-    /* =================================================
-       NOMBRE ÚNICO
-    ================================================= */
-
-    $nombreImagen =
-        uniqid('producto_')
-        . '.'
-        . $extension;
-
-
-    /* =================================================
-       RUTA DONDE SE GUARDARÁ
-    ================================================= */
-
-    $carpetaDestino =
-        '../img/productos/'
-        . $carpetaCategoria
-        . '/';
-
-
-    if (!is_dir($carpetaDestino)) {
-
-        mkdir(
-            $carpetaDestino,
-            0777,
-            true
+    if ($nombreLimpio === '') {
+        throw new Exception(
+            'No fue posible crear el nombre de la imagen.'
         );
     }
 
+    /*
+     * Ruta física:
+     *
+     * proyecto/img/productos/Bebidas-calientes/
+     */
 
-    $rutaDestino =
-        $carpetaDestino
-        . $nombreImagen;
+    $directorioDestino =
+        dirname(__DIR__) .
+        '/img/productos/' .
+        $carpetaCategoria .
+        '/';
 
+    if (!is_dir($directorioDestino)) {
+        $carpetaCreada = mkdir(
+            $directorioDestino,
+            0775,
+            true
+        );
 
-    /* =================================================
-       GUARDAR IMAGEN
-    ================================================= */
+        if (!$carpetaCreada) {
+            throw new Exception(
+                'No fue posible crear la carpeta de imágenes.'
+            );
+        }
+    }
+
+    $nombreArchivo =
+        $nombreLimpio . '.' . $extension;
+
+    $rutaCompleta =
+        $directorioDestino . $nombreArchivo;
+
+    /*
+     * Si el nombre ya existe:
+     *
+     * cappuccino-clasico.jpeg
+     * cappuccino-clasico-2.jpeg
+     * cappuccino-clasico-3.jpeg
+     */
+
+    $contador = 2;
+
+    while (file_exists($rutaCompleta)) {
+        $nombreArchivo =
+            $nombreLimpio .
+            '-' .
+            $contador .
+            '.' .
+            $extension;
+
+        $rutaCompleta =
+            $directorioDestino .
+            $nombreArchivo;
+
+        $contador++;
+    }
 
     if (
         !move_uploaded_file(
-            $archivoTemporal,
-            $rutaDestino
+            $archivo['tmp_name'],
+            $rutaCompleta
         )
     ) {
-
-        die(
-            'No se pudo guardar la imagen.'
+        throw new Exception(
+            'No fue posible guardar la imagen.'
         );
     }
 
-
     /*
-     * Esto se guarda en imagen_url.
+     * Este valor se almacena en imagen_url:
      *
-     * Ejemplo:
-     * Bebidas-calientes/producto_123.jpeg
+     * Bebidas-calientes/cappuccino-clasico.jpeg
      */
+
     return
-        $carpetaCategoria
-        . '/'
-        . $nombreImagen;
+        $carpetaCategoria .
+        '/' .
+        $nombreArchivo;
 }
 
+/* =====================================================
+   LIMPIAR NOMBRE DEL ARCHIVO
+===================================================== */
+
+function limpiarNombreArchivo(
+    string $nombre
+): string {
+    $nombreConvertido = iconv(
+        'UTF-8',
+        'ASCII//TRANSLIT//IGNORE',
+        $nombre
+    );
+
+    if ($nombreConvertido !== false) {
+        $nombre = $nombreConvertido;
+    }
+
+    $nombre = strtolower($nombre);
+
+    $nombre = preg_replace(
+        '/[^a-z0-9]+/',
+        '-',
+        $nombre
+    );
+
+    return trim($nombre, '-');
+}
 
 /* =====================================================
    ELIMINAR IMAGEN
 ===================================================== */
 
-function eliminarImagenAnterior(
+function eliminarImagen(
     ?string $imagen
 ): void {
-
     if (empty($imagen)) {
         return;
     }
 
+    $rutaImagen =
+        dirname(__DIR__) .
+        '/img/productos/' .
+        $imagen;
 
-    $ruta =
-        '../img/productos/'
-        . $imagen;
-
-
-    if (is_file($ruta)) {
-
-        unlink($ruta);
+    if (is_file($rutaImagen)) {
+        unlink($rutaImagen);
     }
 }
