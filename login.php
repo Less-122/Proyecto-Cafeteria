@@ -9,8 +9,6 @@
     <link rel="stylesheet" href="css/login.css">
     <title>Registro | Aroma a Café</title>
     <link rel="icon" type="image/jpeg" href="img/Logo/isotipo.jpg">
-
-    <link rel="icon" type="image/jpeg" href="img/Logo/isotipo.jpg">
 </head>
 
 <body>

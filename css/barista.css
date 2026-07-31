@@ -124,3 +124,31 @@
 
 .finish-btn { background-color: #2ecc71; color: white; }
 .finish-btn:hover { background-color: #27ae60; }
+
+.order-receipt {
+    margin-top: 8px;
+    border: 1px solid #e6e6e6;
+    border-radius: 8px;
+    padding: 10px;
+    background: #fafafa;
+    font-size: 0.9rem;
+}
+
+.receipt-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 4px 0;
+    border-bottom: 1px dashed #e3e3e3;
+}
+
+.receipt-row:last-child {
+    border-bottom: none;
+}
+
+.receipt-total {
+    margin-top: 6px;
+    padding-top: 8px;
+    font-weight: 700;
+    color: #222;
+}

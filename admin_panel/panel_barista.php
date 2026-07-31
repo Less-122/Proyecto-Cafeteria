@@ -27,13 +27,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_pedido'], $_POST['
 }
 
 function obtenerPedidos($conexion, $estado) {
-    // Forzamos la comparación insensible a mayúsculas/minúsculas usando LOWER()
-    $stmt = $conexion->prepare("SELECT * FROM pedidos WHERE LOWER(estado) = LOWER(:estado) ORDER BY fecha_creacion ASC");
+    $stmt = $conexion->prepare(
+        "SELECT p.*, u.nombre AS nombre_usuario, u.apellido AS apellido_usuario " .
+        "FROM pedidos p " .
+        "LEFT JOIN usuarios u ON p.id_usuario = u.id_usuario " .
+        "WHERE LOWER(p.estado) = LOWER(:estado) " .
+        "ORDER BY p.fecha_creacion ASC"
+    );
     $stmt->execute([':estado' => $estado]);
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-$pendientes  = obtenerPedidos($conexion, 'Pendiente'); // Asegúrate de que coincida con mayúsculas/minúsculas de tu DB
+function obtenerDetallesPedido($conexion, $idPedido) {
+    $stmt = $conexion->prepare(
+        "SELECT dp.id_producto, dp.cantidad, dp.precio_unitario, pr.nombre " .
+        "FROM detalle_pedido dp " .
+        "LEFT JOIN productos pr ON dp.id_producto = pr.id_producto " .
+        "WHERE dp.id_pedido = :id_pedido " .
+        "ORDER BY dp.id_detalle_p ASC"
+    );
+    $stmt->execute([':id_pedido' => $idPedido]);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+$pendientes  = obtenerPedidos($conexion, 'pendiente');
 $preparacion = obtenerPedidos($conexion, 'preparacion');
 $listos      = obtenerPedidos($conexion, 'listo');
 ?>
@@ -66,20 +83,33 @@ $listos      = obtenerPedidos($conexion, 'listo');
         <section class="kanban-column" id="col-pendientes">
             <h2>Pendientes <span>(<?= count($pendientes) ?>)</span></h2>
             <?php foreach ($pendientes as $pedido): ?>
+            <?php $detallesPedido = obtenerDetallesPedido($conexion, $pedido['id_pedido']); ?>
             <article class="order-card alert">
                 <header class="order-header">
-                    <!-- Corrección: id_pedido en lugar de id -->
-                    <h3>Pedido #<?= $pedido['id_pedido'] ?></h3>
+                    <h3>Pedido #<?= (int) $pedido['id_pedido'] ?></h3>
                     <time><?= date('h:i A', strtotime($pedido['fecha_creacion'])) ?></time>
                 </header>
-                <!-- Corrección: id_usuario_fk en lugar de cliente -->
-                <div class="order-customer">Cliente: <strong>Usuario #<?= htmlspecialchars($pedido['id_usuario_fk']) ?></strong></div>
-                <div class="order-items">
-                    <?= nl2br(htmlspecialchars($pedido['detalle_pedido'])) ?>
+                <div class="order-customer">
+                    Cliente: <strong><?= htmlspecialchars(trim(($pedido['nombre_usuario'] ?? '') . ' ' . ($pedido['apellido_usuario'] ?? '')), ENT_QUOTES, 'UTF-8') ?: 'Cliente sin nombre' ?></strong>
+                </div>
+                <div class="order-receipt">
+                    <?php $subtotalPedido = 0; ?>
+                    <?php foreach ($detallesPedido as $detalle): ?>
+                        <?php $precioUnitario = (float) ($detalle['precio_unitario'] ?? 0); ?>
+                        <?php $cantidad = (int) ($detalle['cantidad'] ?? 0); ?>
+                        <?php $subtotalPedido += $precioUnitario * $cantidad; ?>
+                        <div class="receipt-row">
+                            <span><?= htmlspecialchars($detalle['nombre'] ?: 'Producto', ENT_QUOTES, 'UTF-8') ?> x<?= $cantidad ?></span>
+                            <span>$<?= number_format($precioUnitario * $cantidad, 2) ?></span>
+                        </div>
+                    <?php endforeach; ?>
+                    <div class="receipt-row receipt-total">
+                        <span>Total</span>
+                        <span>$<?= number_format((float) $pedido['total'], 2) ?></span>
+                    </div>
                 </div>
                 <form method="POST">
-                    <!-- Corrección: id_pedido en el input hidden -->
-                    <input type="hidden" name="id_pedido" value="<?= $pedido['id_pedido'] ?>">
+                    <input type="hidden" name="id_pedido" value="<?= (int) $pedido['id_pedido'] ?>">
                     <input type="hidden" name="nuevo_estado" value="preparacion">
                     <button type="submit" class="btn-action start-btn">Preparar</button>
                 </form>
@@ -90,17 +120,31 @@ $listos      = obtenerPedidos($conexion, 'listo');
         <section class="kanban-column" id="col-preparacion">
             <h2>En Preparación <span>(<?= count($preparacion) ?>)</span></h2>
             <?php foreach ($preparacion as $pedido): ?>
+            <?php $detallesPedido = obtenerDetallesPedido($conexion, $pedido['id_pedido']); ?>
             <article class="order-card in-progress">
                 <header class="order-header">
-                    <h3>Pedido #<?= $pedido['id_pedido'] ?></h3>
+                    <h3>Pedido #<?= (int) $pedido['id_pedido'] ?></h3>
                     <time><?= date('h:i A', strtotime($pedido['fecha_creacion'])) ?></time>
                 </header>
-                <div class="order-customer">Cliente: <strong>Usuario #<?= htmlspecialchars($pedido['id_usuario_fk']) ?></strong></div>
-                <div class="order-items">
-                    <?= nl2br(htmlspecialchars($pedido['detalle_pedido'])) ?>
+                <div class="order-customer">
+                    Cliente: <strong><?= htmlspecialchars(trim(($pedido['nombre_usuario'] ?? '') . ' ' . ($pedido['apellido_usuario'] ?? '')), ENT_QUOTES, 'UTF-8') ?: 'Cliente sin nombre' ?></strong>
+                </div>
+                <div class="order-receipt">
+                    <?php foreach ($detallesPedido as $detalle): ?>
+                        <?php $precioUnitario = (float) ($detalle['precio_unitario'] ?? 0); ?>
+                        <?php $cantidad = (int) ($detalle['cantidad'] ?? 0); ?>
+                        <div class="receipt-row">
+                            <span><?= htmlspecialchars($detalle['nombre'] ?: 'Producto', ENT_QUOTES, 'UTF-8') ?> x<?= $cantidad ?></span>
+                            <span>$<?= number_format($precioUnitario * $cantidad, 2) ?></span>
+                        </div>
+                    <?php endforeach; ?>
+                    <div class="receipt-row receipt-total">
+                        <span>Total</span>
+                        <span>$<?= number_format((float) $pedido['total'], 2) ?></span>
+                    </div>
                 </div>
                 <form method="POST">
-                    <input type="hidden" name="id_pedido" value="<?= $pedido['id_pedido'] ?>">
+                    <input type="hidden" name="id_pedido" value="<?= (int) $pedido['id_pedido'] ?>">
                     <input type="hidden" name="nuevo_estado" value="listo">
                     <button type="submit" class="btn-action finish-btn">Listo para Entrega</button>
                 </form>
@@ -111,17 +155,28 @@ $listos      = obtenerPedidos($conexion, 'listo');
         <section class="kanban-column" id="col-listos">
             <h2>Listos para Pago <span>(<?= count($listos) ?>)</span></h2>
             <?php foreach ($listos as $pedido): ?>
+            <?php $detallesPedido = obtenerDetallesPedido($conexion, $pedido['id_pedido']); ?>
             <article class="order-card">
                 <header class="order-header">
-                    <h3>Pedido #<?= $pedido['id_pedido'] ?></h3>
+                    <h3>Pedido #<?= (int) $pedido['id_pedido'] ?></h3>
                     <time><?= date('h:i A', strtotime($pedido['fecha_creacion'])) ?></time>
                 </header>
-                <div class="order-customer">Cliente: <strong>Usuario #<?= htmlspecialchars($pedido['id_usuario_fk']) ?></strong></div>
-                <div class="order-items">
-                    <?= nl2br(htmlspecialchars($pedido['detalle_pedido'])) ?>
+                <div class="order-customer">
+                    Cliente: <strong><?= htmlspecialchars(trim(($pedido['nombre_usuario'] ?? '') . ' ' . ($pedido['apellido_usuario'] ?? '')), ENT_QUOTES, 'UTF-8') ?: 'Cliente sin nombre' ?></strong>
                 </div>
-                <div class="order-total">
-                    <strong>Total: $<?= number_format($pedido['total'], 2) ?></strong>
+                <div class="order-receipt">
+                    <?php foreach ($detallesPedido as $detalle): ?>
+                        <?php $precioUnitario = (float) ($detalle['precio_unitario'] ?? 0); ?>
+                        <?php $cantidad = (int) ($detalle['cantidad'] ?? 0); ?>
+                        <div class="receipt-row">
+                            <span><?= htmlspecialchars($detalle['nombre'] ?: 'Producto', ENT_QUOTES, 'UTF-8') ?> x<?= $cantidad ?></span>
+                            <span>$<?= number_format($precioUnitario * $cantidad, 2) ?></span>
+                        </div>
+                    <?php endforeach; ?>
+                    <div class="receipt-row receipt-total">
+                        <span>Total</span>
+                        <span>$<?= number_format((float) $pedido['total'], 2) ?></span>
+                    </div>
                 </div>
             </article>
             <?php endforeach; ?>

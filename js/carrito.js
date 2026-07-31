@@ -125,6 +125,18 @@ document.addEventListener("DOMContentLoaded", () => {
             btnConfirmar.disabled = true;
             btnConfirmar.textContent = "Procesando...";
 
+            const carritoValido = carrito.every(item => {
+                const idProducto = Number(item.id_producto ?? item.id ?? 0);
+                return Number.isFinite(idProducto) && idProducto > 0;
+            });
+
+            if (!carritoValido) {
+                alert("No fue posible confirmar el pedido porque algunos productos no tienen un identificador válido.");
+                btnConfirmar.disabled = false;
+                btnConfirmar.textContent = "Confirmar Pedido";
+                return;
+            }
+
             let totalPedido = 0;
             carrito.forEach(item => {
                 const precioFinal = Number(item.precioFinal ?? item.precio ?? 0);
@@ -132,7 +144,11 @@ document.addEventListener("DOMContentLoaded", () => {
             });
 
             const datosPedido = {
-                carrito: carrito,
+                carrito: carrito.map(item => ({
+                    id_producto: Number(item.id_producto ?? item.id ?? 0),
+                    cantidad: Number(item.cantidad ?? 1),
+                    precio_unitario: Number(item.precioFinal ?? item.precio ?? 0)
+                })),
                 total: totalPedido
             };
 
@@ -195,6 +211,7 @@ document.addEventListener('click', (event) => {
 
     const producto = {
         id: nombreProducto.toLowerCase().replace(/\s+/g, '-'),
+        id_producto: Number(boton.dataset.id || 0),
         nombre: nombreProducto,
         precio: precioNormal || precioFinal || 0,
         precioFinal: precioFinal || precioNormal || 0,
@@ -209,7 +226,9 @@ document.addEventListener('click', (event) => {
 function agregarAlLocalStorage(nuevoProducto) {
     let carrito = JSON.parse(localStorage.getItem("carritoCompras")) || [];
 
-    const existe = carrito.find(item => item.id === nuevoProducto.id);
+    const existe = carrito.find(item => {
+        return (item.id_producto && nuevoProducto.id_producto && item.id_producto === nuevoProducto.id_producto) || item.id === nuevoProducto.id;
+    });
 
     if (existe) {
         existe.cantidad++; 
