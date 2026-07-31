@@ -14,6 +14,7 @@ $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Usuarios | Admin</title>
+    <link rel="icon" type="image/jpeg" href="/Proyecto-Cafeteria/img/Logo/isotipoAzul.jpeg">
     <!-- Ruta absoluta corregida -->
     <link rel="stylesheet" href="/Proyecto-Cafeteria/css/admin.css">
 </head>

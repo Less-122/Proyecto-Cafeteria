@@ -23,6 +23,7 @@ $categorias = $resultado ? $resultado->fetchAll(PDO::FETCH_ASSOC) : [];
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Categorías</title>
     <link rel="stylesheet" href="/Proyecto-Cafeteria/css/admin.css">
+    <link rel="icon" type="image/jpeg" href="/Proyecto-Cafeteria/img/Logo/isotipoAzul.jpeg">
 </head>
 
 <body>

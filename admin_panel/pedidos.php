@@ -28,6 +28,7 @@ $pedidos = $resultado ? $resultado->fetchAll(PDO::FETCH_ASSOC) : [];
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pedidos</title>
+    <link rel="icon" type="image/jpeg" href="/Proyecto-Cafeteria/img/Logo/isotipoAzul.jpeg">
     <!-- Rutas absolutas -->
     <link rel="stylesheet" href="/Proyecto-Cafeteria/css/admin.css">
 </head>

@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aroma a Café - Tu Carrito</title>
     <script src="js/carrito.js"></script>
+    <link rel="icon" type="image/jpeg" href="img/Logo/isotipo.jpg">
     
     <link rel="stylesheet" href="css/header-menu.css">
     <link rel="stylesheet" href="css/footer.css">
