@@ -46,6 +46,11 @@ document.addEventListener('click', function(e) {
 
     // Abrir Modal Modificar y cargar datos a los inputs
     if (btnEdit) {
+        const isProductsPage = !!document.getElementById('editIdProducto') && !!document.getElementById('modalEdit');
+        if (isProductsPage) {
+            return;
+        }
+
         const checkbox = document.querySelector('input[name="seleccion"]:checked');
         if (!checkbox) {
             alert("Por favor, selecciona un elemento para modificar.");
@@ -84,6 +89,11 @@ document.addEventListener('click', function(e) {
 
     // Abrir Modal Eliminar y pasar ID USUARIOS
     if (btnDelete) {
+        const isProductsPage = !!document.getElementById('deleteProdId') && !!document.getElementById('modalDeleteProducto');
+        if (isProductsPage) {
+            return;
+        }
+
         const checkbox = document.querySelector('input[name="seleccion"]:checked');
         if (!checkbox) {
             alert("Por favor, selecciona el elemento que deseas eliminar.");
@@ -234,74 +244,44 @@ document.addEventListener('submit', function(e) {
     }
 });
 
-// Motor de Búsqueda
-document.addEventListener('DOMContentLoaded', () => {
+// Filtro por búsqueda y categoría en la tabla de productos
+document.addEventListener('DOMContentLoaded', function() {
     const searchInput = document.getElementById('searchInput');
+    const selectorCategoria = document.querySelector('#selector');
+    const tabla = document.querySelector('main.main_container table tbody');
 
-    if (searchInput) {
-        searchInput.addEventListener('input', function() {
-            const textoBusqueda = this.value.toLowerCase();
-            const filas = document.querySelectorAll('main.main_container table tr');
+    if (!tabla) return;
 
-            filas.forEach((fila, indice) => {
-                if (indice === 0) return; 
+    const filas = Array.from(tabla.querySelectorAll('tr'));
 
-                const columnaID_Pedidos = fila.cells[0] ? fila.cells[0].innerText.toLowerCase() : '';
-                const columnaID_Productos = fila.cells[1] ? fila.cells[1].innerText.toLowerCase() : '';
-                const columnaNombre_Pedidos = fila.cells[1] ? fila.cells[1].innerText.toLowerCase() : '';
-                const columnaNombre_Productos = fila.cells[2] ? fila.cells[2].innerText.toLowerCase() : '';
+    function aplicarFiltros() {
+        const textoBusqueda = (searchInput?.value || '').toLowerCase().trim();
+        const categoriaSeleccionada = (selectorCategoria?.value || '').trim().toLowerCase();
 
-                if (
-                    columnaID_Pedidos.includes(textoBusqueda) || 
-                    columnaID_Productos.includes(textoBusqueda) || 
-                    columnaNombre_Pedidos.includes(textoBusqueda) || 
-                    columnaNombre_Productos.includes(textoBusqueda)
-                ) {
-                    fila.style.display = '';
-                } else {
-                    fila.style.display = 'none';
-                }
-            });
+        filas.forEach((fila) => {
+            const textoFila = (fila.textContent || '').toLowerCase();
+            const nombreFila = (fila.cells[2]?.textContent || '').toLowerCase();
+            const categoriaFila = (fila.dataset.categoriaNombre || '').toLowerCase();
+
+            const coincideBusqueda = textoBusqueda === '' ||
+                textoFila.includes(textoBusqueda) ||
+                nombreFila.includes(textoBusqueda);
+            const coincideCategoria = categoriaSeleccionada === '' ||
+                categoriaFila === categoriaSeleccionada;
+
+            fila.style.display = coincideBusqueda && coincideCategoria ? '' : 'none';
         });
     }
-});
 
-// Filtro por Categorías
-document.addEventListener('DOMContentLoaded', function() {
-    const selectorCategoria = document.querySelector('#selector');
-    const tabla = document.querySelector('table');
-
-    if (!selectorCategoria || !tabla) return; 
-
-    const mapaCategorias = {
-        'Bebidas calientes': 'Bebidas calientes',
-        'Bebidas frias': 'Bebidas frías',
-        'Postres': 'Postres'
-    };
-
-    function filtrarPorCategoria() {
-        const valorSeleccionado = selectorCategoria.value;
-        const categoriaSeleccionada = mapaCategorias[valorSeleccionado] || '';
-        const filas = tabla.querySelectorAll('tr');
-
-        for (let i = 1; i < filas.length; i++) {
-            const fila = filas[i];
-            const celdas = fila.querySelectorAll('td');
-            if (celdas.length === 0) continue;
-            const celdaCategoria = celdas[4];
-            if (!celdaCategoria) continue; 
-            const textoCategoria = celdaCategoria.textContent.trim();
-
-            if (categoriaSeleccionada === '' || textoCategoria === categoriaSeleccionada) {
-                fila.style.display = '';
-            } else {
-                fila.style.display = 'none';
-            }
-        }
+    if (searchInput) {
+        searchInput.addEventListener('input', aplicarFiltros);
     }
 
-    selectorCategoria.addEventListener('change', filtrarPorCategoria);
-    filtrarPorCategoria();
+    if (selectorCategoria) {
+        selectorCategoria.addEventListener('change', aplicarFiltros);
+    }
+
+    aplicarFiltros();
 });
 
 

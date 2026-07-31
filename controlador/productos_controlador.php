@@ -62,85 +62,15 @@ function crearProducto(PDO $conexion): void
             $_POST['precio_descuento'] ?? ''
         );
 
-    function validarProducto(
-    PDO $conexion,
-    string $nombre,
-    int $idCategoria,
-    float $precio,
-    int $tienePromocion,
-    string $etiquetaPromo,
-    ?float $precioDescuento
-): void {
-    if ($nombre === '') {
-        throw new Exception(
-            'El nombre del producto es obligatorio.'
-        );
-    }
-
-    if ($idCategoria <= 0) {
-        throw new Exception(
-            'Selecciona una categoría válida.'
-        );
-    }
-
-    /*
-     * Verificar que la categoría exista realmente
-     * en la tabla categorias.
-     */
-    $sqlCategoria = "
-        SELECT COUNT(*)
-        FROM categorias
-        WHERE id_categoria = :id_categoria
-    ";
-
-    $stmtCategoria =
-        $conexion->prepare($sqlCategoria);
-
-    $stmtCategoria->execute([
-        ':id_categoria' => $idCategoria
-    ]);
-
-    $categoriaExiste =
-        (int) $stmtCategoria->fetchColumn();
-
-    if ($categoriaExiste === 0) {
-        throw new Exception(
-            'La categoría seleccionada no existe en la base de datos.'
-        );
-    }
-
-    if ($precio < 0) {
-        throw new Exception(
-            'El precio no puede ser negativo.'
-        );
-    }
-
-    if ($tienePromocion === 1) {
-        if ($etiquetaPromo === '') {
-            throw new Exception(
-                'Escribe una etiqueta para la promoción.'
-            );
-        }
-
-        if ($precioDescuento === null) {
-            throw new Exception(
-                'Escribe el precio con descuento.'
-            );
-        }
-
-        if ($precioDescuento < 0) {
-            throw new Exception(
-                'El precio con descuento no puede ser negativo.'
-            );
-        }
-
-        if ($precioDescuento >= $precio) {
-            throw new Exception(
-                'El precio con descuento debe ser menor al precio normal.'
-            );
-        }
-    }
-}
+    validarProducto(
+        $conexion,
+        $nombre,
+        $idCategoria,
+        $precio,
+        $tienePromocion,
+        $etiquetaPromo,
+        $precioDescuento
+    );
 
     if (
         !isset($_FILES['imagen']) ||
@@ -451,18 +381,46 @@ function eliminarProducto(PDO $conexion): void
    VALIDAR PRODUCTO
 ===================================================== */
 
+function validarProducto(
+    PDO $conexion,
+    string $nombre,
+    int $idCategoria,
+    float $precio,
+    int $tienePromocion,
+    string $etiquetaPromo,
+    ?float $precioDescuento
+): void {
+    if ($nombre === '') {
+        throw new Exception(
+            'El nombre del producto es obligatorio.'
+        );
+    }
 
-    /*
-     * Tu sistema utiliza:
-     *
-     * 1 = Bebidas calientes
-     * 2 = Bebidas frías
-     * 3 = Postres
-     */
-
-    if (!in_array($idCategoria, [1, 2, 3], true)) {
+    if ($idCategoria <= 0) {
         throw new Exception(
             'Selecciona una categoría válida.'
+        );
+    }
+
+    $sqlCategoria = "
+        SELECT COUNT(*)
+        FROM categorias
+        WHERE id_categoria = :id_categoria
+    ";
+
+    $stmtCategoria =
+        $conexion->prepare($sqlCategoria);
+
+    $stmtCategoria->execute([
+        ':id_categoria' => $idCategoria
+    ]);
+
+    $categoriaExiste =
+        (int) $stmtCategoria->fetchColumn();
+
+    if ($categoriaExiste === 0) {
+        throw new Exception(
+            'La categoría seleccionada no existe en la base de datos.'
         );
     }
 
@@ -497,6 +455,7 @@ function eliminarProducto(PDO $conexion): void
             );
         }
     }
+}
 
 /* =====================================================
    CONVERTIR PRECIO DE DESCUENTO

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 31-07-2026 a las 02:00:58
+-- Tiempo de generación: 31-07-2026 a las 06:34:30
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.0.30
 
@@ -102,7 +102,7 @@ CREATE TABLE `productos` (
 --
 
 INSERT INTO `productos` (`id_producto`, `nombre`, `descripcion`, `id_categoria`, `precio`, `imagen_url`, `tiene_promocion`, `etiqueta_promo`, `precio_descuento`) VALUES
-(4, 'Primer sorbo', 'Espresso doble. El equilibrio perfecto entre intensidad y aroma. Un café corto, fuerte y lleno de carácter para comenzar el día con energía', 2, 59.00, 'Bebidas-calientes/primer-sorbo.jpeg', 0, NULL, NULL),
+(4, 'Primer sorbo', 'Espresso doble. El equilibrio perfecto entre intensidad y aroma. Un café corto, fuerte y lleno de carácter para comenzar el día con energía', 2, 59.00, 'Bebidas-calientes/primer-sorbo.jpeg', 1, '10% de descuento', 53.10),
 (5, 'Brisa de canela', 'Latte con canela. El equilibrio perfecto entre intensidad y aroma Un cafe corto, fuerte y lleno de carácter para comenzar el dia con energia', 2, 49.00, 'Bebidas-calientes/brisa-de-canela.jpeg', 0, NULL, NULL),
 (6, 'Moka Dorado', 'Cafe mocha. La mezcla ideal entre cafe espresso y chocolate, coronada con espuma de leche para un sabor dulce e irresistible.', 2, 59.00, 'Bebidas-calientes/moka-dorado.jpeg', 0, NULL, NULL),
 (7, 'Nube de vainilla', 'Latte de vainilla Leche vaporizada, espresso y vainilla natural que crean una bebida suave, cremosa y reconfortante', 2, 89.00, 'Bebidas-calientes/nube-de-vainilla.jpeg', 0, NULL, NULL),
@@ -125,7 +125,13 @@ INSERT INTO `productos` (`id_producto`, `nombre`, `descripcion`, `id_categoria`,
 (24, 'Deditos Dorados', 'Churros tradicionales Delicados churros recien preparados. espolvoreados con azúcar y canela, perfectos para acompañar una taza de café o chocolate caliente.', 3, 48.00, 'Postres/deditos-dorados.png', 0, NULL, NULL),
 (25, 'Sueño de Chocolate', 'Helado de chocolate Cremoso helado de chocolate elaborado con cacao de alta calidad, de textura suave y un sabor intenso que conquista desde la primera cucharada.', 3, 62.00, 'Postres/sue-no-de-chocolate.jpeg', 0, NULL, NULL),
 (26, 'Dulce Recuerdo', 'Arroz con leche. Un postre tradicional preparado con arroz, leche y un toque de canela, cuya zeceta casera evoca los sabores y recuerdos de hogar', 3, 55.00, 'Postres/dulce-recuerdo.jpeg', 0, NULL, NULL),
-(27, 'Cielo de Chocolate', 'Pastel de chocolate Capas de bizcocho de chocolate cubiertas con una cremosa ganache que conquista desde el primer hocado', 3, 87.00, 'Postres/cielo-de-chocolate.jpeg', 0, NULL, NULL);
+(27, 'Cielo de Chocolate', 'Pastel de chocolate Capas de bizcocho de chocolate cubiertas con una cremosa ganache que conquista desde el primer hocado', 3, 87.00, 'Postres/cielo-de-chocolate.jpeg', 0, NULL, NULL),
+(29, 'Pastel de Snoopy floral', 'ESPECIAL. Pastel decorado con crema de vainilla, flores azules y figura de Snoopy.', 3, 580.00, 'Postres/pastel-de-snoopy-floral-2.jpeg', 1, '-$80', 500.00),
+(30, 'Chocolate galaxy', 'Pastel de chocolate cubierto con ganache y decorado con pequeñas estrellas de chocolate blanco.', 3, 430.00, 'Postres/chocolate-galaxy-2.jpeg', 1, '18% de descuento', 353.00),
+(31, 'Pastel de fresas con crema', 'Pastel de vainilla relleno con crema y fresas frescas, decorado con crema batida.', 3, 480.00, 'Postres/pastel-de-fresas-con-crema.jpeg', 1, '20% de descuento', 152.00),
+(32, 'Nanas', 'Incluye una rebanada de pastel de fresas y una de chocolate para disfrutar en pareja, dos sabores en una sola compra.', 3, 190.00, 'Postres/nanas.jpeg', 1, '20% de descuento', 152.00),
+(33, 'Galletas choco chips artesanal', 'Galletas recién horneadas con generosos trozos de chocolate amargo.', 3, 95.00, 'Postres/galletas-choco-chips-artesanales.jpeg', 1, '-$20', 75.00),
+(34, 'Latte art personalizado', 'Latte cremoso con arte en espuma en forma personalizada, preparado al momento.', 2, 89.00, 'Bebidas-calientes/latte-art-personalizado.jpeg', 1, '15% de descuento', 76.00);
 
 -- --------------------------------------------------------
 
@@ -201,7 +207,7 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT de la tabla `categorias`
 --
 ALTER TABLE `categorias`
-  MODIFY `id_categoria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id_categoria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `detalle_pedido`
@@ -219,7 +225,7 @@ ALTER TABLE `pedidos`
 -- AUTO_INCREMENT de la tabla `productos`
 --
 ALTER TABLE `productos`
-  MODIFY `id_producto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
+  MODIFY `id_producto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios`

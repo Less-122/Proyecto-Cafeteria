@@ -68,9 +68,11 @@ $categorias = $stmtCategorias->fetchAll(PDO::FETCH_ASSOC);
                     <ion-icon name="pricetag-outline" class="icono_filtro"></ion-icon>
                     <select name="seleccion" id="selector" class="custom_select">
                         <option value="" selected>Todas las categorías</option>
-                        <option value="BEBIDAS CALIENTES">Bebidas calientes</option>
-                        <option value="BEBIDAS FRIAS">Bebidas frías</option>
-                        <option value="POSTRES">Postres</option>
+                        <?php foreach ($categorias as $categoria): ?>
+                            <option value="<?= htmlspecialchars($categoria['nombre'], ENT_QUOTES, 'UTF-8') ?>">
+                                <?= htmlspecialchars($categoria['nombre'], ENT_QUOTES, 'UTF-8') ?>
+                            </option>
+                        <?php endforeach; ?>
                     </select>
                 </div>
 
@@ -78,8 +80,8 @@ $categorias = $stmtCategorias->fetchAll(PDO::FETCH_ASSOC);
 
             <div>
                 <button type="button" data-modal="modalAdd" class="btn-add">Añadir</button>
-                <button type="button" class="btn-edit" id="btnModificar">Modificar</button>
-                <button id="btnEliminarProducto" type="button" class="btn-delete">Borrar</button>
+                <button type="button" class="btn-edit" id="btnModificar" data-modal="modalEdit">Modificar</button>
+                <button id="btnEliminarProducto" type="button" class="btn-delete" data-modal="modalDeleteProducto">Borrar</button>
             </div>
 
         </section>
@@ -107,7 +109,7 @@ $categorias = $stmtCategorias->fetchAll(PDO::FETCH_ASSOC);
                     </tr>
                 <?php else: ?>
                     <?php foreach ($productos as $p): ?>
-                        <tr>
+                        <tr data-categoria-nombre="<?= htmlspecialchars($p['categoria'], ENT_QUOTES, 'UTF-8') ?>">
                             <td>
                                 <input 
                                     type="checkbox" 
@@ -119,6 +121,8 @@ $categorias = $stmtCategorias->fetchAll(PDO::FETCH_ASSOC);
                                     data-categoria="<?= (int) $p['id_categoria'] ?>"
                                     data-precio="<?= htmlspecialchars($p['precio'], ENT_QUOTES, 'UTF-8') ?>"
                                     data-promocion="<?= (int) ($p['tiene_promocion'] ?? 0) ?>"
+                                    data-etiqueta-promo="<?= htmlspecialchars($p['etiqueta_promo'] ?? '', ENT_QUOTES, 'UTF-8') ?>"
+                                    data-precio-descuento="<?= htmlspecialchars($p['precio_descuento'] ?? '', ENT_QUOTES, 'UTF-8') ?>"
                                 >
                             </td>
                             <td><?= (int) $p['id_producto'] ?></td>
@@ -188,6 +192,14 @@ $categorias = $stmtCategorias->fetchAll(PDO::FETCH_ASSOC);
                 <label for="promocion">Promoción:</label>
                 <input type="checkbox" id="promocion" name="promocion">
 
+                <div id="promoFieldsAdd" style="display:none; margin-top: 10px;">
+                    <label for="etiquetaPromoAdd">Etiqueta de promoción:</label>
+                    <input type="text" id="etiquetaPromoAdd" name="etiqueta_promo" placeholder="Ej. 20% OFF">
+
+                    <label for="precioDescuentoAdd">Precio con descuento:</label>
+                    <input type="number" id="precioDescuentoAdd" name="precio_descuento" min="0" step="0.01" placeholder="Ej. 79.00">
+                </div>
+
                 <button type="submit">Guardar</button>
             </form>
         </div>
@@ -228,6 +240,14 @@ $categorias = $stmtCategorias->fetchAll(PDO::FETCH_ASSOC);
 
                 <label for="editPromocion">Promoción:</label>
                 <input type="checkbox" id="editPromocion" name="promocion">
+
+                <div id="promoFieldsEdit" style="display:none; margin-top: 10px;">
+                    <label for="editEtiquetaPromo">Etiqueta de promoción:</label>
+                    <input type="text" id="editEtiquetaPromo" name="etiqueta_promo" placeholder="Ej. 20% OFF">
+
+                    <label for="editPrecioDescuento">Precio con descuento:</label>
+                    <input type="number" id="editPrecioDescuento" name="precio_descuento" min="0" step="0.01" placeholder="Ej. 79.00">
+                </div>
 
                 <button type="submit">Actualizar</button>
             </form>

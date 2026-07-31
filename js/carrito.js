@@ -16,13 +16,18 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         carrito.forEach((producto, indice) => {
+            const precioUnitario = Number(producto.precioFinal ?? producto.precio ?? 0);
+            const precioMostrar = Number.isFinite(precioUnitario) ? precioUnitario : 0;
+            const descuentoAplicado = Math.max(0, Number(producto.precio ?? 0) - precioMostrar);
+
             const itemHTML = `
                 <div class="cart-item" data-indice="${indice}">
                     <img src="${producto.imagen}" alt="${producto.nombre}">
                     <div class="item-details">
                         <h3>${producto.nombre}</h3>
                         <p class="item-category">Producto Seleccionado</p>
-                        <span class="item-price">$${producto.precio.toFixed(2)}</span>
+                        <span class="item-price">$${precioMostrar.toFixed(2)}</span>
+                        ${descuentoAplicado > 0 ? `<p class="item-discount">Ahorras $${descuentoAplicado.toFixed(2)}</p>` : ""}
                     </div>
                     <div class="item-quantity">
                         <button class="qty-btn btn-restar">-</button>
@@ -44,21 +49,31 @@ document.addEventListener("DOMContentLoaded", () => {
     // calculo
     function actualizarTotales() {
         let subtotal = 0;
+        let descuentoTotal = 0;
         let totalProductos = 0;
 
         carrito.forEach(item => {
-            subtotal += item.precio * item.cantidad;
-            totalProductos += item.cantidad;
+            const precioNormal = Number(item.precio ?? 0);
+            const precioFinal = Number(item.precioFinal ?? item.precio ?? 0);
+            const cantidad = Number(item.cantidad ?? 1);
+            const precioBase = Number.isFinite(precioNormal) ? precioNormal : 0;
+            const precioUnitario = Number.isFinite(precioFinal) ? precioFinal : precioBase;
+
+            subtotal += precioUnitario * cantidad;
+            descuentoTotal += Math.max(0, precioBase - precioUnitario) * cantidad;
+            totalProductos += cantidad;
         });
 
         const subtotalLabel = document.querySelector(".summary-row:nth-of-type(1) span:first-child");
         const subtotalValue = document.querySelector(".summary-row:nth-of-type(1) span:last-child");
+        const descuentoValue = document.querySelector(".summary-row.discount span:last-child");
         const totalValue = document.querySelector(".summary-row.total span:last-child");
 
-        if (subtotalLabel && subtotalValue && totalValue) {
+        if (subtotalLabel && subtotalValue && descuentoValue && totalValue) {
             subtotalLabel.textContent = `Subtotal (${totalProductos} producto${totalProductos !== 1 ? 's' : ''})`;
             subtotalValue.textContent = `$${subtotal.toFixed(2)}`;
-            totalValue.textContent = `$${subtotal.toFixed(2)}`; 
+            descuentoValue.textContent = `-$${descuentoTotal.toFixed(2)}`;
+            totalValue.textContent = `$${(subtotal - descuentoTotal).toFixed(2)}`;
         }
     }
 
@@ -111,7 +126,10 @@ document.addEventListener("DOMContentLoaded", () => {
             btnConfirmar.textContent = "Procesando...";
 
             let totalPedido = 0;
-            carrito.forEach(item => totalPedido += (item.precio * item.cantidad));
+            carrito.forEach(item => {
+                const precioFinal = Number(item.precioFinal ?? item.precio ?? 0);
+                totalPedido += precioFinal * Number(item.cantidad ?? 1);
+            });
 
             const datosPedido = {
                 carrito: carrito,
@@ -171,10 +189,15 @@ document.addEventListener('click', (event) => {
     
     const imagenProducto = tarjeta.querySelector('img')?.src || '';
 
+    const precioNormalTexto = tarjeta.querySelector('.precio-anterior')?.textContent || '';
+    const precioNormal = parseFloat(precioNormalTexto.replace('$', '').replace(',', '').trim()) || 0;
+    const precioFinal = parseFloat(precioTexto.replace('$', '').replace(',', '').trim()) || 0;
+
     const producto = {
         id: nombreProducto.toLowerCase().replace(/\s+/g, '-'),
         nombre: nombreProducto,
-        precio: parseFloat(precioTexto.replace('$', '').replace(',', '').trim()) || 0,
+        precio: precioNormal || precioFinal || 0,
+        precioFinal: precioFinal || precioNormal || 0,
         imagen: imagenProducto,
         cantidad: 1
     };
